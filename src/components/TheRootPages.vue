@@ -2,7 +2,6 @@
 <template>
     <hy-config-provider>
         <slot></slot>
-        <hy-button text="按钮"></hy-button>
 
         <hy-toast></hy-toast>
         <hy-modal></hy-modal>

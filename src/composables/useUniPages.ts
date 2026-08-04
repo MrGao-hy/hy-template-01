@@ -48,4 +48,5 @@ export interface PageOptions {
 
 export const useUniPages: Partial<PageOptions> = {
     exclude: ['**/components/**/**.*'],
-}
+    subPackages: ['src/pages-sub'],
+};
