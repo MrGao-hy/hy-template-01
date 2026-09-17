@@ -6,13 +6,36 @@
 type _LocationUrl =
   "/pages/index/Index" |
   "/pages/mine/Index" |
+  "/pages/order/Index" |
+  "/pages/search/Index" |
+  "/pages-sub/add-card/Index" |
+  "/pages-sub/address/Index" |
+  "/pages-sub/cart/Index" |
+  "/pages-sub/chat-support/Index" |
+  "/pages-sub/checkout/Index" |
   "/pages-sub/forgot-password/code" |
   "/pages-sub/forgot-password/email" |
   "/pages-sub/forgot-password/reset" |
   "/pages-sub/intro/Index" |
   "/pages-sub/login/Index" |
+  "/pages-sub/notification/Index" |
+  "/pages-sub/notification-setting/Index" |
+  "/pages-sub/order/cancel" |
+  "/pages-sub/order/details" |
+  "/pages-sub/order/Index" |
+  "/pages-sub/order/review" |
+  "/pages-sub/order/tracking" |
+  "/pages-sub/payment/Index" |
+  "/pages-sub/profile-setting/Index" |
+  "/pages-sub/searchDiscover/Index" |
+  "/pages-sub/searchList/Index" |
+  "/pages-sub/setting/Index" |
   "/pages-sub/signup/Index" |
-  "/pages-sub/welcome/Index";
+  "/pages-sub/voucher/Index" |
+  "/pages-sub/welcome/Index" |
+  "/pages-sub/wishlist/Index" |
+  "/pages-sub/product/details/Index" |
+  "/pages-sub/product/list/Index";
 
 interface NavigateToOptions {
   url: _LocationUrl;
@@ -20,7 +43,7 @@ interface NavigateToOptions {
 interface RedirectToOptions extends NavigateToOptions {}
 
 interface SwitchTabOptions {
-  url: "/pages/index/Index" | "/pages/mine/Index"
+  url: "/pages/index/Index" | "/pages/search/Index" | "/pages/order/Index" | "/pages/mine/Index"
 }
 
 type ReLaunchOptions = NavigateToOptions | SwitchTabOptions;

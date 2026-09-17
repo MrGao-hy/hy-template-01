@@ -1,291 +1,311 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { IconConfig } from '@hy-app/ui';
+import { IconConfig, useTranslate, type GridItemVo } from '@hy-app/ui';
 import TheRootPages from '@/components/TheRootPages.vue';
+import Icon from '@/components/Icon.vue';
+import Tabbar from '@/components/Tabbar.vue';
+
+import CategoryNav from './components/CategoryNav.vue';
+import HomeBanner from './components/HomeBanner.vue';
+import FeatureProducts from './components/FeatureProducts.vue';
+import NewCollectionBanner from './components/NewCollectionBanner.vue';
+import RecommendedProducts from './components/RecommendedProducts.vue';
+import TopCollection from './components/TopCollection.vue';
+import CategoryShowcase from './components/CategoryShowcase.vue';
+import SideMenuPopup from '@/components/SideMenuPopup.vue';
+
+import type {
+    CategoryNav as CategoryNavType,
+    BannerItem,
+    Product,
+    RecommendedProduct,
+    CollectionBanner,
+    CategoryShowcase as CategoryShowcaseType,
+    SideMenuItem,
+} from './components/types';
 
 definePage({
+    type: 'home',
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'black',
     },
 });
 
-/** 商品类型 */
-interface Product {
-    id: number;
-    name: string;
-    price: number;
-    originalPrice?: number;
-    image: string;
-    rating: number;
-    tag?: string;
-}
+// ============== 国际化 ==============
+const { t } = useTranslate('home');
 
-/** 分类类型 */
-interface Category {
-    name: string;
-    icon: string;
-    bgColor: string;
-}
+// ============== 模拟数据（使用 key 方便国际化） ==============
 
-/** 轮播图数据 */
-const bannerList = ref<string[]>([
-    '/static/images/fluxstore/image_071373fad51ad0143a98105907f84f8d80c53d58.png',
-    '/static/images/fluxstore/image_09a1be8060c68fe8e2d0ea8f62839ee9328cede6.png',
-    '/static/images/fluxstore/image_09e90f5ea1ecc64acbaaa975deb94ffe18def16c.png',
-]);
-
-/** 分类数据 */
-const categoryList = ref<Category[]>([
-    { name: '时尚', icon: IconConfig.MINE_FILL, bgColor: '#E8D5C4' },
-    { name: '发现', icon: IconConfig.SEARCH, bgColor: '#F0F0F2' },
-    { name: '推荐', icon: IconConfig.STAR_FILL, bgColor: '#F0F0F2' },
-    { name: '分类', icon: IconConfig.CLASS, bgColor: '#F0F0F2' },
-]);
-
-/** 商品数据 */
-const productList = ref<Product[]>([
+/** 分类导航数据 - Women/Men/Accessories/Beauty */
+const categoryNavList = ref<CategoryNavType[]>([
     {
         id: 1,
-        name: '简约时尚针织衫',
-        price: 199,
-        originalPrice: 299,
-        image: '/static/images/fluxstore/image_0bae90a82fa4f5ac14e4f0e05d1b9536e46e2dad.png',
-        rating: 4.8,
-        tag: '新品',
+        nameKey: 'categories.women',
+        icon: 'woman',
+        active: true,
     },
     {
         id: 2,
-        name: '复古休闲外套',
-        price: 329,
-        image: '/static/images/fluxstore/image_12f8cad101641db0192ceca19f5110de13c7a264.png',
-        rating: 4.6,
+        nameKey: 'categories.men',
+        icon: 'man',
     },
     {
         id: 3,
-        name: '纯棉印花T恤',
-        price: 89,
-        originalPrice: 129,
-        image: '/static/images/fluxstore/image_15fabd854b7cb3b15474b1d58ae3661dd03a76db.png',
-        rating: 4.9,
-        tag: '热卖',
+        nameKey: 'categories.accessories',
+        icon: 'glasses',
     },
     {
         id: 4,
-        name: '高腰直筒牛仔裤',
-        price: 259,
-        image: '/static/images/fluxstore/image_1ba718d3938b04da6be29a56e3d4b6108c22d1e6.png',
-        rating: 4.7,
-    },
-    {
-        id: 5,
-        name: '轻奢金属项链',
-        price: 159,
-        originalPrice: 199,
-        image: '/static/images/fluxstore/image_2059944f83f665e563d29b20be6188383e033306.png',
-        rating: 4.5,
-    },
-    {
-        id: 6,
-        name: '百搭帆布单肩包',
-        price: 199,
-        image: '/static/images/fluxstore/image_226c7c5428720a36a74b4a0234996217317a7aac.png',
-        rating: 4.8,
+        nameKey: 'categories.beauty',
+        icon: 'beauty',
     },
 ]);
 
-/** 菜单点击 */
-const onMenu = () => {
-    // TODO: 打开侧边菜单
+/** 轮播图数据 */
+const bannerList = ref<BannerItem[]>([
+    {
+        id: 1,
+        image: '/static/images/fluxstore/image_071373fad51ad0143a98105907f84f8d80c53d58.png',
+        titleKey: 'banner.autumnTitle',
+        subtitleKey: 'banner.autumnSubtitle',
+    },
+    {
+        id: 2,
+        image: '/static/images/fluxstore/image_09a1be8060c68fe8e2d0ea8f62839ee9328cede6.png',
+        titleKey: 'banner.summerTitle',
+        subtitleKey: 'banner.summerSubtitle',
+    },
+    {
+        id: 3,
+        image: '/static/images/fluxstore/image_09e90f5ea1ecc64acbaaa975deb94ffe18def16c.png',
+        titleKey: 'banner.newTitle',
+        subtitleKey: 'banner.newSubtitle',
+    },
+]);
+
+/** Feature Products - 特色商品横向滚动 */
+const featureProductList = ref<Product[]>([
+    {
+        id: 1,
+        nameKey: 'featureProducts.turtleneckSweater',
+        price: 39.99,
+        image: '/static/images/fluxstore/home_swiper_1.png',
+    },
+    {
+        id: 2,
+        nameKey: 'featureProducts.longSleeveDress',
+        price: 45.0,
+        image: '/static/images/fluxstore/home_swiper_2.png',
+    },
+    {
+        id: 3,
+        nameKey: 'featureProducts.sportswearSet',
+        price: 80.0,
+        image: '/static/images/fluxstore/home_swiper_3.png',
+    },
+    {
+        id: 4,
+        nameKey: 'featureProducts.casualJacket',
+        price: 65.0,
+        image: '/static/images/fluxstore/home_swiper_4.png',
+    },
+]);
+
+/** NEW COLLECTION - 新合集横幅 */
+const newCollectionBanner = ref<CollectionBanner>({
+    id: 1,
+    tagKey: 'newCollection.tag',
+    titleKey: 'newCollection.title',
+    image: '/static/images/fluxstore/home_1.png',
+});
+
+/** Recommended - 推荐商品列表 */
+const recommendedList = ref<RecommendedProduct[]>([
+    {
+        id: 1,
+        nameKey: 'recommended.whiteHoodie',
+        price: 29.0,
+        image: '/static/images/fluxstore/home_good_1.png',
+    },
+    {
+        id: 2,
+        nameKey: 'recommended.cottonTshirt',
+        price: 30.0,
+        image: '/static/images/fluxstore/home_good_2.png',
+    },
+]);
+
+/** Top Collection - 合集横幅列表 */
+const topCollectionList = ref<CollectionBanner[]>([
+    {
+        id: 1,
+        tagKey: 'topCollection.saleTag',
+        titleKey: 'topCollection.slimTitle',
+        image: '/static/images/fluxstore/home_good_3.png',
+    },
+    {
+        id: 2,
+        tagKey: 'topCollection.summerTag',
+        titleKey: 'topCollection.sexyTitle',
+        image: '/static/images/fluxstore/home_good_4.png',
+    },
+]);
+
+/** 分类展示 - T-Shirts / Dresses */
+const categoryShowcaseList = ref<CategoryShowcaseType[]>([
+    {
+        id: 1,
+        categoryKey: 'categoryShowcase.tshirts',
+        titleKey: 'categoryShowcase.tshirtsTitle',
+        image: '/static/images/fluxstore/home_good_5.png',
+    },
+    {
+        id: 2,
+        categoryKey: 'categoryShowcase.dresses',
+        titleKey: 'categoryShowcase.dressesTitle',
+        image: '/static/images/fluxstore/home_good_6.png',
+    },
+]);
+
+// ============== 事件处理 ==============
+
+/** 侧边工具列表弹窗显隐 */
+const showSideMenu = ref(false);
+
+/** 菜单点击：打开侧边工具列表弹窗 */
+const onMenuTap = () => {
+    showSideMenu.value = true;
+};
+
+/** 侧边工具列表选中 */
+const onSideMenuSelect = (item: SideMenuItem) => {
+    console.log('side menu selected:', t(`sideMenu.${item.nameKey}`));
 };
 
 /** 通知点击 */
-const onNotification = () => {
-    // TODO: 跳转通知页
+const onNotificationTap = () => {
+    uni.navigateTo({ url: '/pages-sub/notification/Index' });
 };
 
-/** 搜索点击 */
-const onSearch = () => {
-    // TODO: 跳转搜索页
-};
-
-/** 筛选点击 */
-const onFilter = () => {
-    // TODO: 打开筛选
-};
-
-/** 分类点击 */
-const onCategoryClick = (item: Category) => {
-    // TODO: 跳转分类页
-    console.log('category:', item.name);
-};
-
-/** 商品点击 */
-const onProductClick = (item: Product) => {
-    // TODO: 跳转商品详情
-    console.log('product:', item.id);
-};
-
-/** 查看全部 */
-const onViewAll = () => {
-    // TODO: 跳转全部商品
+/** 分类导航点击 */
+const onCategoryNavTap = (item: GridItemVo) => {
+    categoryNavList.value.forEach(cat => {
+        cat.active = cat.id === item.id;
+    });
+    console.log('category tapped:', t(item.nameKey));
 };
 
 /** 轮播图点击 */
-const onBannerClick = (index: number) => {
-    console.log('banner:', index);
+const onBannerTap = (index: number) => {
+    const item = bannerList.value[index];
+    console.log('banner tapped:', item?.id);
 };
+
+/** 商品点击 */
+const onProductTap = (item: Product | RecommendedProduct) => {
+    console.log('product tapped:', item.id);
+};
+
+/** 查看全部点击 */
+const onShowAllTap = (section: string) => {
+    console.log('show all tapped:', section);
+};
+
+/** 合集横幅点击 */
+const onCollectionTap = (item: CollectionBanner) => {
+    console.log('collection tapped:', item.id);
+};
+
+/** 分类展示点击 */
+const onCategoryShowcaseTap = (item: CategoryShowcaseType) => {
+    console.log('category showcase tapped:', t(item.categoryKey));
+};
+
+/** 导航到tabBar页面 */
+const onToPages = () => {};
 </script>
 
 <template>
     <the-root-pages>
         <view class="home">
-            <!-- 顶部导航栏 -->
-            <view class="home__navbar">
-                <view class="home__navbar-btn" @tap="onMenu">
-                    <hy-icon
-                        :name="IconConfig.MENU"
-                        size="40rpx"
-                        color="#33302E"
-                    />
-                </view>
-                <view class="home__navbar-btn" @tap="onNotification">
-                    <hy-icon
-                        :name="IconConfig.REMIND_FILL"
-                        size="40rpx"
-                        color="#33302E"
-                    />
-                    <view class="home__navbar-badge">
-                        <hy-badge is-dot type="error" />
-                    </view>
-                </view>
-            </view>
-
-            <!-- 搜索栏 -->
-            <view class="home__search">
-                <view class="home__search-input" @tap="onSearch">
-                    <hy-icon
-                        :name="IconConfig.SEARCH"
-                        size="32rpx"
-                        color="#9E9B95"
-                    />
-                    <text class="home__search-placeholder">搜索商品...</text>
-                </view>
-                <view class="home__search-filter" @tap="onFilter">
-                    <hy-icon
-                        :name="IconConfig.SCREEN"
-                        size="32rpx"
-                        color="#33302E"
-                    />
-                </view>
-            </view>
-
-            <!-- 分类宫格 -->
-            <hy-grid
-                :list="categoryList"
-                :col="4"
-                :gap="'20rpx'"
-                @click="onCategoryClick"
+            <!-- ============== 顶部导航栏 ============== -->
+            <hy-navbar
+                :title="t('navbarTitle')"
+                :title-style="{ fontSize: '36rpx', fontWeight: '700' }"
+                placeholder
+                @left-click="onMenuTap"
+                @right-click="onNotificationTap"
             >
-                <template #default="{ record }">
-                    <view class="category-item">
-                        <view
-                            class="category-item__icon"
-                            :style="{ backgroundColor: record.bgColor }"
-                        >
-                            <hy-icon
-                                :name="record.icon"
-                                size="40rpx"
-                                color="#33302E"
-                            />
-                        </view>
-                        <text class="category-item__name">{{
-                            record.name
-                        }}</text>
+                <template #left>
+                    <Icon name="menu" />
+                </template>
+                <template #right>
+                    <view class="navbar-right-item">
+                        <hy-icon :name="IconConfig.REMIND" />
+                        <hy-badge is-dot absolute :offset="[0, 12]"></hy-badge>
                     </view>
                 </template>
-            </hy-grid>
+            </hy-navbar>
 
-            <!-- 轮播图 -->
-            <view class="home__banner">
-                <hy-swiper
-                    :list="bannerList"
-                    height="300rpx"
-                    radius="20rpx"
-                    indicator
-                    indicator-mode="dot"
-                    autoplay
-                    circular
-                    @click="onBannerClick"
-                />
-            </view>
+            <scroll-view scroll-y class="home__scroll" :show-scrollbar="false">
+                <view class="home__container">
+                    <!-- ============== 分类导航区 - Women/Men/Accessories/Beauty ============== -->
+                    <CategoryNav
+                        :list="categoryNavList"
+                        @tap="onCategoryNavTap"
+                    />
 
-            <!-- 商品推荐 -->
-            <view class="home__section">
-                <view class="home__section-header">
-                    <text class="home__section-title">推荐商品</text>
-                    <view class="home__section-more" @tap="onViewAll">
-                        <text class="home__section-more-text">查看全部</text>
-                        <hy-icon
-                            :name="IconConfig.RIGHT"
-                            size="24rpx"
-                            color="#9E9B95"
-                        />
-                    </view>
+                    <!-- ============== 轮播图 Banner ============== -->
+                    <HomeBanner :list="bannerList" @tap="onBannerTap" />
+
+                    <!-- ============== Feature Products - 特色商品区 ============== -->
+                    <FeatureProducts
+                        :list="featureProductList"
+                        @tap="onProductTap"
+                        @show-all="onShowAllTap('feature')"
+                    />
                 </view>
-                <scroll-view
-                    scroll-x
-                    class="home__product-scroll"
-                    :show-scrollbar="false"
-                >
-                    <view class="home__product-list">
-                        <view
-                            v-for="item in productList"
-                            :key="item.id"
-                            class="product-card"
-                            @tap="onProductClick(item)"
-                        >
-                            <view class="product-card__image-wrap">
-                                <hy-image
-                                    :src="item.image"
-                                    width="280rpx"
-                                    height="280rpx"
-                                    radius="16rpx"
-                                />
-                                <view v-if="item.tag" class="product-card__tag">
-                                    <hy-badge :value="item.tag" type="error" />
-                                </view>
-                            </view>
-                            <text class="product-card__name">{{
-                                item.name
-                            }}</text>
-                            <view class="product-card__rating">
-                                <hy-icon
-                                    :name="IconConfig.STAR_FILL"
-                                    size="24rpx"
-                                    color="#00C56A"
-                                />
-                                <text class="product-card__rating-text">{{
-                                    item.rating
-                                }}</text>
-                            </view>
-                            <view class="product-card__price-wrap">
-                                <text class="product-card__price"
-                                    >¥{{ item.price }}</text
-                                >
-                                <text
-                                    v-if="item.originalPrice"
-                                    class="product-card__original"
-                                    >¥{{ item.originalPrice }}</text
-                                >
-                            </view>
-                        </view>
-                    </view>
-                </scroll-view>
-            </view>
 
-            <!-- 底部安全区 -->
-            <view class="home__safe-bottom" />
+                <!-- ============== NEW COLLECTION - 新合集横幅 ============== -->
+                <NewCollectionBanner
+                    :banner="newCollectionBanner"
+                    @tap="onCollectionTap"
+                />
+
+                <view class="home__container">
+                    <!-- ============== Recommended - 推荐商品区 ============== -->
+                    <RecommendedProducts
+                        :list="recommendedList"
+                        @tap="onProductTap"
+                        @show-all="onShowAllTap('recommended')"
+                    />
+
+                    <!-- ============== Top Collection - 顶部合集区 ============== -->
+                    <TopCollection
+                        :list="topCollectionList"
+                        @tap="onCollectionTap"
+                        @show-all="onShowAllTap('top')"
+                    />
+
+                    <!-- ============== 分类展示 - T-Shirts / Dresses ============== -->
+                    <CategoryShowcase
+                        :list="categoryShowcaseList"
+                        @tap="onCategoryShowcaseTap"
+                    />
+                </view>
+
+                <!-- ============== 底部安全区 ============== -->
+                <view class="home__safe-bottom" />
+            </scroll-view>
+
+            <!-- ============== 底部 TabBar ============== -->
+            <tabbar :current="0" @change="onToPages" />
+
+            <!-- ============== 侧边工具列表弹窗 ============== -->
+            <SideMenuPopup
+                v-model:show="showSideMenu"
+                @select="onSideMenuSelect"
+            />
         </view>
     </the-root-pages>
 </template>
@@ -293,214 +313,51 @@ const onBannerClick = (index: number) => {
 <style lang="scss" scoped>
 .home {
     min-height: 100vh;
-    background-color: #ffffff;
-
-    /* 顶部导航栏 */
-    &__navbar {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 32rpx;
-        height: 88rpx;
-        padding-top: var(--status-bar-height);
-    }
-
-    &__navbar-btn {
-        position: relative;
-        width: 72rpx;
-        height: 72rpx;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    &__navbar-badge {
-        position: absolute;
-        top: 14rpx;
-        right: 14rpx;
-        z-index: 1;
-    }
-
-    /* 搜索栏 */
-    &__search {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        padding: 16rpx 32rpx 24rpx;
-        gap: 20rpx;
-    }
-
-    &__search-input {
-        flex: 1;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        height: 80rpx;
-        padding: 0 24rpx;
-        background-color: #f5f5f7;
-        border-radius: 40rpx;
-        gap: 16rpx;
-    }
-
-    &__search-placeholder {
-        font-size: 28rpx;
-        color: #9e9b95;
-    }
-
-    &__search-filter {
-        width: 80rpx;
-        height: 80rpx;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #f5f5f7;
-        border-radius: 40rpx;
-    }
-
-    /* 轮播图 */
-    &__banner {
-        padding: 0 32rpx;
-        margin-top: 16rpx;
-    }
-
-    /* 商品推荐区 */
-    &__section {
-        margin-top: 40rpx;
-    }
-
-    &__section-header {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 32rpx;
-        margin-bottom: 24rpx;
-    }
-
-    &__section-title {
-        font-size: 34rpx;
-        font-weight: 700;
-        color: #33302e;
-    }
-
-    &__section-more {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 4rpx;
-    }
-
-    &__section-more-text {
-        font-size: 26rpx;
-        color: #9e9b95;
-    }
-
-    /* 商品横向滚动 */
-    &__product-scroll {
-        width: 100%;
-    }
-
-    &__product-list {
-        display: flex;
-        flex-direction: row;
-        padding: 0 32rpx;
-        gap: 20rpx;
-    }
-
-    /* 底部安全区 */
-    &__safe-bottom {
-        /* #ifdef H5 || APP-PLUS */
-        height: calc(120rpx + env(safe-area-inset-bottom));
-        /* #endif */
-        /* #ifdef MP-WEIXIN */
-        height: calc(120rpx + constant(safe-area-inset-bottom));
-        height: calc(120rpx + env(safe-area-inset-bottom));
-        /* #endif */
-    }
-}
-
-/* 分类项 */
-.category-item {
+    background-color: $flux-bg-page;
+    position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 12rpx;
 
-    &__icon {
-        width: 96rpx;
-        height: 96rpx;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    &__name {
-        font-size: 24rpx;
-        color: #33302e;
-    }
-}
-
-/* 商品卡片 */
-.product-card {
-    flex-shrink: 0;
-    width: 280rpx;
-
-    &__image-wrap {
+    .navbar-right-item {
         position: relative;
-        width: 280rpx;
-        height: 280rpx;
+
+        .hy-badge {
+            border: 2px solid $hy-background;
+        }
     }
 
-    &__tag {
-        position: absolute;
-        top: 16rpx;
-        left: 16rpx;
-        z-index: 1;
+    &__navbar-icon {
+        width: 44rpx;
+        height: 44rpx;
     }
 
-    &__name {
-        display: block;
-        margin-top: 16rpx;
-        font-size: 26rpx;
-        color: #33302e;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    &__rating {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 8rpx;
-        margin-top: 8rpx;
-    }
-
-    &__rating-text {
-        font-size: 22rpx;
-        color: #9e9b95;
-    }
-
-    &__price-wrap {
-        display: flex;
-        flex-direction: row;
-        align-items: baseline;
-        gap: 12rpx;
-        margin-top: 8rpx;
-    }
-
-    &__price {
-        font-size: 32rpx;
+    &__navbar-title {
+        font-size: $flux-font-xl;
         font-weight: 700;
-        color: #ef466f;
+        color: $flux-text-primary;
+        letter-spacing: 0.5rpx;
     }
 
-    &__original {
-        font-size: 22rpx;
-        color: #bebbb5;
-        text-decoration: line-through;
+    /* ============== 滚动区域 ============== */
+    &__scroll {
+        flex: 1;
+        height: 0;
+    }
+
+    /* ============== 容器区域 ============== */
+    &__container {
+        padding: 0 $hy-border-margin-padding-lg;
+    }
+
+    /* ============== 底部安全区 ============== */
+    &__safe-bottom {
+        /* #ifdef H5 || APP-PLUS */
+        height: calc(160rpx + env(safe-area-inset-bottom));
+        /* #endif */
+        /* #ifdef MP-WEIXIN */
+        height: calc(160rpx + constant(safe-area-inset-bottom));
+        height: calc(160rpx + env(safe-area-inset-bottom));
+        /* #endif */
     }
 }
 </style>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { useTranslate, Locale } from '@hy-app/ui';
+import { useTranslate } from '@hy-app/ui';
 import GlassButton from '@/components/GlassButton.vue';
 import TheRootPages from '@/components/TheRootPages.vue';
 import welcomeBg from '@/assets/welcome/welcome-bg.png';

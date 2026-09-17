@@ -1,0 +1,5 @@
+{
+  "css.customData": [
+    "./node_modules/@hy-app/ui/css-vars.custom-data.json"
+  ]
+}

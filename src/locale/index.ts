@@ -20,7 +20,6 @@ const messages = {
 export function setupLocale() {
     Locale.add(messages);
     Locale.use('en-US');
-    console.log(Locale.messages());
 }
 
 export { Locale };
