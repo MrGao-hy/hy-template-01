@@ -13,7 +13,6 @@ import Navbar from '@/components/Navbar.vue';
 definePage({
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'black',
     },
 });
 
@@ -121,12 +120,12 @@ const onBack = () => {
     padding-bottom: calc(90rpx + constant(safe-area-inset-bottom));
     padding-bottom: calc(90rpx + env(safe-area-inset-bottom));
     /* #endif */
-    background-color: #ffffff;
+    background-color: $hy-background;
 
     &__title {
         display: flex;
         flex-direction: column;
-        color: #000000;
+        color: $hy-text-color;
 
         &-line {
             font-size: 48rpx;
@@ -168,7 +167,7 @@ const onBack = () => {
         font-size: 28rpx;
         font-weight: 400;
         line-height: 40rpx;
-        color: #000000;
+        color: $hy-text-color;
         text-decoration: underline;
     }
 }

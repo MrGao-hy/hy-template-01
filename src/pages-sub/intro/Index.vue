@@ -11,7 +11,6 @@ import introPngegg from '@/assets/intro/intro-pngegg.png';
 definePage({
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'black',
         disableScroll: true,
     },
 });
@@ -155,7 +154,7 @@ const onDotClick = (index: number) => {
     width: 100%;
     height: 100vh;
     overflow: hidden;
-    background-color: #ffffff;
+    background-color: $hy-background;
     touch-action: pan-y;
 
     /* 底部深灰块：原型 (0,461) 375×351 #464447 */
@@ -200,13 +199,13 @@ const onDotClick = (index: number) => {
         height: 12rpx;
         border-radius: 50%;
         /* 未激活：空心白边框 0.5px */
-        border: 2rpx solid #ffffff;
+        border: 2rpx solid var(--hy-text-color--inverse, #FFFFFF);
         background-color: transparent;
         transition: all 0.3s ease;
 
         /* 激活：实心白 */
         &.is-active {
-            background-color: #ffffff;
+            background-color: var(--hy-text-color--inverse, #FFFFFF);
         }
     }
 

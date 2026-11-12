@@ -1,43 +1,65 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { IconConfig, useTranslate } from '@hy-app/ui';
+import { IconConfig, useToast, useTranslate } from '@hy-app/ui';
 import { onLoad } from '@dcloudio/uni-app';
 import { mockOrders } from './components/data';
+import { Config } from '@/config';
 import type { OrderItem } from './components/types';
+import Navbar from '@/components/Navbar.vue';
 
 /**
- * 订单详情（常规订单流程占位实现，待 Figma 设计稿校准）
+ * 订单详情（Figma: 8782-2688 已送达 / 8782-2640 配送中）
+ * 状态横幅 → 订单信息卡 → 商品与金额汇总卡 → 底部操作（随状态变化）
  */
 definePage({
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'black',
     },
 });
 
 const { t } = useTranslate('order');
+const toast = useToast();
 
 /** 当前订单 */
 const order = ref<OrderItem>(mockOrders[0]);
 
-onLoad((options) => {
+onLoad(options => {
     const no = options?.no;
-    const found = mockOrders.find((item) => item.no === no);
+    const found = mockOrders.find(item => item.no === no);
     if (found) order.value = found;
 });
 
-/** 状态文案映射 */
-const statusText = computed(() => {
-    const map = {
-        processing: t('statusProcessing'),
-        completed: t('statusCompleted'),
-        cancelled: t('statusCancelled'),
-    } as const;
-    return map[order.value.status];
-});
+/** 是否已送达（completed） */
+const isDelivered = computed(() => order.value.status === 'completed');
 
-/** 是否进行中（展示操作按钮） */
-const isProcessing = computed(() => order.value.status === 'processing');
+/** 状态横幅主/副文案 */
+const banner = computed(() =>
+    isDelivered.value
+        ? { title: t('bannerDelivered'), sub: t('bannerDeliveredSub') }
+        : { title: t('bannerOnway'), sub: t('bannerOnwaySub') }
+);
+
+/** 横幅右侧图标（送达 → 成功；配送中 → 导航） */
+const bannerIcon = computed(() =>
+    isDelivered.value
+        ? `${Config.IMG}/icon_01.png`
+        : `${Config.IMG}/icon_02.png`
+);
+
+/** 订单信息行（左 label / 右 value） */
+const infoRows = computed(() => [
+    { label: t('orderNumber'), value: `#${order.value.no}` },
+    { label: t('trackingNumber'), value: order.value.trackingNo ?? '-' },
+    { label: t('deliveryAddress'), value: order.value.address ?? '-' },
+]);
+
+/** 商品金额小计 */
+const subtotal = computed(() =>
+    order.value.products.reduce(
+        (sum, p) => sum + p.price * (p.quantity ?? 1),
+        0
+    )
+);
 
 // ============== 事件 ==============
 
@@ -45,133 +67,156 @@ const onBack = () => {
     uni.navigateBack();
 };
 
-/** 取消订单 → 取消页 */
-const onCancel = () => {
-    uni.navigateTo({ url: `/pages-sub/order/cancel?no=${order.value.no}` });
-};
-
-/** 物流跟踪 */
-const onTracking = () => {
+/** 配送中横幅点击 → 物流跟踪 */
+const onBannerTap = () => {
+    if (isDelivered.value) return;
     uni.navigateTo({ url: `/pages-sub/order/tracking?no=${order.value.no}` });
 };
 
-/** 评价商品 */
-const onReview = () => {
+/** 返回首页 */
+const onReturnHome = () => {
+    uni.switchTab({ url: '/pages/index/Index' });
+};
+
+/** 去评价 */
+const onRate = () => {
     uni.navigateTo({ url: `/pages-sub/order/review?no=${order.value.no}` });
+};
+
+/** 继续购物（返回首页） */
+const onContinueShopping = () => {
+    toast.success(t('continueShopping'));
+    onReturnHome();
 };
 </script>
 
 <template>
     <view class="order-detail">
-        <!-- ============== 顶部 ============== -->
-        <view class="order-detail__header">
-            <view class="order-detail__back" @tap="onBack">
-                <hy-icon
-                    :name="IconConfig.LEFT"
-                    size="36rpx"
-                    color="#1a1a1a"
+        <!-- ============== 顶部：返回 + 订单号 ============== -->
+        <navbar :title="t('detailNo', { no: order.no })"></navbar>
+
+        <!-- ============== 状态横幅（配送中可点击跳转跟踪） ============== -->
+        <view class="status-banner" @tap="onBannerTap">
+            <view class="status-banner__text">
+                <text class="status-banner__title">
+                    {{ banner.title }}
+                </text>
+                <text class="status-banner__sub">
+                    {{ banner.sub }}
+                </text>
+            </view>
+            <hy-image
+                :src="bannerIcon"
+                width="50"
+                height="50"
+                mode="aspectFit"
+            />
+        </view>
+
+        <!-- ============== 订单信息卡 ============== -->
+        <hy-card :border-radius="10" padding="0" margin="32rpx 0 0">
+            <hy-cell :border="false" :is-right-icon="false">
+                <hy-cell-item
+                    v-for="row in infoRows"
+                    :key="row.label"
+                    :title="row.label"
+                    :border="false"
+                >
+                    <template #value>
+                        <text class="cell-value">{{ row.value }}</text>
+                    </template>
+                </hy-cell-item>
+            </hy-cell>
+        </hy-card>
+
+        <!-- ============== 商品与金额汇总卡 ============== -->
+        <hy-card
+            :border-radius="10"
+            padding="0"
+            margin="32rpx 0 0"
+            foot-border-top
+        >
+            <hy-cell :border="false" :is-right-icon="false">
+                <hy-cell-item
+                    v-for="product in order.products"
+                    :key="product.id"
+                    :title="product.name"
+                    :border="false"
+                >
+                    <template #value>
+                        <view class="goods-meta">
+                            <text class="goods-meta__qty">
+                                x{{ product.quantity ?? 1 }}
+                            </text>
+                            <text class="goods-meta__price">
+                                $ {{ product.price.toFixed(2) }}
+                            </text>
+                        </view>
+                    </template>
+                </hy-cell-item>
+
+                <hy-cell-item
+                    :title="t('subTotal')"
+                    :value="subtotal.toFixed(2)"
+                    :border="false"
                 />
-            </view>
-            <text class="order-detail__title">{{ t('detailsTitle') }}</text>
-        </view>
-
-        <!-- ============== 状态条 ============== -->
-        <view class="status-bar" :class="`status-bar--${order.status}`">
-            <text class="status-bar__no">
-                {{ t('orderNo', { no: order.no }) }}
-            </text>
-            <text class="status-bar__status">{{ statusText }}</text>
-        </view>
-
-        <!-- ============== 收货地址 ============== -->
-        <view class="address-card">
-            <text class="address-card__title">
-                {{ t('shippingAddress') }}
-            </text>
-            <text class="address-card__name">
-                {{ t('addressName') }} · {{ t('addressPhone') }}
-            </text>
-            <text class="address-card__detail">
-                {{ t('addressDetail') }}
-            </text>
-        </view>
-
-        <!-- ============== 商品列表 ============== -->
-        <view class="goods-card">
-            <view
-                v-for="product in order.products"
-                :key="product.id"
-                class="goods-row"
-            >
-                <hy-image
-                    :src="product.image"
-                    width="140rpx"
-                    height="140rpx"
-                    radius="20rpx"
-                    mode="aspectFill"
-                    lazy-load
+                <hy-cell-item
+                    :title="t('shippingFee')"
+                    value="0.00"
+                    :border="false"
                 />
-                <view class="goods-row__info">
-                    <text class="goods-row__name">{{ product.name }}</text>
-                    <text class="goods-row__spec">{{ product.spec }}</text>
-                    <text class="goods-row__price">
-                        $ {{ product.price.toFixed(2) }}
-                    </text>
-                </view>
-            </view>
-        </view>
+            </hy-cell>
 
-        <!-- ============== 金额汇总 ============== -->
-        <view class="summary-card">
-            <view class="summary-row">
-                <text class="summary-row__label">
-                    {{ t('productPrice') }}
-                </text>
-                <text class="summary-row__value">
-                    $ {{ order.total.toFixed(2) }}
-                </text>
-            </view>
-            <view class="summary-row">
-                <text class="summary-row__label">
-                    {{ t('shippingFee') }}
-                </text>
-                <text class="summary-row__value summary-row__value--green">
-                    {{ t('free') }}
-                </text>
-            </view>
-            <view class="summary-row summary-row--total">
-                <text class="summary-row__label summary-row__label--bold">
-                    {{ t('total') }}
-                </text>
-                <text class="summary-row__subtotal">
-                    $ {{ order.total.toFixed(2) }}
-                </text>
-            </view>
-        </view>
+            <template #footer>
+                <hy-cell :border="false" :is-right-icon="false">
+                    <hy-cell-item :title="t('total')" :border="false">
+                        <template #value>
+                            <text class="total-value">
+                                $ {{ order.total.toFixed(2) }}
+                            </text>
+                        </template>
+                    </hy-cell-item>
+                </hy-cell>
+            </template>
+        </hy-card>
 
-        <!-- ============== 底部操作 ============== -->
+        <!-- ============== 底部操作（随状态变化） ============== -->
         <view class="order-detail__footer">
-            <view
-                v-if="isProcessing"
-                class="footer-btn footer-btn--ghost"
-                @tap="onCancel"
-            >
-                {{ t('cancelOrder') }}
-            </view>
-            <view
-                v-if="isProcessing"
-                class="footer-btn footer-btn--primary"
-                @tap="onTracking"
-            >
-                {{ t('tracking') }}
-            </view>
-            <view
-                v-if="order.status === 'completed'"
-                class="footer-btn footer-btn--primary footer-btn--single"
-                @tap="onReview"
-            >
-                {{ t('writeReview') }}
-            </view>
+            <hy-flex gap="10">
+                <template v-if="isDelivered">
+                    <hy-button
+                        shape="circle"
+                        type="info"
+                        plain
+                        :text="t('returnHome')"
+                        :custom-style="{ flex: 1 }"
+                        @click="onReturnHome"
+                    />
+                    <hy-button
+                        shape="circle"
+                        color="#343434"
+                        :text="t('rate')"
+                        :custom-style="{ flex: 1 }"
+                        @click="onRate"
+                    />
+                </template>
+                <hy-button
+                    v-else-if="order.status === 'processing'"
+                    shape="circle"
+                    color="#343434"
+                    :text="t('continueShopping')"
+                    :custom-style="{ flex: 1 }"
+                    @click="onContinueShopping"
+                />
+                <hy-button
+                    v-else
+                    shape="circle"
+                    color="#343434"
+                    :text="t('returnHome')"
+                    :custom-style="{ flex: 1 }"
+                    @click="onReturnHome"
+                />
+            </hy-flex>
         </view>
     </view>
 </template>
@@ -179,10 +224,9 @@ const onReview = () => {
 <style lang="scss" scoped>
 .order-detail {
     min-height: 100vh;
-    padding: calc(var(--status-bar-height) + 40rpx) 40rpx
-        calc(200rpx + env(safe-area-inset-bottom));
     box-sizing: border-box;
-    background-color: #ffffff;
+    padding: calc(var(--status-bar-height) + 40rpx) 30rpx
+        calc(180rpx + env(safe-area-inset-bottom));
 
     &__header {
         position: relative;
@@ -198,214 +242,106 @@ const onReview = () => {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 56rpx;
-        height: 56rpx;
+        width: 72rpx;
+        height: 72rpx;
     }
 
     &__title {
         font-size: 36rpx;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color--2;
     }
 
     &__footer {
         position: fixed;
-        right: 0;
-        bottom: 0;
-        left: 0;
+        right: 50rpx;
+        bottom: calc(40rpx + env(safe-area-inset-bottom));
+        left: 50rpx;
         z-index: 10;
-        display: flex;
-        gap: 24rpx;
-        padding: 24rpx 40rpx calc(24rpx + env(safe-area-inset-bottom));
-        background-color: #ffffff;
-        border-top: 2rpx solid #f1f2f3;
     }
 }
 
-/* 状态条 */
-.status-bar {
+/* 状态横幅 */
+.status-banner {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-top: 40rpx;
-    padding: 28rpx 32rpx;
-    background-color: #fafafa;
-    border-radius: $flux-radius-lg;
+    padding: 40rpx;
+    background-color: #575757;
+    border-radius: 20rpx;
 
-    &--processing {
-        background-color: rgba(80, 138, 123, 0.1);
+    &:active {
+        opacity: 0.92;
     }
 
-    &--cancelled {
-        background-color: rgba(152, 27, 31, 0.08);
-    }
-
-    &__no {
-        font-size: 26rpx;
-        font-weight: 600;
-        color: $flux-text-primary;
-    }
-
-    &__status {
-        font-size: 26rpx;
-        font-weight: 700;
-        color: #508a7b;
-
-        .status-bar--cancelled & {
-            color: #981b1f;
-        }
-    }
-}
-
-/* 地址卡片 */
-.address-card {
-    margin-top: 32rpx;
-    padding: 32rpx;
-    background-color: #ffffff;
-    border: 1rpx solid #fbfbfb;
-    border-radius: $flux-radius-xl;
-    box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.05);
-
-    &__title {
-        display: block;
-        margin-bottom: 16rpx;
-        font-size: 26rpx;
-        font-weight: 700;
-        color: $flux-text-primary;
-    }
-
-    &__name {
-        display: block;
-        font-size: 26rpx;
-        font-weight: 600;
-        color: rgba(51, 48, 46, 0.7);
-    }
-
-    &__detail {
-        display: block;
-        margin-top: 8rpx;
-        font-size: 24rpx;
-        line-height: 36rpx;
-        color: #8a8a8f;
-    }
-}
-
-/* 商品卡片 */
-.goods-card {
-    margin-top: 32rpx;
-    padding: 8rpx 32rpx;
-    background-color: #ffffff;
-    border: 1rpx solid #fbfbfb;
-    border-radius: $flux-radius-xl;
-    box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.05);
-}
-
-.goods-row {
-    display: flex;
-    gap: 24rpx;
-    padding: 24rpx 0;
-
-    &__info {
+    &__text {
         display: flex;
         flex: 1;
         flex-direction: column;
         min-width: 0;
-        gap: 6rpx;
+        margin-right: 32rpx;
     }
 
-    &__name {
-        font-size: 26rpx;
-        font-weight: 600;
-        color: $flux-text-primary;
+    &__title {
+        font-size: 32rpx;
+        font-weight: 700;
+        letter-spacing: -0.5rpx;
+        color: var(--hy-text-color--inverse, #ffffff);
     }
 
-    &__spec {
+    &__sub {
+        margin-top: 12rpx;
         font-size: 20rpx;
-        color: #8a8a8f;
+        font-weight: 600;
+        line-height: 32rpx;
+        letter-spacing: -0.5rpx;
+        color: var(--hy-text-color--inverse, #ffffff);
+    }
+}
+
+/* 单元格文字 */
+.cell-value {
+    display: block;
+    max-width: 360rpx;
+    font-size: 24rpx;
+    font-weight: 500;
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 商品数量与单价 */
+.goods-meta {
+    display: flex;
+    align-items: center;
+    gap: 28rpx;
+
+    &__qty {
+        font-size: 26rpx;
+        font-weight: 300;
+        color: $hy-text-color;
     }
 
     &__price {
-        font-size: 28rpx;
-        font-weight: 700;
-        color: $flux-text-primary;
+        font-size: 32rpx;
+        font-weight: 500;
+        color: $hy-text-color;
     }
 }
 
-/* 金额汇总 */
-.summary-card {
-    margin-top: 32rpx;
-    padding: 32rpx;
-    background-color: #ffffff;
-    border: 1rpx solid #fbfbfb;
-    border-radius: $flux-radius-xl;
-    box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.05);
-}
-
-.summary-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16rpx;
-
-    &:last-child {
-        margin-bottom: 0;
-    }
-
-    &__label {
-        font-size: 26rpx;
-        color: #8a8a8f;
-
-        &--bold {
-            font-weight: 700;
-            color: $flux-text-primary;
-        }
-    }
-
-    &__value {
-        font-size: 26rpx;
-        font-weight: 600;
-        color: $flux-text-primary;
-
-        &--green {
-            color: #508a7b;
-        }
-    }
-
-    &__subtotal {
-        font-size: 36rpx;
-        font-weight: 700;
-        color: $flux-text-primary;
-    }
-
-    &--total {
-        padding-top: 24rpx;
-        border-top: 2rpx solid #f1f2f3;
-    }
-}
-
-/* 底部按钮 */
-.footer-btn {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 88rpx;
-    font-size: 28rpx;
+/* 合计金额 */
+.total-value {
+    font-size: 32rpx;
     font-weight: 700;
-    border-radius: 100rpx;
+    color: $hy-text-color;
+}
 
-    &:active {
-        opacity: 0.85;
-    }
-
-    &--ghost {
-        color: rgba(51, 48, 46, 0.7);
-        border: 2rpx solid rgba(51, 48, 46, 0.15);
-    }
-
-    &--primary {
-        color: #ffffff;
-        background-color: #343434;
+/* hy-cell-item 默认值文字为灰色，统一为主题文字色 */
+.order-detail {
+    :deep(.hy-cell-item__center--value) {
+        color: $hy-text-color;
     }
 }
 </style>

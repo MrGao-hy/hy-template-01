@@ -19,7 +19,7 @@ const onProductTap = (product: SimpleProduct) => {
 
 <template>
     <hy-scroll-list :indicator="false">
-        <view class="similar-products">
+        <hy-flex gap="10">
             <view
                 v-for="item in products"
                 :key="item.id"
@@ -39,22 +39,16 @@ const onProductTap = (product: SimpleProduct) => {
                     $ {{ item.price.toFixed(2) }}
                 </text>
             </view>
-        </view>
+        </hy-flex>
     </hy-scroll-list>
 </template>
 
 <style lang="scss" scoped>
-.similar-products {
-    display: flex;
-    gap: 70rpx;
-    padding: 8rpx 0 16rpx;
-}
 
 .similar-card {
     display: flex;
     flex-direction: column;
     gap: 4rpx;
-    width: 296rpx;
 
     &:active {
         opacity: 0.7;
@@ -62,17 +56,17 @@ const onProductTap = (product: SimpleProduct) => {
 
     &__name {
         margin-top: 20rpx;
-        font-size: $flux-font-sm;
-        color: $flux-text-primary;
+        font-size: $hy-font-size-sm;
+        color: $hy-text-color;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
     &__price {
-        font-size: $flux-font-lg;
+        font-size: $hy-font-size-md;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 }
 </style>

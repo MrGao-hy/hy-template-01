@@ -10,7 +10,6 @@ const { t } = useTranslate('welcome');
 definePage({
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'white',
         disableScroll: true,
     },
 });
@@ -128,7 +127,7 @@ const onStart = () => {
         font-size: 50rpx;
         font-weight: 700;
         line-height: 1.41em;
-        color: #ffffff;
+        color: var(--hy-text-color--inverse, #FFFFFF);
         text-align: center;
     }
 
@@ -137,7 +136,7 @@ const onStart = () => {
         font-size: 32rpx;
         font-weight: 700;
         line-height: 1.41em;
-        color: #ffffff;
+        color: var(--hy-text-color--inverse, #FFFFFF);
         text-align: center;
     }
 

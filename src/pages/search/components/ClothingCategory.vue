@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { IconConfig, useTranslate } from '@hy-app/ui';
+import { Config } from '@/config';
 
 const { t } = useTranslate('search');
 
@@ -37,7 +38,7 @@ const list = ref<CategoryCard[]>([
         background: '#A3A798',
         circleLight: 'rgba(194, 199, 181, 0.5)',
         circleBg: '#C2C7B5',
-        image: '/static/images/fluxstore/image_c793677696d160379456b9e0b7274fcb6b4facc6.png',
+        image: `${Config.IMG}/image_c793677696d160379456b9e0b7274fcb6b4facc6.png`,
         items: [
             { titleKey: 'classification1', count: 128 },
             { titleKey: 'classification2', count: 40 },
@@ -54,7 +55,7 @@ const list = ref<CategoryCard[]>([
         background: '#9C9492',
         circleLight: 'rgba(156, 148, 146, 0.5)',
         circleBg: '#9C9492',
-        image: '/static/images/fluxstore/image_96c516a4449f5653b7738bfaff52d2373eb9d940.png',
+        image: `${Config.IMG}/image_96c516a4449f5653b7738bfaff52d2373eb9d940.png`,
     },
     {
         key: 3,
@@ -62,7 +63,7 @@ const list = ref<CategoryCard[]>([
         background: '#44565C',
         circleLight: 'rgba(91, 113, 120, 0.5)',
         circleBg: '#5B7178',
-        image: '/static/images/fluxstore/image_3d3c56ecc5dd806b206d8595e4f1e074342375c1.png',
+        image: `${Config.IMG}/image_3d3c56ecc5dd806b206d8595e4f1e074342375c1.png`,
     },
     {
         key: 4,
@@ -70,9 +71,12 @@ const list = ref<CategoryCard[]>([
         background: '#B9AEB2',
         circleLight: 'rgba(214, 207, 210, 0.5)',
         circleBg: '#D1CACD',
-        image: '/static/images/fluxstore/image_94e3f60d0bcca95f03fb944f30384d4c322d886e.png',
+        image: `${Config.IMG}/image_94e3f60d0bcca95f03fb944f30384d4c322d886e.png`,
     },
 ]);
+
+/** 当前展开的分类 key 列表（hy-folding-panel 为受控组件，必须 v-model 绑定） */
+const activeKeys = ref<number[]>([]);
 
 /** 子分类点击 */
 const onSubCategoryTap = (item: SubCategoryItem) => {
@@ -82,11 +86,11 @@ const onSubCategoryTap = (item: SubCategoryItem) => {
 
 <template>
     <view class="category">
-        <hy-folding-panel :border="false">
+        <hy-folding-panel v-model:model-value="activeKeys" :border="false">
             <hy-folding-panel-item
                 v-for="(item, index) in list"
                 :key="item.key"
-                content-height="400"
+                :index="item.key"
             >
                 <!-- ============== 卡片头部 ============== -->
                 <template #header>
@@ -137,7 +141,6 @@ const onSubCategoryTap = (item: SubCategoryItem) => {
                                 <hy-icon
                                     :name="IconConfig.RIGHT"
                                     size="24rpx"
-                                    color="#000"
                                     class="sub-category__arrow"
                                 />
                             </view>
@@ -150,13 +153,10 @@ const onSubCategoryTap = (item: SubCategoryItem) => {
 </template>
 
 <style lang="scss" scoped>
-.category {
-}
-
 /* 覆盖折叠面板项默认内边距，使卡片撑满 */
 :deep(.hy-folding-panel-item) {
     padding: 0 !important;
-    margin-bottom: 32rpx;
+    --hy-background--container: transparent;
 }
 
 /* ============== 分类卡片 ============== */
@@ -176,7 +176,7 @@ const onSubCategoryTap = (item: SubCategoryItem) => {
         right: 72rpx;
         width: 150rpx;
         height: 150rpx;
-        border-radius: $flux-radius-circle;
+        border-radius: $hy-radius-circle;
 
         &--light {
             top: 20rpx;
@@ -189,8 +189,8 @@ const onSubCategoryTap = (item: SubCategoryItem) => {
     &__title {
         position: relative;
         z-index: 1;
-        color: $flux-text-white;
-        font-size: $flux-font-lg;
+        color: var(--hy-text-color--inverse, #ffffff);
+        font-size: $hy-font-size-md;
         font-weight: 700;
         letter-spacing: 2rpx;
     }
@@ -204,7 +204,7 @@ const onSubCategoryTap = (item: SubCategoryItem) => {
 
 /* ============== 子分类列表 ============== */
 .sub-category {
-    background-color: $flux-bg-page;
+    background-color: $hy-background;
 
     &__item {
         display: flex;
@@ -221,7 +221,7 @@ const onSubCategoryTap = (item: SubCategoryItem) => {
             right: 36rpx;
             bottom: 0;
             height: 2rpx;
-            background-color: #f1f2f4;
+            background-color: $hy-background--container;
         }
 
         &:last-child::after {
@@ -230,13 +230,13 @@ const onSubCategoryTap = (item: SubCategoryItem) => {
     }
 
     &__name {
-        font-size: $flux-font-md;
-        color: $flux-text-primary;
+        font-size: $hy-font-size-base;
+        color: $hy-text-color;
     }
 
     &__count {
-        font-size: $flux-font-sm;
-        color: #a3a5ad;
+        font-size: $hy-font-size-sm;
+        color: $hy-text-color--4;
         display: flex;
         align-items: center;
         justify-content: center;

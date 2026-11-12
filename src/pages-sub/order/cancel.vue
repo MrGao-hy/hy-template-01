@@ -9,7 +9,6 @@ import { onLoad } from '@dcloudio/uni-app';
 definePage({
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'black',
     },
 });
 
@@ -118,7 +117,7 @@ const onConfirm = () => {
     padding: calc(var(--status-bar-height) + 40rpx) 40rpx
         calc(200rpx + env(safe-area-inset-bottom));
     box-sizing: border-box;
-    background-color: #ffffff;
+    background-color: $hy-background;
 
     &__header {
         position: relative;
@@ -141,7 +140,7 @@ const onConfirm = () => {
     &__title {
         font-size: 36rpx;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 
     &__footer {
@@ -156,7 +155,7 @@ const onConfirm = () => {
         height: 96rpx;
         font-size: 32rpx;
         font-weight: 700;
-        color: #ffffff;
+        color: var(--hy-text-color--inverse, #FFFFFF);
         background-color: #343434;
         border-radius: 48rpx;
 
@@ -173,9 +172,9 @@ const onConfirm = () => {
     &__title {
         display: block;
         margin-bottom: 28rpx;
-        font-size: $flux-font-lg;
+        font-size: $hy-font-size-md;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 }
 
@@ -195,18 +194,18 @@ const onConfirm = () => {
         justify-content: center;
         width: 46rpx;
         height: 46rpx;
-        border: 3rpx solid #bebfc4;
+        border: 3rpx solid $hy-text-color--4;
         border-radius: 50%;
 
         &.is-active {
-            border-color: #508a7b;
+            border-color: $hy-primary;
         }
     }
 
     &__radio-dot {
         width: 18rpx;
         height: 18rpx;
-        background-color: #508a7b;
+        background-color: $hy-primary;
         border-radius: 50%;
     }
 
@@ -224,9 +223,9 @@ const onConfirm = () => {
     &__title {
         display: block;
         margin-bottom: 24rpx;
-        font-size: $flux-font-lg;
+        font-size: $hy-font-size-md;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 
     &__input {
@@ -234,9 +233,9 @@ const onConfirm = () => {
         height: 220rpx;
         padding: 28rpx 32rpx;
         font-size: 26rpx;
-        color: $flux-text-primary;
-        background-color: #f7f7f8;
-        border-radius: $flux-radius-md;
+        color: $hy-text-color;
+        background-color: $hy-background--3;
+        border-radius: $hy-radius-base;
         box-sizing: border-box;
     }
 }

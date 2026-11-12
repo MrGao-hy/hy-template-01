@@ -1,12 +1,8 @@
 @font-face {
-    font-family: 'icon'; /* Project id 5221488 */
-    src:
-        url('https://at.alicdn.com/t/c/font_5221488_d8n05pp8n2g.woff2?t=1786350658818')
-            format('woff2'),
-        url('https://at.alicdn.com/t/c/font_5221488_d8n05pp8n2g.woff?t=1786350658818')
-            format('woff'),
-        url('https://at.alicdn.com/t/c/font_5221488_d8n05pp8n2g.ttf?t=1786350658818')
-            format('truetype');
+    font-family: 'icon';  /* Project id 5221488 */
+    src: url('https://at.alicdn.com/t/c/font_5221488_lh1qflw2o7g.woff2?t=1794482515288') format('woff2'),
+    url('https://at.alicdn.com/t/c/font_5221488_lh1qflw2o7g.woff?t=1794482515288') format('woff'),
+    url('https://at.alicdn.com/t/c/font_5221488_lh1qflw2o7g.ttf?t=1794482515288') format('truetype');
 }
 
 .icon {
@@ -17,26 +13,74 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-credit-card:before {
+    content: "\e60f";
+}
+
+.icon-thumb-up1:before {
+    content: "\e610";
+}
+
+.icon-credit-card-normal:before {
+    content: "\e612";
+}
+
+.icon-sun:before {
+    content: "\e614";
+}
+
+.icon-star-yellow1:before {
+    content: "\e616";
+}
+
+.icon-moon:before {
+    content: "\e617";
+}
+
+.icon-step-check:before {
+    content: "\e60a";
+}
+
+.icon-thumb-up:before {
+    content: "\e60b";
+}
+
+.icon-star-yellow:before {
+    content: "\e60c";
+}
+
+.icon-star-gray:before {
+    content: "\e60d";
+}
+
+.icon-order-completed:before {
+    content: "\e603";
+}
+
 .icon-man:before {
-    content: '\e602';
+    content: "\e602";
 }
 
 .icon-menu:before {
-    content: '\e637';
+    content: "\e637";
 }
 
 .icon-filtrate:before {
-    content: '\e699';
+    content: "\e699";
 }
 
 .icon-beauty:before {
-    content: '\e67d';
+    content: "\e67d";
 }
 
 .icon-glasses:before {
-    content: '\e600';
+    content: "\e600";
 }
 
 .icon-woman:before {
-    content: '\e601';
+    content: "\e601";
+}
+
+.icon-xuanze:before {
+    content: "\e604";
 }

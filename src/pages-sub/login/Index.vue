@@ -12,7 +12,6 @@ import TheRootPages from '@/components/TheRootPages.vue';
 definePage({
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'black',
     },
 });
 
@@ -170,7 +169,7 @@ const onSignUp = () => {
     padding-bottom: calc(90rpx + constant(safe-area-inset-bottom));
     padding-bottom: calc(90rpx + env(safe-area-inset-bottom));
     /* #endif */
-    background-color: #ffffff;
+    background-color: $hy-background;
 
     /* 标题 */
     &__title {
@@ -183,7 +182,7 @@ const onSignUp = () => {
         font-size: 48rpx;
         font-weight: 700;
         line-height: 96rpx;
-        color: #000000;
+        color: $hy-text-color;
         text-align: left;
     }
 
@@ -199,7 +198,7 @@ const onSignUp = () => {
         font-size: 24rpx;
         font-weight: 400;
         line-height: 48rpx;
-        color: #000000;
+        color: $hy-text-color;
     }
 
     /* 按钮 */
@@ -216,7 +215,7 @@ const onSignUp = () => {
         font-size: 24rpx;
         font-weight: 400;
         line-height: 48rpx;
-        color: #000000;
+        color: $hy-text-color;
         opacity: 0.6;
         letter-spacing: 0.02em;
         /* 原型 button→divider 32px */
@@ -245,14 +244,14 @@ const onSignUp = () => {
         font-size: 28rpx;
         font-weight: 400;
         line-height: 40rpx;
-        color: #000000;
+        color: $hy-text-color;
     }
 
     &__footer-link {
         font-size: 28rpx;
         font-weight: 400;
         line-height: 40rpx;
-        color: #000000;
+        color: $hy-text-color;
         text-decoration: underline;
     }
 }

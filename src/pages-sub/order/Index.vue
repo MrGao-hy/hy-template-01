@@ -177,10 +177,10 @@ const onReorder = (_order: OrderItem) => {
 <style lang="scss" scoped>
 .order-page {
     min-height: 100vh;
-    padding: calc(var(--status-bar-height) + 40rpx) 40rpx
-        calc(40rpx + env(safe-area-inset-bottom));
+    // padding: calc(var(--status-bar-height) + 40rpx) 40rpx
+    //     calc(40rpx + env(safe-area-inset-bottom));
     box-sizing: border-box;
-    background-color: #ffffff;
+    background-color: $hy-background;
 
     &__header {
         position: relative;
@@ -203,7 +203,7 @@ const onReorder = (_order: OrderItem) => {
     &__title {
         font-size: 36rpx;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 }
 
@@ -217,12 +217,12 @@ const onReorder = (_order: OrderItem) => {
         padding: 14rpx 36rpx;
         font-size: 26rpx;
         color: rgba(51, 48, 46, 0.7);
-        background-color: #fafafa;
-        border-radius: $flux-radius-md;
+        background-color: $hy-background--3;
+        border-radius: $hy-radius-base;
         transition: all 0.2s;
 
         &.is-active {
-            color: #ffffff;
+            color: var(--hy-text-color--inverse, #FFFFFF);
             background-color: #343434;
         }
     }
@@ -238,9 +238,9 @@ const onReorder = (_order: OrderItem) => {
 
 .order-card {
     padding: 32rpx;
-    background-color: #ffffff;
-    border: 1rpx solid #fbfbfb;
-    border-radius: $flux-radius-xl;
+    background-color: $hy-background--2;
+    border: 1rpx solid $hy-background--3;
+    border-radius: $hy-radius-lg;
     box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.05);
 
     &__head {
@@ -252,7 +252,7 @@ const onReorder = (_order: OrderItem) => {
     &__no {
         font-size: 26rpx;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 
     &__status {
@@ -260,11 +260,11 @@ const onReorder = (_order: OrderItem) => {
         font-weight: 600;
 
         &--processing {
-            color: #508a7b;
+            color: $hy-primary;
         }
 
         &--completed {
-            color: $flux-text-primary;
+            color: $hy-text-color;
         }
 
         &--cancelled {
@@ -279,7 +279,7 @@ const onReorder = (_order: OrderItem) => {
         gap: 20rpx;
         padding-top: 24rpx;
         margin-top: 8rpx;
-        border-top: 2rpx solid #f1f2f3;
+        border-top: 2rpx solid $hy-background--empty;
     }
 
     &__total {
@@ -291,13 +291,13 @@ const onReorder = (_order: OrderItem) => {
 
     &__total-label {
         font-size: 24rpx;
-        color: #8a8a8f;
+        color: $hy-text-color--3;
     }
 
     &__total-value {
         font-size: 32rpx;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 
     &__btn {
@@ -320,7 +320,7 @@ const onReorder = (_order: OrderItem) => {
         }
 
         &--primary {
-            color: #ffffff;
+            color: var(--hy-text-color--inverse, #FFFFFF);
             background-color: #343434;
         }
     }
@@ -342,7 +342,7 @@ const onReorder = (_order: OrderItem) => {
     &__name {
         font-size: 26rpx;
         font-weight: 600;
-        color: $flux-text-primary;
+        color: $hy-text-color;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -350,13 +350,13 @@ const onReorder = (_order: OrderItem) => {
 
     &__spec {
         font-size: 20rpx;
-        color: #8a8a8f;
+        color: $hy-text-color--3;
     }
 
     &__price {
         font-size: 28rpx;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 }
 
@@ -368,7 +368,7 @@ const onReorder = (_order: OrderItem) => {
 
     &__text {
         font-size: 28rpx;
-        color: #8a8a8f;
+        color: $hy-text-color--3;
     }
 }
 </style>

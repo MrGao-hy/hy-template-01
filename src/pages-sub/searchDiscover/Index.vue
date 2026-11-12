@@ -2,19 +2,18 @@
 import { ref } from 'vue';
 import { IconConfig, useTranslate } from '@hy-app/ui';
 import SearchHeader from '@/pages/search/components/SearchHeader.vue';
-import RecentSearches from '@/pages/search/components/RecentSearches.vue';
-import PopularWeek from '@/pages/search/components/PopularWeek.vue';
+import RecentSearches from './components/RecentSearches.vue';
+import PopularWeek from './components/PopularWeek.vue';
 import FilterPopup from '@/pages/search/components/FilterPopup.vue';
 import type { PopularProduct } from '@/pages/search/components/types';
 
 /**
- * 搜索发现页（Figma: 8782-1658）
+ * 搜索发现页
  * 主搜索页点击搜索框进入，支持关键词搜索
  */
 definePage({
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'black',
     },
 });
 
@@ -67,11 +66,7 @@ const onShowAllPopular = () => {
         <!-- ============== 顶部：返回 + 可搜索栏 ============== -->
         <view class="search-discover__header">
             <view class="search-discover__back" @tap="onBack">
-                <hy-icon
-                    :name="IconConfig.LEFT"
-                    size="36rpx"
-                    color="#1a1a1a"
-                />
+                <hy-icon :name="IconConfig.LEFT" size="36rpx" />
             </view>
             <search-header
                 class="search-discover__bar"
@@ -84,10 +79,7 @@ const onShowAllPopular = () => {
         <recent-searches @search="onToSearchList" />
 
         <!-- ============== 本周热门 ============== -->
-        <popular-week
-            @tap="onToProductDetail"
-            @show-all="onShowAllPopular"
-        />
+        <popular-week @tap="onToProductDetail" @show-all="onShowAllPopular" />
 
         <!-- ============== 筛选弹窗 ============== -->
         <filter-popup
@@ -104,7 +96,7 @@ const onShowAllPopular = () => {
     padding: calc(var(--status-bar-height) + 20rpx) 62rpx
         calc(40rpx + env(safe-area-inset-bottom));
     box-sizing: border-box;
-    background-color: $flux-bg-page;
+    background-color: $hy-background;
 
     &__header {
         display: flex;
@@ -116,8 +108,6 @@ const onShowAllPopular = () => {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 56rpx;
-        height: 56rpx;
     }
 
     &__bar {

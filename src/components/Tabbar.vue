@@ -49,8 +49,9 @@ const onChange = (param: ParamType) => {
         shape="circle"
         fixed
         @change="onChange"
-        active-color="black"
+        active-color="#2463EB"
         inactive-color="#E6E8EC"
+        safe-area-inset-bottom
     >
         <hy-tabbar-item
             v-for="(item, index) in tabs"

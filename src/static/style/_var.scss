@@ -1,0 +1,95 @@
+/**
+ * 全局主题变量（唯一出口，由 App.vue 引入一次）
+ * 基准：@hy-app/ui/libs/css/theme.scss 的 --hy-* 设计 token
+ * 原则：与组件库语义/色值接近的直接复用 token；差异大的补充项目自定义 token
+ */
+page .hy-config-provider.hy-theme--light {
+    /* 主题色 */
+    --hy-theme-color: #508a7b;
+
+    /* 背景 */
+    --hy-background: #ffffff; /* 页面底色 */
+    --hy-background--container: #f8f8fa; /* 分组容器 */
+    --hy-background--empty: #f1f2f3; /* 空状态 / 分类图标底 */
+    --hy-background--hover: rgba(0, 0, 0, 0.05);
+    --hy-background--active: rgba(131, 131, 131, 0.12);
+
+    /* 文字 */
+    --hy-text-color: #1a1a1a;
+    --hy-text-color--2: #343434;
+    --hy-text-color--3: #8a8a8f;
+    --hy-text-color--4: #bebfc4;
+    --hy-icon-color: #1a1a1a;
+
+    /* 边框 */
+    --hy-border-line: 1px solid #e8e8e8;
+    --hy-border-color: #e6e6e6;
+    --hy-border-color-light: #f1f2f3;
+
+    /* 项目自定义（组件库无对应 token） */
+    --hy-text-color--inverse: #ffffff; /* 深色/主色背景上的文字 */
+    --hy-menu-bg: #f3f3f3;
+    --hy-home-image-bg--circle: #f1f1f1;
+    --hy-home-image-bg--circle-2: #e2e2e2;
+    --hy-navbar-bg: #ffffff;
+
+    --hy-slider-base-background: #F3F3F6;
+    --hy-slider-color: #000000;
+    --hy-slider-button-color: #000000;
+
+    /* 优惠券页 */
+    --hy-voucher-card-bg: #ffffff; /* 券卡底色 */
+    --hy-voucher-card-shadow: 0 8rpx 32rpx rgba(20, 20, 22, 0.06);
+    --hy-voucher-notch: #f3f4f5; /* 撕边齿 / 冲孔 */
+    --hy-voucher-title: #23262f; /* 券标题、券码 */
+    --hy-voucher-desc: #777e90; /* 券副标题 */
+    --hy-voucher-exp-label: #777e90; /* Exp. 标签 */
+    --hy-voucher-exp-date: #141416; /* 有效期日期 */
+    --hy-voucher-divider: rgba(20, 20, 22, 0.22); /* 虚线分隔 */
+    --hy-voucher-back-border: rgba(20, 20, 22, 0.15); /* 返回按钮描边 */
+}
+
+page .hy-config-provider.hy-theme--dark {
+    /* 主题色 */
+    --hy-theme-color: #508a7b;
+
+    /* 背景 */
+    // --hy-background: #2a2f37;
+    --hy-background: #141416;
+    --hy-background--container: #23262f;
+    --hy-background--hover: rgba(255, 255, 255, 0.08);
+    --hy-background--active: #000000;
+
+    /* 文字 */
+    --hy-text-color: #ffffff;
+    --hy-text-color--2: #d6d6d6;
+    --hy-text-color--3: #8a8a8f;
+    --hy-text-color--4: #575757;
+    --hy-icon-color: #ffffff;
+
+    /* 边框 */
+    --hy-border-line: 1px solid #343434;
+    --hy-border-color: #343434;
+    --hy-border-color-light: #2a2f37;
+
+    /* 项目自定义（组件库无对应 token） */
+    --hy-text-color--inverse: #ffffff;
+    --hy-menu-bg: #23262f;
+    --hy-home-image-bg--circle: #313542;
+    --hy-home-image-bg--circle-2: #545A67;
+    --hy-navbar-bg: #141416;
+
+    --hy-slider-color: #FFFFFF;
+    --hy-slider-button-color: #FFFFFF;
+
+    /* 优惠券页 */
+    --hy-voucher-card-bg: #2f2f2f; /* 券卡底色 */
+    --hy-voucher-card-shadow: none;
+    --hy-voucher-notch: #141416; /* 撕边齿 / 冲孔 */
+    --hy-voucher-title: #ffffff; /* 券标题、券码 */
+    --hy-voucher-desc: rgba(255, 255, 255, 0.62); /* 券副标题 */
+    --hy-voucher-exp-label: #b1b5c3; /* Exp. 标签 */
+    --hy-voucher-exp-date: #ffffff; /* 有效期日期 */
+    --hy-voucher-divider: rgba(255, 255, 255, 0.3); /* 虚线分隔 */
+    --hy-voucher-back-border: rgba(255, 255, 255, 0.12); /* 返回按钮描边 */
+}

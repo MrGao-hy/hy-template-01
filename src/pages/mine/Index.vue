@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { IconConfig, useMessage, useTranslate } from '@hy-app/ui';
 import TheRootPages from '@/components/TheRootPages.vue';
 import Tabbar from '@/components/Tabbar.vue';
+import { Config } from '@/config';
 
 definePage({
     style: {
@@ -17,7 +18,7 @@ const message = useMessage();
 const userInfo = {
     name: 'Sunie Pham',
     email: 'sunieux@gmail.com',
-    avatar: '/static/images/fluxstore/avatar.jpg',
+    avatar: `${Config.IMG}/avatar.jpg`,
 };
 
 /** 菜单项类型 */
@@ -110,43 +111,37 @@ const onToPages = () => {};
 </script>
 
 <template>
-    <the-root-pages>
-        <!-- ============== 用户信息头部 ============== -->
-        <view class="profile-header" @tap="onEditProfile">
-            <hy-avatar :src="userInfo.avatar" />
-            <view class="profile-header__info">
-                <text class="profile-header__name">{{ userInfo.name }}</text>
-                <text class="profile-header__email">{{ userInfo.email }}</text>
-            </view>
-            <hy-icon
-                :name="IconConfig.SETTING_FILL"
-                :size="24"
-                color="#000000"
-            />
+    <!-- ============== 用户信息头部 ============== -->
+    <view class="profile-header" @tap="onEditProfile">
+        <hy-avatar :src="userInfo.avatar" />
+        <view class="profile-header__info">
+            <text class="profile-header__name">{{ userInfo.name }}</text>
+            <text class="profile-header__email">{{ userInfo.email }}</text>
         </view>
+        <hy-icon :name="IconConfig.SETTING_FILL" :size="24" />
+    </view>
 
-        <!-- ============== 菜单列表（hy-card + hy-cell） ============== -->
-        <hy-card
-            :border-radius="16"
-            margin="0 24rpx"
-            :padding="0"
-            :body-style="{ overflow: 'hidden' }"
-            :show-foot="false"
-        >
-            <hy-cell clickable @click="onCellClick" size="large">
-                <hy-cell-item
-                    v-for="item in menuList.filter(i => !i.danger)"
-                    :key="item.key"
-                    :name="item.key"
-                    :title="item.label"
-                    :icon="{ name: item.icon, color: '#343434' }"
-                />
-            </hy-cell>
-        </hy-card>
+    <!-- ============== 菜单列表（hy-card + hy-cell） ============== -->
+    <hy-card
+        :border-radius="16"
+        margin="0 24rpx"
+        :padding="0"
+        border
+        :show-foot="false"
+    >
+        <hy-cell clickable :border="false" @click="onCellClick" size="large">
+            <hy-cell-item
+                v-for="item in menuList.filter(i => !i.danger)"
+                :key="item.key"
+                :name="item.key"
+                :title="item.label"
+                :icon="{ name: item.icon }"
+            />
+        </hy-cell>
+    </hy-card>
 
-        <!-- ============== 底部 TabBar ============== -->
-        <tabbar :current="3" @change="onToPages" />
-    </the-root-pages>
+    <!-- ============== 底部 TabBar ============== -->
+    <tabbar :current="3" @change="onToPages" />
 </template>
 
 <style lang="scss" scoped>
@@ -156,12 +151,6 @@ const onToPages = () => {};
     align-items: center;
     gap: 34rpx;
     padding: calc(var(--status-bar-height) + 128rpx) 64rpx;
-    background-color: #ffffff;
-    border-radius: $flux-radius-lg;
-
-    &:active {
-        opacity: 0.8;
-    }
 
     &__info {
         display: flex;
@@ -174,12 +163,11 @@ const onToPages = () => {};
     &__name {
         font-size: 32rpx;
         font-weight: 700;
-        color: $flux-text-primary;
     }
 
     &__email {
         font-size: 26rpx;
-        color: #8a8a8f;
+        color: $hy-text-color--3;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

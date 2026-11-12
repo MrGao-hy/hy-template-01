@@ -1,15 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { IconConfig, useTranslate } from '@hy-app/ui';
+import Navbar from '@/components/Navbar.vue';
 
-/**
- * 通知设置页（Figma 画板 8782:3417 notification setting）
- * 3 个开关项：显示通知 / 通知提示音 / 锁屏通知
- */
 definePage({
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'black',
     },
 });
 
@@ -36,48 +32,26 @@ const switchState = ref<Record<SwitchItem['key'], boolean>>({
     lock: false,
 });
 
-// ============== 事件处理 ==============
-
-/** 返回上一页 */
-const onBack = () => {
-    uni.navigateBack();
-};
-
-/** 开关变更 */
-const onSwitchChange = (key: SwitchItem['key'], value: boolean) => {
-    switchState.value[key] = value;
-};
 </script>
 
 <template>
     <view class="notify-setting">
         <!-- ============== 顶部：返回 + 标题 ============== -->
-        <view class="notify-setting__header">
-            <view class="notify-setting__back" @tap="onBack">
-                <hy-icon :name="IconConfig.LEFT" size="36rpx" color="#1a1a1a" />
-            </view>
-            <text class="notify-setting__title">{{ t('title') }}</text>
-        </view>
+        <Navbar :title="t('title')"></Navbar>
 
-        <!-- ============== 开关列表 ============== -->
-        <view class="switch-list">
-            <view
+        <!-- ============== 开关列表（hy-cell） ============== -->
+        <hy-cell class="switch-list" :border="false" size="large" :is-right-icon="false">
+            <hy-cell-item
                 v-for="item in items"
                 :key="item.key"
-                class="switch-item"
+                :title="item.title"
+                :sub="item.desc"
             >
-                <view class="switch-item__body">
-                    <text class="switch-item__title">{{ item.title }}</text>
-                    <text class="switch-item__desc">{{ item.desc }}</text>
-                </view>
-                <hy-switch
-                    :model-value="switchState[item.key]"
-                    size="small"
-                    active-color="#343434"
-                    @update:model-value="(v: boolean) => onSwitchChange(item.key, v)"
-                />
-            </view>
-        </view>
+                <template #value>
+                    <hy-switch v-model="switchState[item.key]" size="small" />
+                </template>
+            </hy-cell-item>
+        </hy-cell>
     </view>
 </template>
 
@@ -87,69 +61,11 @@ const onSwitchChange = (key: SwitchItem['key'], value: boolean) => {
     padding: calc(var(--status-bar-height) + 40rpx) 40rpx
         calc(40rpx + env(safe-area-inset-bottom));
     box-sizing: border-box;
-    background-color: #ffffff;
-
-    &__header {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 80rpx;
-    }
-
-    &__back {
-        position: absolute;
-        left: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 56rpx;
-        height: 56rpx;
-    }
-
-    &__title {
-        font-size: 36rpx;
-        font-weight: 700;
-        color: $flux-text-primary;
-    }
 }
 
-/* 开关列表 */
+/* 开关列表（hy-cell）：覆盖默认背景/padding/字号/分隔线以贴合 Figma */
 .switch-list {
-    display: flex;
-    flex-direction: column;
     margin-top: 40rpx;
-}
-
-.switch-item {
-    display: flex;
-    align-items: center;
-    gap: 32rpx;
-    padding: 32rpx 0;
-    border-bottom: 2rpx solid #f1f2f3;
-
-    &:last-child {
-        border-bottom: none;
-    }
-
-    &__body {
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-        gap: 8rpx;
-        min-width: 0;
-    }
-
-    &__title {
-        font-size: 30rpx;
-        font-weight: 600;
-        color: $flux-text-primary;
-    }
-
-    &__desc {
-        font-size: 24rpx;
-        line-height: 1.5;
-        color: #8a8a8f;
-    }
+    --hy-cell-item-background: transparent;
 }
 </style>

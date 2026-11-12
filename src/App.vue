@@ -4,12 +4,11 @@
 
 <style lang="scss">
 @use './static/style/icons.scss' as *;
+@use './static/style/_var.scss' as *;
 
 page {
     font-family:
         'Product Sans Medium', 'PingFang SC', 'Helvetica Neue', sans-serif;
-    --hy-background: #ffffff;
-    --hy-border-box-shadow: 0 8rpx 12rpx -8rpx rgba(0, 0, 0, 0.15);
 }
 
 /* #ifdef H5 */

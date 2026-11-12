@@ -80,14 +80,7 @@ const FULL_STARS = 5;
             :key="review.id"
             class="review-item"
         >
-            <hy-image
-                :src="review.avatar"
-                width="72rpx"
-                height="72rpx"
-                radius="36rpx"
-                mode="aspectFill"
-                lazy-load
-            />
+            <hy-avatar :src="review.avatar" size="small" />
             <view class="review-item__body">
                 <view class="review-item__head">
                     <text class="review-item__name">{{ review.name }}</text>
@@ -120,8 +113,6 @@ const FULL_STARS = 5;
         gap: 60rpx;
         padding: 32rpx 0;
         margin-bottom: 16rpx;
-        background-color: #fafafa;
-        border-radius: $flux-radius-md;
     }
 
     &__top {
@@ -143,12 +134,11 @@ const FULL_STARS = 5;
         font-size: 80rpx;
         font-weight: 700;
         line-height: 80rpx;
-        color: #231f20;
     }
 
     &__out {
         font-size: 22rpx;
-        color: #8a8a8f;
+        color: $hy-text-color--grey;
     }
 
     &__stars {
@@ -159,7 +149,7 @@ const FULL_STARS = 5;
 
     &__total {
         font-size: 22rpx;
-        color: #8a8a8f;
+        color: $hy-text-color--grey;
     }
 
     &__bars {
@@ -196,7 +186,7 @@ const FULL_STARS = 5;
     &__name {
         font-size: 26rpx;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 
     &__time {
@@ -215,7 +205,6 @@ const FULL_STARS = 5;
         margin-top: 12rpx;
         font-size: 22rpx;
         line-height: 34rpx;
-        color: rgba(51, 48, 46, 0.7);
     }
 }
 </style>

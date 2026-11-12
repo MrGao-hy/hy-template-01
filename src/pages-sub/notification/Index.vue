@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { IconConfig, useTranslate } from '@hy-app/ui';
+import { IconConfig, useTranslate, useToast } from '@hy-app/ui';
+import Navbar from '@/components/Navbar.vue';
 
 /**
  * 通知列表页（Figma 画板 8782:3378 notification）
@@ -9,11 +10,11 @@ import { IconConfig, useTranslate } from '@hy-app/ui';
 definePage({
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'black',
     },
 });
 
 const { t } = useTranslate('notification');
+const toast = useToast()
 
 /** 通知项类型 */
 interface NotificationItem {
@@ -32,26 +33,16 @@ const notifications = computed<NotificationItem[]>(() => [
 
 // ============== 事件处理 ==============
 
-/** 返回上一页 */
-const onBack = () => {
-    uni.navigateBack();
-};
-
 /** 通知点击 */
 const onItemTap = (item: NotificationItem) => {
-    uni.showToast({ title: item.title, icon: 'none' });
+    toast.show(item.title)
 };
 </script>
 
 <template>
     <view class="notification-page">
         <!-- ============== 顶部：返回 + 标题 ============== -->
-        <view class="notification-page__header">
-            <view class="notification-page__back" @tap="onBack">
-                <hy-icon :name="IconConfig.LEFT" size="36rpx" color="#1a1a1a" />
-            </view>
-            <text class="notification-page__title">{{ t('title') }}</text>
-        </view>
+        <navbar :title="t('title')"></navbar>
 
         <!-- ============== 通知列表 ============== -->
         <view class="notice-list">
@@ -62,7 +53,7 @@ const onItemTap = (item: NotificationItem) => {
                 @tap="onItemTap(item)"
             >
                 <view class="notice-card__icon">
-                    <hy-icon :name="item.icon" size="40rpx" color="#343434" />
+                    <hy-icon :name="item.icon" size="40rpx" />
                 </view>
                 <view class="notice-card__body">
                     <text class="notice-card__title">{{ item.title }}</text>
@@ -79,31 +70,6 @@ const onItemTap = (item: NotificationItem) => {
     padding: calc(var(--status-bar-height) + 40rpx) 40rpx
         calc(40rpx + env(safe-area-inset-bottom));
     box-sizing: border-box;
-    background-color: #ffffff;
-
-    &__header {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 80rpx;
-    }
-
-    &__back {
-        position: absolute;
-        left: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 56rpx;
-        height: 56rpx;
-    }
-
-    &__title {
-        font-size: 36rpx;
-        font-weight: 700;
-        color: $flux-text-primary;
-    }
 }
 
 /* 通知卡片 */
@@ -119,8 +85,8 @@ const onItemTap = (item: NotificationItem) => {
     align-items: flex-start;
     gap: 28rpx;
     padding: 32rpx;
-    background-color: #fafafa;
-    border-radius: $flux-radius-lg;
+    background-color: $hy-background--container;
+    border-radius: $hy-radius-lg;
 
     &:active {
         opacity: 0.8;
@@ -133,7 +99,7 @@ const onItemTap = (item: NotificationItem) => {
         flex-shrink: 0;
         width: 80rpx;
         height: 80rpx;
-        background-color: #ffffff;
+        background-color: $hy-background--2;
         border-radius: $hy-radius-circle;
     }
 
@@ -148,13 +114,13 @@ const onItemTap = (item: NotificationItem) => {
     &__title {
         font-size: 28rpx;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 
     &__desc {
         font-size: 24rpx;
         line-height: 1.5;
-        color: #8a8a8f;
+        color: $hy-text-color--grey;
     }
 }
 </style>

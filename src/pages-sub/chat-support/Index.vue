@@ -9,7 +9,6 @@ import { IconConfig, useTranslate } from '@hy-app/ui';
 definePage({
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'black',
     },
 });
 
@@ -71,7 +70,11 @@ const onSend = () => {
             <view class="chat-page__back" @tap="onBack">
                 <hy-icon :name="IconConfig.LEFT" size="36rpx" color="#1a1a1a" />
             </view>
-            <hy-icon :name="IconConfig.CUSTOMER_SERVICE" size="40rpx" color="#343434" />
+            <hy-icon
+                :name="IconConfig.CUSTOMER_SERVICE"
+                size="40rpx"
+                color="#343434"
+            />
             <view class="chat-page__info">
                 <text class="chat-page__name">{{ t('admin') }}</text>
                 <view class="chat-page__status">
@@ -125,7 +128,7 @@ const onSend = () => {
     padding: calc(var(--status-bar-height) + 24rpx) 40rpx
         calc(24rpx + env(safe-area-inset-bottom));
     box-sizing: border-box;
-    background-color: #ffffff;
+    background-color: $hy-background;
 
     &__header {
         display: flex;
@@ -152,7 +155,7 @@ const onSend = () => {
     &__name {
         font-size: 30rpx;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 
     &__status {
@@ -194,8 +197,8 @@ const onSend = () => {
         align-items: flex-start;
 
         .chat-msg__bubble {
-            background-color: #f4f5f6;
-            color: $flux-text-primary;
+            background-color: $hy-background--empty;
+            color: $hy-text-color;
             border-radius: 32rpx 32rpx 32rpx 8rpx;
         }
     }
@@ -205,7 +208,7 @@ const onSend = () => {
 
         .chat-msg__bubble {
             background-color: #343434;
-            color: #ffffff;
+            color: var(--hy-text-color--inverse, #ffffff);
             border-radius: 32rpx 32rpx 8rpx 32rpx;
         }
     }
@@ -213,7 +216,7 @@ const onSend = () => {
     &__time {
         margin-bottom: 12rpx;
         font-size: 20rpx;
-        color: #8a8a8f;
+        color: $hy-text-color--3;
     }
 
     &__bubble {
@@ -231,7 +234,7 @@ const onSend = () => {
     align-items: center;
     gap: 20rpx;
     padding: 16rpx 16rpx 16rpx 32rpx;
-    background-color: #f4f5f6;
+    background-color: $hy-background--empty;
     border-radius: 100rpx;
 
     &__send {

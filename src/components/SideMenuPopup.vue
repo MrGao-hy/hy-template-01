@@ -1,10 +1,22 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { IconConfig, useTranslate } from '@hy-app/ui';
-import Icon from '@/components/Icon.vue';
+import type { ThemeModeType } from '@hy-app/ui';
+import { useToolsStore } from '@/store';
+import { Config } from '@/config';
 import type { SideMenuItem } from '@/pages/index/components/types';
+import Icon from '@/components/Icon.vue';
 
 const show = defineModel('show', { default: false });
+
+const props = withDefaults(
+    defineProps<{
+        /** 默认激活的菜单项 id */
+        activeId?: number;
+    }>(),
+    { activeId: 1 }
+);
 
 const emit = defineEmits<{
     (e: 'select', item: SideMenuItem): void;
@@ -12,31 +24,32 @@ const emit = defineEmits<{
 
 const { t } = useTranslate('home');
 
+/** 全局工具状态：暗色模式由 tools store 统一管理（App.ku.vue 注入 hy-config-provider） */
+const toolsStore = useToolsStore();
+const { darkMode } = storeToRefs(toolsStore);
+
 // ============== 模拟数据 ==============
 
 /** 当前登录用户（Figma 设计稿模拟数据） */
 const userInfo = {
     name: 'Sunie Pham',
     email: 'sunieux@gmail.com',
-    avatar: '/static/images/fluxstore/avatar.jpg',
+    avatar: `${Config.IMG}/avatar.jpg`,
 };
 
-/** 主题切换选项 */
+/** 主题切换选项（value 对应 ThemeModeType） */
 const themeOptions = [
     {
-        key: 'light',
-        labelKey: 'light',
-        icon: '/static/images/fluxstore/icon-sun.svg',
+        value: 'light',
+        name: 'light',
+        icon: 'sun',
     },
     {
-        key: 'dark',
-        labelKey: 'dark',
-        icon: '/static/images/fluxstore/icon-moon.svg',
+        value: 'dark',
+        name: 'dark',
+        icon: 'moon',
     },
-] as const;
-
-type ThemeKey = (typeof themeOptions)[number]['key'];
-const activeTheme = ref<ThemeKey>('light');
+];
 
 /** 主菜单：Homepage / Discover / My Order / My profile */
 const mainMenuList = computed<SideMenuItem[]>(() => [
@@ -54,49 +67,24 @@ const otherMenuList = computed<SideMenuItem[]>(() => [
 ]);
 
 /** 当前激活的菜单项 */
-const activeMenuId = ref<number>(1);
+const activeMenuId = ref<number>(props.activeId);
 
 // ============== 事件处理 ==============
 
-/** 菜单项对应的跳转路由（switchTab/navigateTo） */
-const menuRoutes: Record<number, string> = {
-    1: '/pages/index/Index',
-    2: '/pages/search/Index',
-    3: '/pages-sub/order/Index',
-    4: '/pages/mine/Index',
-    5: '/pages-sub/setting/Index',
-    6: '/pages-sub/chat-support/Index',
-};
-
-/** TabBar 页面路由集合 */
-const tabRoutes = new Set([
-    '/pages/index/Index',
-    '/pages/search/Index',
-    '/pages/mine/Index',
-]);
-
-/** 菜单项点击：激活、关闭弹窗并跳转对应页面 */
-const onMenuTap = (item: SideMenuItem) => {
+/** 菜单项点击：hy-cell 派发 name（菜单 id），激活、关闭弹窗并通知父级（跳转由父页面执行） */
+const onCellClick = (name: string | number) => {
+    const item = [...mainMenuList.value, ...otherMenuList.value].find(
+        i => i.id === name
+    );
+    if (!item) return;
     activeMenuId.value = item.id;
     emit('select', item);
     show.value = false;
-
-    const url = menuRoutes[item.id];
-    if (!url) {
-        // About us：仅提示
-        uni.showToast({ title: 'GemStore v1.0.0', icon: 'none' });
-        return;
-    }
-    if (tabRoutes.has(url)) {
-        uni.switchTab({ url });
-    } else {
-        uni.navigateTo({ url });
-    }
 };
 
-/** 主题切换 */
-const onThemeTap = (key: ThemeKey) => {
-    activeTheme.value = key;
+/** 主题切换：直接写入 tools store，由 App.ku.vue 的 hy-config-provider 响应 */
+const onThemeChange = (value: string | number) => {
+    darkMode.value = value as ThemeModeType;
 };
 </script>
 
@@ -107,73 +95,108 @@ const onThemeTap = (key: ThemeKey) => {
         safe-area-inset-top
         close-on-click-overlay
         :custom-style="{ width: '586rpx' }"
-        :z-index="13000"
-        round="24"
+        round="48rpx"
+        :z-index="99999"
         @close="show = false"
     >
-        <scroll-view scroll-y :show-scrollbar="false" class="side-menu">
-            <!-- ============== 用户信息头部 ============== -->
-            <view class="side-menu__header">
-                <hy-avatar :src="userInfo.avatar"></hy-avatar>
-                <view class="side-menu__user">
-                    <text class="side-menu__username">{{ userInfo.name }}</text>
-                    <text class="side-menu__email">{{ userInfo.email }}</text>
-                </view>
-            </view>
-
-            <!-- ============== 主菜单 ============== -->
-            <view class="side-menu__group">
-                <view
-                    v-for="item in mainMenuList"
-                    :key="item.id"
-                    class="side-menu__item"
-                    :class="{ 'is-active': activeMenuId === item.id }"
-                    @tap="onMenuTap(item)"
-                >
-                    <Icon :name="item.icon" size="36rpx" color="currentColor" />
-                    <text class="side-menu__item-text">
-                        {{ t(`sideMenu.${item.nameKey}`) }}
-                    </text>
-                </view>
-            </view>
-
-            <!-- ============== 其他分组 ============== -->
-            <view class="side-menu__group-title">
-                {{ t('sideMenu.other') }}
-            </view>
-            <view class="side-menu__group">
-                <view
-                    v-for="item in otherMenuList"
-                    :key="item.id"
-                    class="side-menu__item"
-                    :class="{ 'is-active': activeMenuId === item.id }"
-                    @tap="onMenuTap(item)"
-                >
-                    <Icon :name="item.icon" size="36rpx" color="currentColor" />
-                    <text class="side-menu__item-text">
-                        {{ t(`sideMenu.${item.nameKey}`) }}
-                    </text>
-                </view>
-            </view>
-        </scroll-view>
-
-        <!-- ============== 底部主题切换 ============== -->
-        <view class="side-menu__theme">
-            <view
-                v-for="option in themeOptions"
-                :key="option.key"
-                class="theme-option"
-                :class="{ 'is-active': activeTheme === option.key }"
-                @tap="onThemeTap(option.key)"
+        <view class="side-menu">
+            <scroll-view
+                scroll-y
+                :show-scrollbar="false"
+                class="side-menu__scroll"
             >
-                <image
-                    class="theme-option__icon"
-                    :src="option.icon"
-                    mode="aspectFit"
-                />
-                <text class="theme-option__text">
-                    {{ t(`sideMenu.${option.labelKey}`) }}
-                </text>
+                <!-- ============== 用户信息头部 ============== -->
+                <view class="side-menu__header">
+                    <hy-avatar
+                        :src="userInfo.avatar"
+                        :custom-style="{ width: '104rpx', height: '104rpx' }"
+                    />
+                    <view class="side-menu__user">
+                        <text class="side-menu__username">{{
+                            userInfo.name
+                        }}</text>
+                        <text class="side-menu__email">{{
+                            userInfo.email
+                        }}</text>
+                    </view>
+                </view>
+
+                <!-- ============== 主菜单 ============== -->
+                <hy-cell
+                    class="side-menu__group"
+                    :border="false"
+                    :is-right-icon="false"
+                    clickable
+                    @click="onCellClick"
+                >
+                    <hy-cell-item
+                        v-for="item in mainMenuList"
+                        :key="item.id"
+                        :name="item.id"
+                        :title="t(`sideMenu.${item.nameKey}`)"
+                        :icon="{
+                            name: item.icon,
+                            customStyle: {
+                                fontSize: '36rpx',
+                                lineHeight: '36rpx',
+                            },
+                        }"
+                        :border="false"
+                        :custom-class="
+                            activeMenuId === item.id
+                                ? 'side-menu__item--active'
+                                : ''
+                        "
+                    />
+                </hy-cell>
+
+                <!-- ============== 其他分组 ============== -->
+                <view class="side-menu__group-title">
+                    {{ t('sideMenu.other') }}
+                </view>
+                <hy-cell
+                    class="side-menu__group"
+                    :border="false"
+                    :is-right-icon="false"
+                    clickable
+                    @click="onCellClick"
+                >
+                    <hy-cell-item
+                        v-for="item in otherMenuList"
+                        :key="item.id"
+                        :name="item.id"
+                        :title="t(`sideMenu.${item.nameKey}`)"
+                        :icon="{
+                            name: item.icon,
+                            customStyle: {
+                                fontSize: '36rpx',
+                                lineHeight: '36rpx',
+                            },
+                        }"
+                        :border="false"
+                        :custom-class="
+                            activeMenuId === item.id
+                                ? 'side-menu__item--active'
+                                : ''
+                        "
+                    />
+                </hy-cell>
+            </scroll-view>
+
+            <!-- ============== 底部主题切换 ============== -->
+            <view class="side-menu__theme">
+                <hy-subsection
+                    :list="themeOptions"
+                    :model-value="darkMode"
+                    @update:model-value="onThemeChange"
+                >
+                    <template #default="{ record }">
+                        <Icon :name="record.icon as string"></Icon>
+                        <text class="side-menu__theme--text">
+                            {{ t(`sideMenu.${record.name}`) }}
+                        </text>
+                    </template>
+                </hy-subsection>
             </view>
         </view>
     </hy-popup>
@@ -181,132 +204,95 @@ const onThemeTap = (key: ThemeKey) => {
 
 <style lang="scss" scoped>
 .side-menu {
-    /* ============== 弹窗整体：纵向 flex 布局 ============== */
-    height: 100%;
+    /* ============== 弹窗整体：铺满内容区，纵向 flex 布局 ============== */
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
     display: flex;
     flex-direction: column;
-    box-sizing: border-box;
+
+    &__scroll {
+        flex: 1;
+        height: 0;
+    }
 
     /* ============== 用户信息头部 ============== */
     &__header {
         display: flex;
         align-items: center;
         gap: 34rpx;
-        padding: 48rpx 88rpx 40rpx;
+        padding: 48rpx 104rpx 102rpx;
     }
 
     &__user {
         display: flex;
         flex-direction: column;
-        gap: 6rpx;
+        gap: 12rpx;
         min-width: 0;
     }
 
     &__username {
-        font-size: $flux-font-lg;
+        font-size: 32rpx;
         font-weight: 700;
-        color: $flux-text-primary;
+        line-height: 46rpx;
     }
 
     &__email {
-        font-size: $flux-font-md;
-        color: $flux-text-primary;
+        font-size: 24rpx;
+        font-weight: 500;
+        line-height: 30rpx;
+        letter-spacing: -0.24rpx;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
-    /* ============== 菜单分组 ============== */
+    /* ============== 菜单分组（hy-cell） ============== */
     &__group {
-        display: flex;
-        flex-direction: column;
+        --hy-cell-item-icon-margin: 40rpx;
+
+        :deep(.hy-cell-item) {
+            height: 110rpx;
+            margin: 0 26rpx;
+            padding: 0 0 0 40rpx;
+            border-radius: 20rpx;
+            font-size: 32rpx;
+            font-weight: 700;
+            color: $hy-text-color--3;
+            transition: background-color 0.2s;
+
+            /* #ifdef H5 */
+            cursor: pointer;
+            /* #endif */
+
+            &.side-menu__item--active {
+                background-color: $hy-background--active;
+                color: $hy-text-color;
+            }
+        }
     }
 
     &__group-title {
-        margin: 48rpx 0 32rpx;
         padding-left: 66rpx;
-        font-size: $flux-font-md;
+        margin: 48rpx 0;
+        font-size: 28rpx;
         font-weight: 500;
-        color: $flux-text-secondary;
+        line-height: 40rpx;
+        color: $hy-text-color--3;
         text-transform: uppercase;
-    }
-
-    /* ============== 菜单项 ============== */
-    &__item {
-        display: flex;
-        align-items: center;
-        gap: 40rpx;
-        height: 110rpx;
-        margin: 0 26rpx;
-        padding-left: 40rpx;
-        border-radius: 20rpx;
-        color: $flux-text-secondary;
-        transition: background-color 0.2s;
-
-        /* #ifdef H5 */
-        cursor: pointer;
-        /* #endif */
-
-        &:active {
-            opacity: 0.7;
-        }
-
-        &.is-active {
-            background-color: #f4f5f6;
-            color: $flux-text-primary;
-        }
-    }
-
-    &__item-text {
-        font-size: $flux-font-lg;
-        font-weight: 500;
-        line-height: 1.4;
-
-        .is-active & {
-            font-weight: 700;
-        }
     }
 
     /* ============== 底部主题切换 ============== */
     &__theme {
-        display: flex;
-        align-items: center;
-        margin: 24rpx 52rpx;
-        margin-bottom: calc(24rpx + env(safe-area-inset-bottom));
-        padding: 8rpx;
-        border-radius: 100rpx;
-        background-color: #f4f5f6;
-    }
-}
+        margin: 24rpx 66rpx calc(120rpx + env(safe-area-inset-bottom));
+        --hy-subsection-radius: 100px;
 
-.theme-option {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16rpx;
-    height: 76rpx;
-    border-radius: 100rpx;
-    color: $flux-text-secondary;
-    transition: all 0.2s;
-
-    /* #ifdef H5 */
-    cursor: pointer;
-    /* #endif */
-
-    &.is-active {
-        background-color: $hy-background--container;
-        color: #2c2f32;
-    }
-
-    &__icon {
-        width: 44rpx;
-        height: 44rpx;
-    }
-
-    &__text {
-        font-size: $flux-font-md;
-        font-weight: 500;
+        &--text {
+            font-size: 26rpx;
+            margin-left: 10rpx;
+        }
     }
 }
 </style>

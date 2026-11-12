@@ -12,14 +12,30 @@ const messages = {
     'zh-CN': zhCN,
 };
 
+/** 语言缓存 key */
+export const LANG_STORAGE_KEY = 'app-lang';
+
+/** 默认语言 */
+const DEFAULT_LANG = 'en-US';
+
 /**
  * 初始化多语言
- * 默认使用英文
- * 切换语言：Locale.use('zh-CN') / Locale.use('en')
+ * 优先读取本地缓存语言，无缓存时默认英文
+ * 切换语言请使用 setLocale()，会同步写入缓存
  */
 export function setupLocale() {
     Locale.add(messages);
-    Locale.use('en-US');
+    const cached = uni.getStorageSync<string>(LANG_STORAGE_KEY);
+    Locale.use(cached || DEFAULT_LANG);
+}
+
+/**
+ * 切换语言并持久化
+ * Locale.use 后所有 t() 响应式刷新
+ */
+export function setLocale(lang: string) {
+    Locale.use(lang);
+    uni.setStorageSync(LANG_STORAGE_KEY, lang);
 }
 
 export { Locale };

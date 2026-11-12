@@ -60,7 +60,7 @@ const onSelect = (p: SocialProvider) => emit('select', p);
         width: 84rpx;
         height: 84rpx;
         border-radius: 50%;
-        background-color: #ffffff;
+        background-color: $hy-background--2;
         /* 原型描边 #332218 @ opacity 0.14 */
         border: 2rpx solid rgba(51, 34, 24, 0.14);
         display: flex;

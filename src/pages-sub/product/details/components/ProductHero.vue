@@ -3,8 +3,8 @@ import { ref } from 'vue';
 import { IconConfig } from '@hy-app/ui';
 
 const props = defineProps<{
-    /** 商品主图 */
-    image: string;
+    /** 商品图集（优先于 image） */
+    images?: string[];
 }>();
 
 const emit = defineEmits<{
@@ -14,9 +14,8 @@ const emit = defineEmits<{
 /** 收藏状态 */
 const favorite = ref(false);
 
-/** 返回上一页 */
 const onBack = () => {
-    emit('back');
+    uni.navigateBack();
 };
 </script>
 
@@ -26,48 +25,61 @@ const onBack = () => {
         <view class="product-hero__ellipse"></view>
 
         <!-- ============== 顶部操作栏 ============== -->
-        <view class="product-hero__header">
-            <view class="product-hero__action" @tap="onBack">
-                <hy-icon
-                    :name="IconConfig.LEFT"
-                    size="36rpx"
-                    color="#1a1a1a"
-                />
-            </view>
-            <view class="product-hero__actions-right">
-                <view
-                    class="product-hero__action"
-                    @tap="favorite = !favorite"
-                >
-                    <hy-icon
-                        :name="
-                            favorite
-                                ? IconConfig.STAR_FILL
-                                : IconConfig.STAR
-                        "
-                        size="44rpx"
-                        color="#1a1a1a"
-                    />
-                </view>
-                <view class="product-hero__action">
-                    <hy-icon
-                        :name="IconConfig.SHARE"
-                        size="44rpx"
-                        color="#1a1a1a"
-                    />
-                </view>
-            </view>
-        </view>
+        <hy-navbar bg-color="transparent" @left-click="onBack" left-icon-color="#000000">
+            <template #right>
+                <hy-flex gap="10">
+                    <view
+                        class="product-hero__action"
+                        @tap="favorite = !favorite"
+                    >
+                        <hy-icon
+                            :name="
+                                favorite
+                                    ? IconConfig.STAR_FILL
+                                    : IconConfig.STAR
+                            "
+                            color="red"
+                            size="40rpx"
+                        />
+                    </view>
+                    <view class="product-hero__action">
+                        <hy-icon
+                            :name="IconConfig.SHARE"
+                            size="44rpx"
+                            color="#000000"
+                        />
+                    </view>
+                </hy-flex>
+            </template>
+        </hy-navbar>
 
-        <!-- ============== 商品主图 ============== -->
+        <!-- ============== 商品主图轮播 ============== -->
         <view class="product-hero__media">
-            <hy-image
-                :src="props.image"
-                width="710rpx"
-                height="1064rpx"
-                mode="aspectFill"
-                lazy-load
-            />
+            <hy-swiper
+                :list="images"
+                height="451"
+                radius="0"
+                bg-color="transparent"
+                :autoplay="false"
+                indicator
+                img-mode="widthFix"
+            >
+                <template #indicator="{ current, length }">
+                    <view class="product-hero__indicator">
+                        <view
+                            v-for="i in length"
+                            :key="i"
+                            class="product-hero__indicator-dot"
+                            :class="{ 'is-active': i - 1 === current }"
+                        >
+                            <view
+                                v-if="i - 1 === current"
+                                class="product-hero__indicator-dot-inner"
+                            ></view>
+                        </view>
+                    </view>
+                </template>
+            </hy-swiper>
         </view>
     </view>
 </template>
@@ -83,47 +95,56 @@ const onBack = () => {
         top: 186rpx;
         left: 50%;
         width: 468rpx;
-        height: 260rpx;
+        height: 468rpx;
         transform: translateX(-50%);
         border-radius: 50%;
         background-color: rgba(234, 202, 183, 0.2);
     }
 
-    &__header {
-        position: absolute;
-        top: calc(var(--status-bar-height) + 30rpx);
-        left: 40rpx;
-        right: 40rpx;
-        z-index: 3;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+    &__media {
+
+        z-index: 1;
+        width: 100%;
     }
 
-    &__action {
+    &__slide {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 64rpx;
-        height: 64rpx;
+        width: 100%;
+        height: 100%;
+    }
 
-        &:active {
-            opacity: 0.7;
+    &__indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20rpx;
+        margin-bottom: 100rpx;
+    }
+
+    &__indicator-dot {
+        width: 10rpx;
+        height: 10rpx;
+        border-radius: 50%;
+        background-color: #4a4a4a;
+
+        &.is-active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 26rpx;
+            height: 26rpx;
+            background-color: transparent;
+            border: 2rpx solid #1a1a1a;
         }
     }
 
-    &__actions-right {
-        display: flex;
-        align-items: center;
-        gap: 20rpx;
-    }
-
-    &__media {
-        position: absolute;
-        top: 24rpx;
-        left: 50%;
-        z-index: 1;
-        transform: translateX(-50%);
+    &__indicator-dot-inner {
+        width: 12rpx;
+        height: 12rpx;
+        border-radius: 50%;
+        background-color: #1a1a1a;
     }
 }
 </style>

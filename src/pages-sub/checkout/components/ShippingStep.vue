@@ -17,11 +17,22 @@ interface FormInstance {
 
 const formRef = ref<FormInstance>();
 
-/** 配送表单（country 为 hy-picker 回填的数组值） */
+/** 国家选项（key 为国际化 key，label 为当前语言文案） */
+const COUNTRY_OPTIONS = [
+    { key: 'countryVietnam' },
+    { key: 'countryChina' },
+    { key: 'countryUnitedStates' },
+    { key: 'countryJapan' },
+];
+
+/** 默认国家 */
+const DEFAULT_COUNTRY_KEY = 'countryChina';
+
+/** 配送表单（country 为 hy-picker 回填的文本值） */
 const form = reactive({
     firstName: 'Pham',
     lastName: '',
-    country: '' as string | string[],
+    country: t(DEFAULT_COUNTRY_KEY),
     streetName: '',
     city: '',
     state: '',
@@ -40,8 +51,15 @@ const rules = {
     phone: { required: true, message: t('fieldRequired') },
 };
 
-/** 国家选项 */
-const countryColumns = [['Vietnam', 'China', 'United States', 'Japan']];
+/** 国家选项（随语言切换） */
+const countryOptions = computed(() =>
+    COUNTRY_OPTIONS.map(item => ({ key: item.key, label: t(item.key) }))
+);
+
+/** hy-picker 列数据 */
+const countryColumns = computed(() => [
+    countryOptions.value.map(item => item.label),
+]);
 
 /** 选中国家文案（兼容初始空串与 picker 回填数组） */
 const countryText = computed(() => {
@@ -82,7 +100,7 @@ const selectedMethod = ref('home-free');
 
 /** 复制账单地址（hy-checkbox 单布尔模式：columns 长度须为 1） */
 const copyAddress = ref(false);
-const copyColumns = ref([{ label: t('copyAddress'), value: true }]);
+const copyColumns = ref([{ label: t('copyAddress'), value: 1 }]);
 
 /** 优惠券码 */
 const couponCode = ref('');
@@ -117,21 +135,14 @@ defineExpose({ validate });
             :model="form"
             :rules="rules"
             label-position="top"
+            border
         >
             <view class="checkout-form">
                 <hy-form-item :label="t('firstName')" prop="firstName" required>
-                    <hy-input
-                        v-model="form.firstName"
-                        border="bottom"
-                        placeholder=" "
-                    />
+                    <hy-input v-model="form.firstName" border="none" />
                 </hy-form-item>
                 <hy-form-item :label="t('lastName')" prop="lastName" required>
-                    <hy-input
-                        v-model="form.lastName"
-                        border="bottom"
-                        placeholder=" "
-                    />
+                    <hy-input v-model="form.lastName" border="none" />
                 </hy-form-item>
 
                 <!-- 国家（下拉选择，直接绑定 form.country） -->
@@ -167,39 +178,22 @@ defineExpose({ validate });
                     prop="streetName"
                     required
                 >
-                    <hy-input
-                        v-model="form.streetName"
-                        border="bottom"
-                        placeholder=" "
-                    />
+                    <hy-input v-model="form.streetName" border="none" />
                 </hy-form-item>
                 <hy-form-item :label="t('city')" prop="city" required>
-                    <hy-input
-                        v-model="form.city"
-                        border="bottom"
-                        placeholder=" "
-                    />
+                    <hy-input v-model="form.city" border="none" />
                 </hy-form-item>
                 <hy-form-item :label="t('state')" prop="state">
-                    <hy-input
-                        v-model="form.state"
-                        border="bottom"
-                        placeholder=" "
-                    />
+                    <hy-input v-model="form.state" border="none" />
                 </hy-form-item>
                 <hy-form-item :label="t('zipCode')" prop="zipCode" required>
-                    <hy-input
-                        v-model="form.zipCode"
-                        border="bottom"
-                        placeholder=" "
-                    />
+                    <hy-input v-model="form.zipCode" border="none" />
                 </hy-form-item>
                 <hy-form-item :label="t('phone')" prop="phone" required>
                     <hy-input
                         v-model="form.phone"
-                        border="bottom"
+                        border="none"
                         type="number"
-                        placeholder=" "
                     />
                 </hy-form-item>
             </view>
@@ -239,6 +233,28 @@ defineExpose({ validate });
             </view>
         </view>
 
+        <!-- ============== 优惠券 ============== -->
+        <view class="coupon-section">
+            <text class="coupon-section__title">{{ t('couponCode') }}</text>
+            <view class="coupon-section__row">
+                <hy-input
+                    v-model="couponCode"
+                    :placeholder="t('couponPlaceholder')"
+                    shape="circle"
+                    custom-class="coupon-section__input"
+                >
+                    <template #suffix>
+                        <text
+                            class="coupon-section__validate"
+                            @tap="onValidateCoupon"
+                        >
+                            {{ t('validate') }}
+                        </text>
+                    </template>
+                </hy-input>
+            </view>
+        </view>
+
         <!-- ============== 账单地址 ============== -->
         <view class="billing-section">
             <text class="billing-section__title">
@@ -255,22 +271,6 @@ defineExpose({ validate });
                 label-color="#575757"
             />
         </view>
-
-        <!-- ============== 优惠券 ============== -->
-        <view class="coupon-section">
-            <text class="coupon-section__title">{{ t('couponCode') }}</text>
-            <view class="coupon-section__row">
-                <input
-                    v-model="couponCode"
-                    class="coupon-section__input"
-                    :placeholder="t('couponPlaceholder')"
-                    placeholder-class="coupon-placeholder"
-                />
-                <text class="coupon-section__validate" @tap="onValidateCoupon">
-                    {{ t('validate') }}
-                </text>
-            </view>
-        </view>
     </view>
 </template>
 
@@ -286,11 +286,10 @@ defineExpose({ validate });
     justify-content: space-between;
     width: 100%;
     padding-bottom: 16rpx;
-    border-bottom: 2rpx solid #f1f2f3;
 
     &__text {
         font-size: 28rpx;
-        color: $flux-text-primary;
+        color: $hy-text-color;
 
         &--placeholder {
             color: #cbcdd8;
@@ -305,9 +304,9 @@ defineExpose({ validate });
     &__title {
         display: block;
         margin-bottom: 28rpx;
-        font-size: $flux-font-lg;
+        font-size: $hy-font-size-md;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 }
 
@@ -328,18 +327,18 @@ defineExpose({ validate });
         width: 46rpx;
         height: 46rpx;
         margin-top: 4rpx;
-        border: 3rpx solid #bebfc4;
+        border: 3rpx solid $hy-text-color--4;
         border-radius: 50%;
 
         &.is-active {
-            border-color: #508a7b;
+            border-color: $hy-primary;
         }
     }
 
     &__radio-dot {
         width: 18rpx;
         height: 18rpx;
-        background-color: #508a7b;
+        background-color: $hy-primary;
         border-radius: 50%;
     }
 
@@ -357,20 +356,20 @@ defineExpose({ validate });
     &__name {
         font-size: 28rpx;
         font-weight: 600;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 
     &__price {
         font-size: 28rpx;
         font-weight: 600;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 
     &__desc {
         display: block;
         margin-top: 8rpx;
         font-size: 24rpx;
-        color: #a3a5ad;
+        color: $hy-text-color--4;
     }
 }
 
@@ -381,9 +380,9 @@ defineExpose({ validate });
     &__title {
         display: block;
         margin-bottom: 24rpx;
-        font-size: $flux-font-lg;
+        font-size: $hy-font-size-md;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 }
 
@@ -394,9 +393,8 @@ defineExpose({ validate });
     &__title {
         display: block;
         margin-bottom: 24rpx;
-        font-size: $flux-font-lg;
+        font-size: $hy-font-size-md;
         font-weight: 700;
-        color: #000839;
     }
 
     &__row {
@@ -409,17 +407,20 @@ defineExpose({ validate });
         flex: 1;
         height: 96rpx;
         padding: 0 32rpx;
-        font-size: 26rpx;
-        color: $flux-text-primary;
-        background-color: #f7f7f8;
-        border-radius: $flux-radius-md;
+        color: $hy-text-color;
+        background-color: $hy-background--track;
+        border-radius: $hy-radius-base;
+
+        :deep(.uni-input-input) {
+            font-size: $hy-font-size-xxl;
+        }
     }
 
     &__validate {
         flex-shrink: 0;
         font-size: 28rpx;
         font-weight: 600;
-        color: #508a7b;
+        color: $hy-primary;
 
         &:active {
             opacity: 0.7;

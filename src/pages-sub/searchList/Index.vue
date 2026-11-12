@@ -5,6 +5,7 @@ import { onLoad } from '@dcloudio/uni-app';
 import ProductCard from './components/ProductCard.vue';
 import FilterPopup from '@/pages/search/components/FilterPopup.vue';
 import type { SearchResultProduct } from './components/types';
+import { Config } from '@/config';
 
 /**
  * 搜索结果页（Figma: 8782-3057）
@@ -40,7 +41,7 @@ const products = ref<SearchResultProduct[]>([
         price: 68.0,
         reviews: 46,
         rating: 5,
-        image: '/static/images/fluxstore/image_ab2f4ed424ae6384ab7d20a54f772bf15d7db671.png',
+        image: `${Config.IMG}/image_ab2f4ed424ae6384ab7d20a54f772bf15d7db671.png`,
     },
     {
         id: 2,
@@ -49,7 +50,7 @@ const products = ref<SearchResultProduct[]>([
         oldPrice: 90.0,
         reviews: 64,
         rating: 5,
-        image: '/static/images/fluxstore/image_226c7c5428720a36a74b4a0234996217317a7aac.png',
+        image: `${Config.IMG}/image_226c7c5428720a36a74b4a0234996217317a7aac.png`,
     },
     {
         id: 3,
@@ -57,7 +58,7 @@ const products = ref<SearchResultProduct[]>([
         price: 85.0,
         reviews: 50,
         rating: 5,
-        image: '/static/images/fluxstore/image_0bae90a82fa4f5ac14e4f0e05d1b9536e46e2dad.png',
+        image: `${Config.IMG}/image_0bae90a82fa4f5ac14e4f0e05d1b9536e46e2dad.png`,
     },
     {
         id: 4,
@@ -65,7 +66,7 @@ const products = ref<SearchResultProduct[]>([
         price: 59.0,
         reviews: 38,
         rating: 5,
-        image: '/static/images/fluxstore/image_277a304a44849c4e605ccf87ec37092bf51698d0.png',
+        image: `${Config.IMG}/image_277a304a44849c4e605ccf87ec37092bf51698d0.png`,
     },
     {
         id: 5,
@@ -73,7 +74,7 @@ const products = ref<SearchResultProduct[]>([
         price: 67.0,
         reviews: 39,
         rating: 5,
-        image: '/static/images/fluxstore/image_69401766929aa18a23140b188e176f5dc57c4883.png',
+        image: `${Config.IMG}/image_69401766929aa18a23140b188e176f5dc57c4883.png`,
     },
     {
         id: 6,
@@ -82,7 +83,7 @@ const products = ref<SearchResultProduct[]>([
         oldPrice: 82.0,
         reviews: 53,
         rating: 5,
-        image: '/static/images/fluxstore/image_5ff7fc25c9e3fc5d6a2e06d04f48aed5873b9be1.png',
+        image: `${Config.IMG}/image_5ff7fc25c9e3fc5d6a2e06d04f48aed5873b9be1.png`,
     },
     {
         id: 7,
@@ -90,7 +91,7 @@ const products = ref<SearchResultProduct[]>([
         price: 64.0,
         reviews: 83,
         rating: 5,
-        image: '/static/images/fluxstore/image_6f239608e6eedd4eb1bc0211a6fb49f898973ab9.png',
+        image: `${Config.IMG}/image_6f239608e6eedd4eb1bc0211a6fb49f898973ab9.png`,
     },
     {
         id: 8,
@@ -98,7 +99,7 @@ const products = ref<SearchResultProduct[]>([
         price: 78.99,
         reviews: 25,
         rating: 5,
-        image: '/static/images/fluxstore/image_ba2a806d6be335c904ae672bcb778cd426726789.png',
+        image: `${Config.IMG}/image_ba2a806d6be335c904ae672bcb778cd426726789.png`,
     },
 ]);
 
@@ -129,7 +130,7 @@ const onCardTap = (_product: SearchResultProduct) => {
                 <text class="search-list__filter-text">
                     {{ t('filter') }}
                 </text>
-                <hy-icon :name="IconConfig.DOWN" size="22rpx" color="#1a1a1a" />
+                <hy-icon :name="IconConfig.ARROW_DOWN_FILL" size="22rpx" />
             </view>
         </view>
 
@@ -151,10 +152,9 @@ const onCardTap = (_product: SearchResultProduct) => {
 <style lang="scss" scoped>
 .search-list {
     min-height: 100vh;
-    padding: 40rpx 40rpx
-        calc(40rpx + env(safe-area-inset-bottom));
+    padding: 40rpx 40rpx calc(40rpx + env(safe-area-inset-bottom));
     box-sizing: border-box;
-    background-color: #ffffff;
+    background-color: $hy-background;
 
     &__header {
         display: flex;
@@ -171,9 +171,9 @@ const onCardTap = (_product: SearchResultProduct) => {
     }
 
     &__keyword {
-        font-size: $flux-font-lg;
+        font-size: $hy-font-size-md;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 
     &__meta {
@@ -184,10 +184,10 @@ const onCardTap = (_product: SearchResultProduct) => {
     }
 
     &__found {
-        font-size: $flux-font-xl;
+        font-size: $hy-font-size-lg;
         font-weight: 700;
         line-height: 1.4;
-        color: $flux-text-primary;
+        color: $hy-text-color;
         white-space: pre-line;
     }
 
@@ -198,8 +198,8 @@ const onCardTap = (_product: SearchResultProduct) => {
         gap: 12rpx;
         width: 194rpx;
         height: 80rpx;
-        border: 3rpx solid rgba(51, 48, 46, 0.15);
-        border-radius: 120rpx;
+        border: $hy-border-line;
+        border-radius: $hy-radius-semicircle;
         box-sizing: border-box;
 
         &:active {
@@ -208,9 +208,8 @@ const onCardTap = (_product: SearchResultProduct) => {
     }
 
     &__filter-text {
-        font-size: $flux-font-sm;
+        font-size: $hy-font-size-sm;
         font-weight: 600;
-        color: rgba(51, 48, 46, 0.7);
     }
 
     &__grid {

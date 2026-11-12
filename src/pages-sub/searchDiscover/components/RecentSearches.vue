@@ -38,32 +38,25 @@ const onClearAll = () => {
             <text class="recent-searches__title">{{
                 t('recentSearches')
             }}</text>
-            <hy-icon
-                :name="IconConfig.DELETE"
-                size="42rpx"
-                color="#1D1F22"
-                @tap="onClearAll"
-            />
+            <hy-icon :name="IconConfig.DELETE" size="42rpx" @tap="onClearAll" />
         </view>
 
         <!-- ============== 搜索词标签 ============== -->
         <view class="recent-searches__list">
-            <view
+            <hy-tag
                 v-for="keyword in keywords"
                 :key="keyword"
-                class="recent-searches__chip"
-                @tap="onKeywordTap(keyword)"
-            >
-                <text class="recent-searches__chip-text">{{ keyword }}</text>
-                <hy-icon
-                    :name="IconConfig.CLOSE_CIRCLE"
-                    size="38rpx"
-                    color="#33302E"
-                    stop
-                    custom-class="recent-searches__chip-close"
-                    @click="onKeywordRemove(keyword)"
-                />
-            </view>
+                :label="keyword"
+                :value="keyword"
+                shape="circle"
+                size="medium"
+                color="var(--hy-background--track)"
+                :border="false"
+                closable
+                :custom-style="{ marginRight: 0, marginTop: 0, color: 'var(--hy-text-color)' }"
+                @click="onKeywordTap(keyword)"
+                @close="onKeywordRemove(keyword)"
+            />
         </view>
     </view>
 </template>
@@ -78,39 +71,14 @@ const onClearAll = () => {
     }
 
     &__title {
-        font-size: $flux-font-lg;
+        font-size: $hy-font-size-md;
         font-weight: 700;
-        color: rgba(51, 48, 46, 0.49);
     }
 
     &__list {
         display: flex;
         flex-wrap: wrap;
         gap: 36rpx 28rpx;
-    }
-
-    &__chip {
-        display: flex;
-        align-items: center;
-        gap: 16rpx;
-        height: 76rpx;
-        padding: 0 24rpx 0 44rpx;
-        background-color: #fafafa;
-        border-radius: $flux-radius-md;
-
-        &:active {
-            opacity: 0.7;
-        }
-    }
-
-    &__chip-text {
-        font-size: $flux-font-lg;
-        font-weight: 600;
-        color: rgba(51, 48, 46, 0.7);
-    }
-
-    &__chip-close {
-        opacity: 0.6;
     }
 }
 </style>

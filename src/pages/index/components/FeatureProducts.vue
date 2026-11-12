@@ -76,27 +76,27 @@ const onShowAllTap = () => {
 
 <style lang="scss" scoped>
 .home__section {
-    margin-bottom: $flux-spacing-xl;
+    margin-bottom: $hy-border-margin-padding-xl;
 
     &-header {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: $flux-spacing-md;
+        margin-bottom: $hy-border-margin-padding-base;
     }
 
     &-title {
         font-size: 36rpx;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 
     &-more {
-        padding: $flux-spacing-xs $flux-spacing-sm;
+        padding: $hy-border-margin-padding-sm $hy-border-margin-padding-sm;
         &-text {
-            font-size: $flux-font-sm;
-            color: $flux-text-secondary;
+            font-size: $hy-font-size-sm;
+            color: $hy-text-color--3;
         }
     }
 }
@@ -106,16 +106,16 @@ const onShowAllTap = () => {
     width: 280rpx;
     display: flex;
     flex-direction: column;
-    gap: $flux-spacing-sm;
+    gap: $hy-border-margin-padding-sm;
 
     &__image-wrap {
         overflow: hidden;
     }
 
     &__name {
-        font-size: $flux-font-md;
+        font-size: $hy-font-size-base;
         font-weight: 500;
-        color: $flux-text-primary;
+        color: $hy-text-color;
         line-height: 1.3;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -123,9 +123,9 @@ const onShowAllTap = () => {
     }
 
     &__price {
-        font-size: $flux-font-lg;
+        font-size: $hy-font-size-md;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 }
 </style>

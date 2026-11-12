@@ -8,16 +8,10 @@ import TheRootPages from '@/components/TheRootPages.vue';
 
 /**
  * 注册页
- * 还原 Figma 节点 8782:1207 "sign up"
- * - 标题 "Create / your account"
- * - 姓名 + 邮箱 + 密码 + 确认密码 四个下划线输入框
- * - SIGN UP 按钮（深色圆角）
- * - 社交注册（Apple / Google / Facebook）
  */
 definePage({
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'black',
     },
 });
 
@@ -200,7 +194,7 @@ const onLogIn = () => {
     padding-bottom: calc(90rpx + constant(safe-area-inset-bottom));
     padding-bottom: calc(90rpx + env(safe-area-inset-bottom));
     /* #endif */
-    background-color: #ffffff;
+    background-color: $hy-background;
 
     &__title {
         display: flex;
@@ -211,7 +205,7 @@ const onLogIn = () => {
         font-size: 48rpx;
         font-weight: 700;
         line-height: 96rpx;
-        color: #000000;
+        color: $hy-text-color;
         text-align: left;
     }
 
@@ -240,7 +234,7 @@ const onLogIn = () => {
         font-size: 24rpx;
         font-weight: 400;
         line-height: 48rpx;
-        color: #000000;
+        color: $hy-text-color;
         opacity: 0.6;
         letter-spacing: 0.02em;
         /* 原型 button→divider 28px */
@@ -267,14 +261,14 @@ const onLogIn = () => {
         font-size: 28rpx;
         font-weight: 400;
         line-height: 40rpx;
-        color: #000000;
+        color: $hy-text-color;
     }
 
     &__footer-link {
         font-size: 28rpx;
         font-weight: 400;
         line-height: 40rpx;
-        color: #000000;
+        color: $hy-text-color;
         text-decoration: underline;
     }
 }

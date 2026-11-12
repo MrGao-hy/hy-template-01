@@ -4,23 +4,19 @@ import { useTranslate } from '@hy-app/ui';
 import CartItemCard from './components/CartItemCard.vue';
 import type { CartItem } from './components/types';
 import { onReady } from '@dcloudio/uni-app';
+import { Config } from '@/config';
+import Navbar from '@/components/Navbar.vue';
 
 /**
  * 购物车页（Figma: 8782-2168）
  */
 definePage({
     style: {
-        navigationBarTitleText: '',
+        navigationStyle: 'custom',
     },
 });
 
 const { t } = useTranslate('cart');
-
-onReady(() => {
-    uni.setNavigationBarTitle({
-        title: t('title'),
-    });
-});
 
 /** 购物车商品（Turtleneck/Cotton 图缺失，复用首页同款图） */
 const items = ref<CartItem[]>([
@@ -29,7 +25,7 @@ const items = ref<CartItem[]>([
         name: 'Sportwear Set',
         price: 80.0,
         spec: 'Size: L | Color: Brown',
-        image: '/static/images/fluxstore/image_550c305749d6c4a8efe5849bb6952d297db4e2c1.png',
+        image: `${Config.IMG}/good_0.png`,
         badgeColor: '#508A7B',
         colors: ['Cream', 'Green', 'Dark'],
         quantity: 1,
@@ -39,7 +35,7 @@ const items = ref<CartItem[]>([
         name: 'Turtleneck Sweater',
         price: 39.99,
         spec: 'Size: M | Color: White',
-        image: '/static/images/fluxstore/home_swiper_1.png',
+        image: `${Config.IMG}/home_swiper_1.png`,
         badgeColor: '#8E8E8E',
         colors: ['Brown', 'Grey'],
         quantity: 1,
@@ -49,7 +45,7 @@ const items = ref<CartItem[]>([
         name: 'Cotton T-shirt',
         price: 30.0,
         spec: 'Size: S | Color: Black',
-        image: '/static/images/fluxstore/home_good_2.png',
+        image: `${Config.IMG}/home_good_2.png`,
         badgeColor: '#508A7B',
         colors: ['White', 'Black'],
         quantity: 1,
@@ -62,11 +58,6 @@ const productTotal = computed(() =>
 );
 
 // ============== 事件 ==============
-
-/** 返回上一页 */
-const onBack = () => {
-    uni.navigateBack();
-};
 
 /** 数量变化 */
 const onQuantityChange = (id: number, quantity: number) => {
@@ -82,6 +73,8 @@ const onCheckout = () => {
 
 <template>
     <view class="cart-page">
+        <navbar :title="t('title')"></navbar>
+
         <!-- ============== 商品列表 ============== -->
         <view class="cart-page__list">
             <cart-item-card :items="items" @change="onQuantityChange" />
@@ -132,7 +125,7 @@ const onCheckout = () => {
     padding: calc(var(--status-bar-height) + 40rpx) 40rpx
         calc(420rpx + env(safe-area-inset-bottom));
     box-sizing: border-box;
-    background-color: #ffffff;
+    background-color: $hy-background;
 
     &__header {
         position: relative;
@@ -155,14 +148,13 @@ const onCheckout = () => {
     &__title {
         font-size: 36rpx;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 
     &__list {
         display: flex;
         flex-direction: column;
         gap: 32rpx;
-        margin-top: 48rpx;
     }
 }
 
@@ -174,7 +166,7 @@ const onCheckout = () => {
     left: 0;
     z-index: 10;
     padding: 32rpx 40rpx calc(24rpx + env(safe-area-inset-bottom));
-    background-color: #ffffff;
+    background-color: $hy-background--2;
     border-radius: 30rpx 30rpx 0 0;
     box-shadow: 0 -2rpx 20rpx rgba(0, 0, 0, 0.1);
 }
@@ -187,28 +179,28 @@ const onCheckout = () => {
 
     &__label {
         font-size: 28rpx;
-        color: #8a8a8f;
+        color: $hy-text-color--3;
 
         &--bold {
             font-weight: 700;
-            color: $flux-text-primary;
+            color: $hy-text-color;
         }
     }
 
     &__value {
         font-size: 28rpx;
         font-weight: 600;
-        color: $flux-text-primary;
+        color: $hy-text-color;
 
         &--green {
-            color: #508a7b;
+            color: $hy-primary;
         }
     }
 
     &__subtotal {
         font-size: 40rpx;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 }
 
@@ -216,7 +208,7 @@ const onCheckout = () => {
     &__divider {
         height: 2rpx;
         margin: 24rpx 0;
-        background-color: #e8e8e8;
+        background-color: $hy-border-color;
     }
 }
 </style>

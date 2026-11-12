@@ -13,6 +13,8 @@ export interface OrderProduct {
     spec: string;
     /** 单价 */
     price: number;
+    /** 购买数量（默认 1） */
+    quantity?: number;
 }
 
 /** 订单 */
@@ -27,6 +29,10 @@ export interface OrderItem {
     products: OrderProduct[];
     /** 合计金额 */
     total: number;
+    /** 物流单号 */
+    trackingNo?: string;
+    /** 收货地址 */
+    address?: string;
 }
 
 /** 订单评价 */

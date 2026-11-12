@@ -53,10 +53,11 @@ const toProductDetailPage = () => {
             <hy-image
                 :src="item.image"
                 width="196rpx"
-                height="198rpx"
                 radius="40rpx"
-                mode="aspectFill"
+                mode="widthFix"
+                bg-color="#FFFBF8"
                 lazy-load
+                :custom-style="{ height: '198rpx' }"
             />
 
             <!-- ============== 信息区 ============== -->
@@ -103,8 +104,8 @@ const toProductDetailPage = () => {
     position: relative;
     display: flex;
     padding: 0;
-    background-color: #ffffff;
-    border: 1rpx solid #fbfbfb;
+    background-color: $hy-background--2;
+    border: 1rpx solid $hy-background--3;
     border-radius: 40rpx;
     box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.05);
     margin-bottom: 30rpx;
@@ -120,7 +121,7 @@ const toProductDetailPage = () => {
     &__name {
         font-size: 26rpx;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -129,7 +130,7 @@ const toProductDetailPage = () => {
     &__spec {
         margin-top: 8rpx;
         font-size: 20rpx;
-        color: #8a8a8f;
+        color: $hy-text-color--3;
     }
 
     &__footer {
@@ -140,9 +141,9 @@ const toProductDetailPage = () => {
     }
 
     &__price {
-        font-size: $flux-font-lg;
+        font-size: $hy-font-size-md;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 
     &__colors {
@@ -163,7 +164,7 @@ const toProductDetailPage = () => {
     width: 168rpx;
     height: 48rpx;
     padding: 0 16rpx;
-    border: 2rpx solid rgba(0, 0, 0, 0.5);
+    border: $hy-border-line;
     border-radius: 40rpx;
     box-sizing: border-box;
 
@@ -174,7 +175,7 @@ const toProductDetailPage = () => {
         width: 40rpx;
         height: 40rpx;
         font-size: 28rpx;
-        color: $flux-text-primary;
+        color: $hy-text-color;
 
         &:active {
             opacity: 0.5;
@@ -185,7 +186,7 @@ const toProductDetailPage = () => {
         min-width: 32rpx;
         font-size: 24rpx;
         text-align: center;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 }
 </style>

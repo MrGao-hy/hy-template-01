@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { IconConfig, useToast, useTranslate } from '@hy-app/ui';
+import { Config } from '@/config';
 import ProductHero from './components/ProductHero.vue';
-import ProductReviews from './components/ProductReviews.vue';
-import SimilarProducts from './components/SimilarProducts.vue';
+import ProductSections from './components/ProductSections.vue';
 import type {
     ColorOption,
     RatingBar,
@@ -12,21 +12,23 @@ import type {
 } from './components/types';
 
 /**
- * 商品详情页（Figma: 8782-1828 / 8782-1981）
+ * 商品详情页
  */
 definePage({
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'black',
     },
 });
 
 const { t } = useTranslate('product');
 const toast = useToast();
 
-/** 商品主图（Figma: 550c3057） */
-const HERO_IMAGE =
-    '/static/images/fluxstore/image_550c305749d6c4a8efe5849bb6952d297db4e2c1.png';
+/** 商品主图轮播（Figma: 550c3057） */
+const HERO_IMAGES = [
+    `${Config.IMG}/good_0.png`,
+    `${Config.IMG}/good_1.png`,
+    `${Config.IMG}/good_2.png`,
+];
 
 /** 商品信息 */
 const product = {
@@ -51,13 +53,7 @@ const sizeOptions = ['S', 'M', 'L'];
 const selectedSize = ref('L');
 
 /** 详情描述（商品数据） */
-const description = `The Sportwear Set features a soft, breathable fabric blend that keeps you comfortable through workouts and casual days alike. The set includes a relaxed-fit top and matching joggers with an adjustable drawstring waist. Designed in a versatile green tone, it pairs easily with sneakers for an effortless everyday look.`;
-
-/** 描述是否展开 */
-const descriptionExpanded = ref(false);
-
-/** 当前展开的面板索引（0=详情 1=评价 2=相似推荐，设计稿默认全开） */
-const expandedPanels = ref<number[]>([0, 1, 2]);
+const description = computed(() => t('descriptionText'));
 
 /** 评分分布 */
 const ratingBars: RatingBar[] = [
@@ -73,7 +69,7 @@ const reviews: ReviewItem[] = [
     {
         id: 1,
         name: 'Jennifer Rose',
-        avatar: '/static/images/fluxstore/image_f38890a225ddff0443fafd8c2e8b14967c27e285.png',
+        avatar: `${Config.IMG}/avatar_1.png`,
         time: '5m ago',
         rating: 5,
         content:
@@ -82,7 +78,7 @@ const reviews: ReviewItem[] = [
     {
         id: 2,
         name: 'Kelly Rihana',
-        avatar: '/static/images/fluxstore/image_09e90f5ea1ecc64acbaaa975deb94ffe18def16c.png',
+        avatar: `${Config.IMG}/avatar_2.png`,
         time: '9m ago',
         rating: 4,
         content:
@@ -96,28 +92,23 @@ const similarProductList: SimpleProduct[] = [
         id: 1,
         name: 'Maxi Dress',
         price: 68.0,
-        image: '/static/images/fluxstore/image_ab2f4ed424ae6384ab7d20a54f772bf15d7db671.png',
+        image: `${Config.IMG}/good_9.png`,
     },
     {
         id: 2,
         name: 'Linen Dress',
         price: 52.0,
-        image: '/static/images/fluxstore/image_226c7c5428720a36a74b4a0234996217317a7aac.png',
+        image: `${Config.IMG}/good_10.png`,
     },
     {
         id: 3,
         name: 'Kimi Green Dress',
         price: 47.99,
-        image: '/static/images/fluxstore/image_dbd313f3e91dae05087bab8930b7dba79f15e751.png',
+        image: `${Config.IMG}/good_11.png`,
     },
 ];
 
 // ============== 事件 ==============
-
-/** 返回上一页 */
-const onBack = () => {
-    uni.navigateBack();
-};
 
 /** 选择颜色 */
 const onSelectColor = (key: string) => {
@@ -127,11 +118,6 @@ const onSelectColor = (key: string) => {
 /** 选择尺码 */
 const onSelectSize = (size: string) => {
     selectedSize.value = size;
-};
-
-/** 切换描述展开 */
-const onToggleDescription = () => {
-    descriptionExpanded.value = !descriptionExpanded.value;
 };
 
 /** 加入购物车 */
@@ -148,123 +134,90 @@ const onSimilarTap = (_item: SimpleProduct) => {
 <template>
     <view class="product-detail">
         <!-- ============== 顶部主图 ============== -->
-        <product-hero :image="HERO_IMAGE" @back="onBack" />
+        <product-hero :images="HERO_IMAGES" />
 
         <!-- ============== 白色信息面板 ============== -->
         <view class="product-panel">
-            <!-- 标题 + 价格 -->
             <view class="product-panel__head">
-                <text class="product-panel__name">{{ product.name }}</text>
-                <text class="product-panel__price">
-                    $ {{ product.price.toFixed(2) }}
-                </text>
-            </view>
-            <view class="product-panel__rating">
-                <hy-rate
-                    :model-value="product.rating"
-                    readonly
-                    :count="5"
-                    :size="18"
-                    :gutter="4"
-                    active-color="#508A7B"
-                    inactive-color="#eff0f1"
-                />
-                <text class="product-panel__reviews">
-                    ({{ product.reviews }})
-                </text>
-            </view>
-
-            <!-- 颜色 -->
-            <view class="option-row">
-                <view class="option-row__head">
-                    <text class="option-row__label">{{ t('color') }}</text>
-                    <text class="option-row__hint">
-                        {{ t('available', { count: colorOptions.length }) }}
+                <!-- 标题 + 价格 -->
+                <hy-flex align="center" justify="space-between">
+                    <text class="product-panel__head--name">{{ product.name }}</text>
+                    <text class="product-panel__head--price">
+                        $ {{ product.price.toFixed(2) }}
                     </text>
-                </view>
-                <view class="option-row__colors">
-                    <view
-                        v-for="color in colorOptions"
-                        :key="color.key"
-                        class="color-dot"
-                        :class="{
-                            'is-active': selectedColor === color.key,
-                        }"
-                        :style="{ backgroundColor: color.value }"
-                        @tap="onSelectColor(color.key)"
-                    ></view>
-                </view>
+                </hy-flex>
+                <hy-flex gap="5" :custom-style="{ marginTop: '10px' }">
+                    <hy-rate
+                        :model-value="product.rating"
+                        readonly
+                        :count="5"
+                        :size="18"
+                        :gutter="4"
+                        active-color="#508A7B"
+                        inactive-color="#eff0f1"
+                    />
+                    <text class="product-panel__head--reviews">
+                        ({{ product.reviews }})
+                    </text>
+                </hy-flex>
             </view>
 
-            <!-- 尺码 -->
-            <view class="option-row">
-                <text class="option-row__label option-row__label--alone">
-                    {{ t('size') }}
-                </text>
-                <view class="option-row__sizes">
-                    <view
-                        v-for="size in sizeOptions"
-                        :key="size"
-                        class="size-dot"
-                        :class="{ 'is-active': selectedSize === size }"
-                        @tap="onSelectSize(size)"
-                    >
-                        {{ size }}
+            <hy-flex
+                align="center"
+                justify="space-between"
+                custom-class="option-row"
+            >
+                <!-- 颜色 -->
+                <hy-flex vertical>
+                    <view class="option-row__head">
+                        <text class="option-row__label">{{ t('color') }}</text>
+                        <text class="option-row__hint">
+                            {{ t('available', { count: colorOptions.length }) }}
+                        </text>
                     </view>
-                </view>
-            </view>
+                    <view class="option-row__colors">
+                        <view
+                            v-for="color in colorOptions"
+                            :key="color.key"
+                            class="color-dot"
+                            :class="{
+                                'is-active': selectedColor === color.key,
+                            }"
+                            :style="{ backgroundColor: color.value }"
+                            @tap="onSelectColor(color.key)"
+                        ></view>
+                    </view>
+                </hy-flex>
+
+                <!-- 尺码 -->
+                <hy-flex vertical>
+                    <text class="option-row__label option-row__label--alone">
+                        {{ t('size') }}
+                    </text>
+                    <view class="option-row__sizes">
+                        <view
+                            v-for="size in sizeOptions"
+                            :key="size"
+                            class="size-dot"
+                            :class="{ 'is-active': selectedSize === size }"
+                            @tap="onSelectSize(size)"
+                        >
+                            {{ size }}
+                        </view>
+                    </view>
+                </hy-flex>
+            </hy-flex>
 
             <!-- 折叠区：详情 / 评价 / 相似推荐 -->
-            <hy-folding-panel v-model="expandedPanels" :border="false">
-                <hy-folding-panel-item
-                    :index="0"
-                    :title="t('description')"
-                    default-open
-                    :custom-style="{ padding: '0' }"
-                >
-                    <view class="description">
-                        <text
-                            class="description__text"
-                            :class="{
-                                'description__text--clamped':
-                                    !descriptionExpanded,
-                            }"
-                        >
-                            {{ description }}
-                        </text>
-                        <text
-                            class="description__more"
-                            @tap="onToggleDescription"
-                        >
-                            {{ t('readMore') }}
-                        </text>
-                    </view>
-                </hy-folding-panel-item>
-
-                <hy-folding-panel-item
-                    :index="1"
-                    default-open
-                    :title="t('reviews')"
-                >
-                    <product-reviews
-                        :score="product.score"
-                        :total="product.reviews"
-                        :bars="ratingBars"
-                        :reviews="reviews"
-                    />
-                </hy-folding-panel-item>
-
-                <hy-folding-panel-item
-                    :index="2"
-                    default-open
-                    :title="t('similarProduct')"
-                >
-                    <similar-products
-                        :products="similarProductList"
-                        @tap="onSimilarTap"
-                    />
-                </hy-folding-panel-item>
-            </hy-folding-panel>
+            <product-sections
+                :description="description"
+                :score="product.score"
+                :total="product.reviews"
+                :bars="ratingBars"
+                :reviews="reviews"
+                :products="similarProductList"
+                @similar-tap="onSimilarTap"
+            />
         </view>
 
         <!-- ============== 底部加购栏 ============== -->
@@ -282,52 +235,42 @@ const onSimilarTap = (_item: SimpleProduct) => {
 <style lang="scss" scoped>
 .product-detail {
     min-height: 100vh;
-    padding-bottom: calc(220rpx + env(safe-area-inset-bottom));
-    background-color: #ffffff;
+    --hy-folding-panel-header-background: transparent;
 }
 
 .product-panel {
     position: relative;
     z-index: 2;
-    padding: 48rpx 40rpx 40rpx;
-    background-color: #ffffff;
+    padding: 48rpx 40rpx calc(220rpx + env(safe-area-inset-bottom));
+    background-color: $hy-background--2;
     border-radius: 40rpx 40rpx 0 0;
-    box-shadow: 0 -8rpx 30rpx rgba(0, 0, 0, 0.04);
+    transform: translateY(-40rpx);
 
     &__head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
+        border-bottom: $hy-border-line;
+        padding-bottom: 50rpx;
 
-    &__name {
-        font-size: 36rpx;
-        font-weight: 700;
-        color: $flux-text-primary;
-    }
+        &--name {
+            font-size: $hy-font-size-lg;
+            font-weight: 700;
+        }
 
-    &__price {
-        font-size: 52rpx;
-        font-weight: 700;
-        color: $flux-text-primary;
-    }
+        &--price {
+            font-size: $hy-font-size-xxl;
+            font-weight: 700;
+        }
 
-    &__rating {
-        display: flex;
-        align-items: center;
-        gap: 10rpx;
-        margin-top: 16rpx;
-    }
-
-    &__reviews {
-        font-size: 20rpx;
-        color: rgba(51, 48, 46, 0.5);
+        &--reviews {
+            font-size: $hy-font-size-sm;
+            color: $hy-text-color--grey;
+        }
     }
 }
 
 /* 颜色 / 尺码行 */
 .option-row {
-    margin-top: 40rpx;
+    padding: 40rpx 0;
+    border-bottom: $hy-border-line;
 
     &__head {
         display: flex;
@@ -336,15 +279,15 @@ const onSimilarTap = (_item: SimpleProduct) => {
     }
 
     &__label {
-        font-size: $flux-font-lg;
+        font-size: $hy-font-size-md;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
 
         &--alone {
             display: block;
             margin-bottom: 20rpx;
             font-weight: 400;
-            color: #777e90;
+            color: $hy-text-color--3;
         }
     }
 
@@ -379,7 +322,7 @@ const onSimilarTap = (_item: SimpleProduct) => {
         position: absolute;
         inset: -8rpx;
         border-radius: 50%;
-        border: 3rpx solid $flux-text-primary;
+        border: 3rpx solid $hy-text-color;
     }
 }
 
@@ -391,38 +334,13 @@ const onSimilarTap = (_item: SimpleProduct) => {
     height: 66rpx;
     font-size: 24rpx;
     font-weight: 500;
-    color: $flux-text-primary;
-    background-color: #fafafa;
+    color: $hy-text-color;
+    background-color: $hy-background--track;
     border-radius: 50%;
 
     &.is-active {
-        color: #ffffff;
-        background-color: #515151;
-    }
-}
-
-/* 描述 */
-.description {
-    &__text {
-        font-size: 24rpx;
-        line-height: 40rpx;
-        color: rgba(51, 48, 46, 0.7);
-    }
-
-    &__text--clamped {
-        display: -webkit-box;
-        overflow: hidden;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 3;
-        text-overflow: ellipsis;
-    }
-
-    &__more {
-        display: inline-block;
-        margin-top: 12rpx;
-        font-size: 24rpx;
-        color: #508a7b;
-        text-decoration: underline;
+        color: $hy-icon-color;
+        background-color: $hy-background--hover;
     }
 }
 
@@ -449,7 +367,7 @@ const onSimilarTap = (_item: SimpleProduct) => {
     &__text {
         font-size: 36rpx;
         font-weight: 700;
-        color: #ffffff;
+        color: var(--hy-text-color--inverse, #ffffff);
     }
 }
 </style>

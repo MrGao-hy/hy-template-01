@@ -106,7 +106,7 @@ const headerStyle = computed<CSSProperties>(() => ({
         top: 0;
         width: 100%;
         height: 100%;
-        background-color: #e7e8e9;
+        background-color: $hy-border-color;
         border-radius: 20rpx;
     }
 
@@ -142,7 +142,7 @@ const headerStyle = computed<CSSProperties>(() => ({
     font-weight: 700;
     line-height: 68rpx;
     letter-spacing: 0.018em;
-    color: #000000;
+    color: $hy-text-color;
     text-align: center;
 }
 
@@ -151,7 +151,7 @@ const headerStyle = computed<CSSProperties>(() => ({
     font-size: 28rpx;
     font-weight: 400;
     line-height: 40rpx;
-    color: #000000;
+    color: $hy-text-color;
     text-align: center;
     width: 542rpx;
 }

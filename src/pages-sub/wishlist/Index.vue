@@ -1,169 +1,178 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { IconConfig, useTranslate } from '@hy-app/ui';
+import { useToast, useTranslate } from '@hy-app/ui';
+import { Config } from '@/config';
+import Navbar from '@/components/Navbar.vue';
+import WishItemCard, { type WishItem } from './components/WishItemCard.vue';
+import WishBoardCard, { type WishBoard } from './components/WishBoardCard.vue';
 
 /**
- * 我的收藏页（Figma 画板 8782:2506 my wishlist-all items / 8782:2594 my wishlist-boards）
- * All items：双列商品网格（名称/评分/价格/划线价）
- * Boards：双列看板卡片（封面 + 名称 + 数量）
+ * 我的收藏页
  */
 definePage({
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'black',
     },
 });
 
 const { t } = useTranslate('wishlist');
 
+// ============== Tab 配置 ==============
+
 /** Tab 键 */
-type TabKey = 'allItems' | 'boards';
+type TabValue = 'allItems' | 'boards';
 
-/** Tab 配置 */
-const tabs = computed<{ key: TabKey; label: string }[]>(() => [
-    { key: 'allItems', label: t('allItems') },
-    { key: 'boards', label: t('boards') },
+/** 分段器数据源 */
+const tabList = computed(() => [
+    { name: t('allItems'), value: 'allItems' as TabValue },
+    { name: t('boards'), value: 'boards' as TabValue },
 ]);
 
-const activeTab = ref<TabKey>('allItems');
+/** 当前选中值 */
+const activeTab = ref<TabValue>('allItems');
+const toast = useToast();
 
-/** 收藏商品类型 */
-interface WishItem {
-    id: number;
-    name: string;
-    rate: number;
-    price: number;
-    originPrice?: number;
-    image: string;
-}
+// ============== 收藏商品数据 ==============
 
-/** 收藏商品列表（Figma 设计稿模拟数据） */
+/** 收藏商品列表 */
 const wishItems = computed<WishItem[]>(() => [
-    { id: 1, name: t('linenDress'), rate: 64, price: 52, originPrice: 90, image: '/static/images/fluxstore/home_good_1.png' },
-    { id: 2, name: t('tieBackMini'), rate: 39, price: 67, image: '/static/images/fluxstore/home_good_2.png' },
-    { id: 3, name: t('frontTieMini'), rate: 38, price: 59, image: '/static/images/fluxstore/home_good_3.png' },
-    { id: 4, name: t('oharaDress'), rate: 50, price: 85, image: '/static/images/fluxstore/home_good_4.png' },
+    {
+        id: 1,
+        name: t('linenDress'),
+        rating: 5,
+        scoreCount: 64,
+        price: 52,
+        originPrice: 90,
+        image: `${Config.IMG}/good_4.png`,
+    },
+    {
+        id: 2,
+        name: t('tieBackMini'),
+        rating: 5,
+        scoreCount: 39,
+        price: 67,
+        image: `${Config.IMG}/good_1.png`,
+    },
+    {
+        id: 3,
+        name: t('frontTieMini'),
+        rating: 4,
+        scoreCount: 38,
+        price: 59,
+        image: `${Config.IMG}/good_5.png`,
+    },
+    {
+        id: 4,
+        name: t('oharaDress'),
+        rating: 5,
+        scoreCount: 50,
+        price: 85,
+        image: `${Config.IMG}/good_6.png`,
+    },
 ]);
 
-/** 看板类型 */
-interface WishBoard {
-    id: number;
-    name: string;
-    count: number;
-    cover: string;
-}
-
-/** 看板列表 */
+/** 看板列表（每张卡 6 张拼贴图：左 2 大 + 右 4 小） */
 const boards = computed<WishBoard[]>(() => [
-    { id: 1, name: t('partyFashion'), count: 20, cover: '/static/images/fluxstore/home_swiper_1.png' },
-    { id: 2, name: t('officeFashion'), count: 20, cover: '/static/images/fluxstore/home_swiper_2.png' },
-    { id: 3, name: t('goingOut'), count: 36, cover: '/static/images/fluxstore/home_swiper_3.png' },
+    {
+        id: 1,
+        name: t('goingOut'),
+        count: 36,
+        images: [
+            `${Config.IMG}/good_12.png`,
+            `${Config.IMG}/good_13.png`,
+            `${Config.IMG}/good_14.png`,
+            `${Config.IMG}/good_15.png`,
+            `${Config.IMG}/good_16.png`,
+            `${Config.IMG}/good_17.png`,
+        ],
+    },
+    {
+        id: 2,
+        name: t('officeFashion'),
+        count: 20,
+        images: [
+            `${Config.IMG}/good_18.png`,
+            `${Config.IMG}/good_19.png`,
+            `${Config.IMG}/good_20.png`,
+            `${Config.IMG}/good_21.png`,
+            `${Config.IMG}/good_22.png`,
+            `${Config.IMG}/good_23.png`,
+        ],
+    },
+    {
+        id: 3,
+        name: t('partyFashion'),
+        count: 20,
+        images: [
+            `${Config.IMG}/good_24.png`,
+            `${Config.IMG}/good_25.png`,
+            `${Config.IMG}/good_26.png`,
+            `${Config.IMG}/good_27.png`,
+            `${Config.IMG}/good_28.png`,
+            `${Config.IMG}/good_29.png`,
+        ],
+    },
 ]);
 
 // ============== 事件处理 ==============
 
-/** 返回上一页 */
-const onBack = () => {
-    uni.navigateBack();
-};
-
-/** 切换 Tab */
-const onTabChange = (key: TabKey) => {
-    activeTab.value = key;
+/** 分段器 change：回传索引，映射为 TabValue */
+const onTabChange = (index: number) => {
+    activeTab.value = tabList.value[index].value;
 };
 
 /** 查看商品 */
-const onViewItem = (item: WishItem) => {
+const onViewItem = (_item: WishItem) => {
     uni.navigateTo({ url: '/pages-sub/product/details/Index' });
 };
 
-/** 查看看板 */
-const onViewBoard = (board: WishBoard) => {
-    uni.showToast({ title: `${board.name} · ${t('itemsCount', { count: board.count })}`, icon: 'none' });
+/** 切换商品收藏状态 */
+const onToggleFav = (item: WishItem) => {
+    toast.show(item.name);
 };
+
+/** 查看看板 */
+const onViewBoard = (board: WishBoard) => {};
 </script>
 
 <template>
+    <!-- 顶部导航 -->
+    <navbar :title="t('title')" />
+
     <view class="wishlist-page">
-        <!-- ============== 顶部：返回 + 标题 ============== -->
-        <view class="wishlist-page__header">
-            <view class="wishlist-page__back" @tap="onBack">
-                <hy-icon :name="IconConfig.LEFT" size="36rpx" color="#1a1a1a" />
-            </view>
-            <text class="wishlist-page__title">{{ t('title') }}</text>
+        <!-- 分段器：激活黑底白字 / 未激活白底黑框 -->
+        <view class="wishlist-page__tabs">
+            <hy-subsection
+                v-model="activeTab"
+                :list="tabList"
+                activeColor="var(--hy-text-color)"
+                bg-color="var(--hy-text-color)"
+                :font-size="16"
+                :bold="true"
+                @change="onTabChange"
+            />
         </view>
 
-        <!-- ============== Tab ============== -->
-        <view class="wish-tabs">
-            <view
-                v-for="tab in tabs"
-                :key="tab.key"
-                class="wish-tabs__item"
-                :class="{ 'is-active': activeTab === tab.key }"
-                @tap="onTabChange(tab.key)"
-            >
-                {{ tab.label }}
-            </view>
-        </view>
-
-        <!-- ============== 全部商品网格 ============== -->
-        <view v-if="activeTab === 'allItems'" class="wish-grid">
-            <view
+        <!-- 全部商品：双列网格 -->
+        <view v-if="activeTab === 'allItems'" class="wishlist-page__items">
+            <WishItemCard
                 v-for="item in wishItems"
                 :key="item.id"
-                class="wish-card"
-                @tap="onViewItem(item)"
-            >
-                <hy-image
-                    :src="item.image"
-                    width="100%"
-                    height="320rpx"
-                    radius="24rpx"
-                    mode="aspectFill"
-                    :fade="true"
-                    lazy-load
-                />
-                <view class="wish-card__info">
-                    <text class="wish-card__name">{{ item.name }}</text>
-                    <view class="wish-card__rate">
-                        <hy-icon :name="IconConfig.STAR_FILL" size="22rpx" color="#f5c33b" />
-                        <text class="wish-card__rate-text">({{ item.rate }})</text>
-                    </view>
-                    <view class="wish-card__price-row">
-                        <text class="wish-card__price">$ {{ item.price.toFixed(2) }}</text>
-                        <text v-if="item.originPrice" class="wish-card__origin">
-                            $ {{ item.originPrice.toFixed(2) }}
-                        </text>
-                    </view>
-                </view>
-            </view>
+                :item="item"
+                @tap="onViewItem"
+                @toggle-fav="onToggleFav"
+            />
         </view>
 
-        <!-- ============== 看板网格 ============== -->
-        <view v-else class="wish-grid">
-            <view
+        <!-- 看板：单列全宽卡片 -->
+        <view v-else class="wishlist-page__boards">
+            <WishBoardCard
                 v-for="board in boards"
                 :key="board.id"
-                class="board-card"
-                @tap="onViewBoard(board)"
-            >
-                <hy-image
-                    :src="board.cover"
-                    width="100%"
-                    height="320rpx"
-                    radius="24rpx"
-                    mode="aspectFill"
-                    :fade="true"
-                    lazy-load
-                />
-                <view class="board-card__mask" />
-                <view class="board-card__info">
-                    <text class="board-card__name">{{ board.name }}</text>
-                    <text class="board-card__count">
-                        {{ t('itemsCount', { count: board.count }) }}
-                    </text>
-                </view>
-            </view>
+                :board="board"
+                :count-text="t('itemsCount', { count: board.count })"
+                @tap="onViewBoard"
+            />
         </view>
     </view>
 </template>
@@ -171,154 +180,48 @@ const onViewBoard = (board: WishBoard) => {
 <style lang="scss" scoped>
 .wishlist-page {
     min-height: 100vh;
-    padding: calc(var(--status-bar-height) + 40rpx) 40rpx
-        calc(40rpx + env(safe-area-inset-bottom));
+    padding-bottom: calc(
+        $hy-border-margin-padding-lg + env(safe-area-inset-bottom)
+    );
     box-sizing: border-box;
-    background-color: #ffffff;
 
-    &__header {
-        position: relative;
+    /* 分段器容器：Figma tab 位于 x=40 / y=112（40px → 80rpx） */
+    &__tabs {
+        color: $hy-background;
+        margin-top: 24rpx;
+        padding: 0 80rpx;
+
+        /* 容器透明底 */
+        //:deep(.hy-subsection__button) {
+        //    background-color: transparent;
+        //}
+
+        /* 滑块：黑色（覆盖库内 !important 的容器色变量） */
+        //:deep(.hy-subsection__button--bar) {
+        //    background-color: #1d1f22 !important;
+        //}
+        //
+        ///* 未激活项：1px 黑框（激活项边框被滑块遮盖） */
+        //:deep(.hy-subsection__item) {
+        //    border: 2rpx solid #1d1f22;
+        //    box-sizing: border-box;
+        //}
+    }
+
+    /* 全部商品网格：x=32 → 64rpx；首行 y=173（距 tab 底 25px → 50rpx） */
+    &__items {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 80rpx;
+        flex-wrap: wrap;
+        gap: 52rpx 58rpx;
+        padding: 50rpx 64rpx 0;
     }
 
-    &__back {
-        position: absolute;
-        left: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 56rpx;
-        height: 56rpx;
-    }
-
-    &__title {
-        font-size: 36rpx;
-        font-weight: 700;
-        color: $flux-text-primary;
-    }
-}
-
-/* Tab */
-.wish-tabs {
-    display: flex;
-    gap: 16rpx;
-    margin-top: 40rpx;
-
-    &__item {
-        padding: 14rpx 36rpx;
-        font-size: 26rpx;
-        color: rgba(51, 48, 46, 0.7);
-        background-color: #fafafa;
-        border-radius: $flux-radius-md;
-        transition: all 0.2s;
-
-        &.is-active {
-            color: #ffffff;
-            background-color: #343434;
-        }
-    }
-}
-
-/* 双列网格 */
-.wish-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 32rpx;
-    margin-top: 40rpx;
-}
-
-/* 收藏商品卡片 */
-.wish-card {
-    width: calc(50% - 16rpx);
-
-    &:active {
-        opacity: 0.85;
-    }
-
-    &__info {
+    /* 看板列表：x=22 → 44rpx；卡片间距 28px → 56rpx */
+    &__boards {
         display: flex;
         flex-direction: column;
-        gap: 8rpx;
-        margin-top: 16rpx;
-    }
-
-    &__name {
-        font-size: 26rpx;
-        font-weight: 600;
-        color: $flux-text-primary;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    &__rate {
-        display: flex;
-        align-items: center;
-        gap: 8rpx;
-    }
-
-    &__rate-text {
-        font-size: 22rpx;
-        color: #8a8a8f;
-    }
-
-    &__price-row {
-        display: flex;
-        align-items: baseline;
-        gap: 16rpx;
-    }
-
-    &__price {
-        font-size: 28rpx;
-        font-weight: 700;
-        color: $flux-text-primary;
-    }
-
-    &__origin {
-        font-size: 22rpx;
-        color: #8a8a8f;
-        text-decoration: line-through;
-    }
-}
-
-/* 看板卡片 */
-.board-card {
-    position: relative;
-    width: calc(50% - 16rpx);
-
-    &:active {
-        opacity: 0.85;
-    }
-
-    &__mask {
-        position: absolute;
-        inset: 0;
-        border-radius: 24rpx;
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 50%);
-    }
-
-    &__info {
-        position: absolute;
-        right: 24rpx;
-        bottom: 24rpx;
-        left: 24rpx;
-        display: flex;
-        flex-direction: column;
-        gap: 4rpx;
-    }
-
-    &__name {
-        font-size: 26rpx;
-        font-weight: 700;
-        color: #ffffff;
-    }
-
-    &__count {
-        font-size: 22rpx;
-        color: rgba(255, 255, 255, 0.85);
+        gap: 56rpx;
+        padding: 50rpx 44rpx 0;
     }
 }
 </style>

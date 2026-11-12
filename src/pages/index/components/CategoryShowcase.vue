@@ -1,3 +1,11 @@
+<script lang="ts">
+export default {
+    options: {
+        styleIsolation: 'shared',
+    },
+};
+</script>
+
 <script setup lang="ts">
 import { useTranslate } from '@hy-app/ui';
 import type { CategoryShowcase } from './types';
@@ -32,20 +40,15 @@ const onCategoryShowcaseTap = (item: CategoryShowcase) => {
                 <view
                     class="category-showcase-card__overlay"
                     :style="{
-                        alignItems:
-                            item.id === 1
-                                ? 'flex-end'
-                                : 'flex-start',
+                        alignItems: item.id === 1 ? 'flex-end' : 'flex-start',
                     }"
                 >
-                    <text
-                        class="category-showcase-card__category"
-                        >{{ t(item.categoryKey) }}</text
-                    >
-                    <text
-                        class="category-showcase-card__title"
-                        >{{ t(item.titleKey) }}</text
-                    >
+                    <text class="category-showcase-card__category">{{
+                        t(item.categoryKey)
+                    }}</text>
+                    <text class="category-showcase-card__title">{{
+                        t(item.titleKey)
+                    }}</text>
                 </view>
                 <hy-image
                     :src="item.image"
@@ -54,12 +57,7 @@ const onCategoryShowcaseTap = (item: CategoryShowcase) => {
                     radius="24rpx"
                     mode="aspectFill"
                     lazy-load
-                    :class="[
-                        'category-showcase-card__image',
-                        item.id === 1
-                            ? 'image--left'
-                            : 'image--right',
-                    ]"
+                    :custom-class="`category-showcase-card__image ${item.id === 1 ? 'image--left' : 'image--right'}`"
                 />
             </view>
         </view>
@@ -68,23 +66,23 @@ const onCategoryShowcaseTap = (item: CategoryShowcase) => {
 
 <style lang="scss" scoped>
 .home__section {
-    margin-bottom: $flux-spacing-xl;
+    margin-bottom: $hy-border-margin-padding-xl;
 }
 
 .category-showcase-grid {
     display: flex;
     flex-direction: row;
-    gap: $flux-spacing-md;
+    gap: $hy-border-margin-padding-base;
 }
 
 .category-showcase-card {
     flex: 1;
     height: 440rpx;
     position: relative;
-    border-radius: $flux-radius-lg;
+    border-radius: $hy-radius-lg;
     overflow: hidden;
 
-    &__image {
+    :deep(.category-showcase-card__image) {
         position: absolute;
         z-index: 999;
 
@@ -110,12 +108,12 @@ const onCategoryShowcaseTap = (item: CategoryShowcase) => {
         display: flex;
         flex-direction: column;
         justify-content: center;
-        gap: $flux-spacing-xs;
-        background-color: $hy-background--track;
+        gap: $hy-border-margin-padding-sm;
+        background-color: $hy-background--container;
     }
 
     &__category {
-        font-size: $flux-font-sm;
+        font-size: $hy-font-size-sm;
         font-weight: 500;
         color: $hy-text-color--3;
         letter-spacing: 0.5rpx;

@@ -27,6 +27,8 @@ export interface OrderItem {
     products: OrderProduct[];
     /** 合计金额 */
     total: number;
+    /** 数量 */
+    quantity: number;
 }
 
 /** 订单评价 */

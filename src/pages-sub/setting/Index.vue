@@ -1,20 +1,17 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { IconConfig, Locale, useCurrentLang, useTranslate } from '@hy-app/ui';
-import SideMenuPopup from '@/components/SideMenuPopup.vue';
+import { IconConfig, useCurrentLang, useToast, useTranslate } from '@hy-app/ui';
+import { setLocale } from '@/locale';
+import AppNavbar from '@/components/AppNavbar.vue';
 
-/**
- * 设置页（Figma 画板 8782:3517 setting / 8782:3582 sidebar-setting）
- * sidebar-setting 为本页叠加首页侧边工具列表弹窗（SideMenuPopup 复用）
- */
 definePage({
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'black',
     },
 });
 
 const { t } = useTranslate('setting');
+const toast = useToast();
 
 /** 当前语言（Locale 内部响应式 ref） */
 const lang = useCurrentLang();
@@ -52,19 +49,12 @@ const menuList = computed<SettingItem[]>(() => [
     },
 ]);
 
-/** 侧边工具列表弹窗显隐 */
-const showSideMenu = ref(false);
-
 // ============== 事件处理 ==============
 
-/** 返回上一页 */
-const onBack = () => {
-    uni.navigateBack();
-};
-
-/** 打开侧边工具列表（sidebar-setting） */
-const onMenuTap = () => {
-    showSideMenu.value = true;
+/** 设置项点击（hy-cell 派发 name，即菜单 key） */
+const onCellClick = (name: string | number) => {
+    const item = menuList.value.find(i => i.key === name);
+    if (item) onItemTap(item);
 };
 
 /** 设置项点击 */
@@ -74,49 +64,34 @@ const onItemTap = (item: SettingItem) => {
         return;
     }
     if (item.key === 'language') {
-        // 中英文互切，Locale.use 后所有 t() 响应式刷新
+        // 中英文互切，切换后写入本地缓存，重启后保持
         const next = lang.value === 'zh-CN' ? 'en-US' : 'zh-CN';
-        Locale.use(next);
-        uni.showToast({ title: langLabels[next], icon: 'none' });
+        setLocale(next);
+        toast.success(langLabels[next]);
         return;
     }
-    uni.showToast({ title: item.label, icon: 'none' });
+    toast.show(item.label);
 };
 </script>
 
 <template>
-    <view class="setting-page">
-        <!-- ============== 顶部：菜单 + 返回 + 标题 ============== -->
-        <view class="setting-page__header">
-            <view class="setting-page__icon-btn" @tap="onMenuTap">
-                <hy-icon :name="IconConfig.MENU" size="36rpx" color="#1a1a1a" />
-            </view>
-            <text class="setting-page__title">{{ t('title') }}</text>
-            <view class="setting-page__back" @tap="onBack">
-                <hy-icon :name="IconConfig.LEFT" size="36rpx" color="#1a1a1a" />
-            </view>
-        </view>
+    <!-- ============== 顶部：菜单 + 返回 + 标题 ============== -->
+    <app-navbar :title="t('title')" :active-id="5" />
 
+    <view class="setting-page">
         <!-- ============== 设置菜单 ============== -->
-        <view class="setting-list">
-            <view
+        <hy-cell custom-class="setting-list" @click="onCellClick">
+            <hy-cell-item
                 v-for="item in menuList"
                 :key="item.key"
-                class="setting-item"
-                @tap="onItemTap(item)"
-            >
-                <hy-icon :name="item.icon" size="40rpx" color="#343434" />
-                <text class="setting-item__label">{{ item.label }}</text>
-                <hy-icon
-                    :name="IconConfig.RIGHT"
-                    size="28rpx"
-                    color="#8a8a8f"
-                />
-            </view>
-        </view>
-
-        <!-- ============== 侧边工具列表弹窗（sidebar-setting） ============== -->
-        <SideMenuPopup v-model:show="showSideMenu" />
+                :name="item.key"
+                :title="item.label"
+                :icon="{ name: item.icon }"
+                :right-icon="{
+                    size: '23rpx',
+                }"
+            />
+        </hy-cell>
     </view>
 </template>
 
@@ -125,8 +100,6 @@ const onItemTap = (item: SettingItem) => {
     min-height: 100vh;
     padding: calc(var(--status-bar-height) + 40rpx) 40rpx
         calc(40rpx + env(safe-area-inset-bottom));
-    box-sizing: border-box;
-    background-color: #ffffff;
 
     &__header {
         position: relative;
@@ -139,7 +112,7 @@ const onItemTap = (item: SettingItem) => {
     &__title {
         font-size: 36rpx;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 
     &__icon-btn {
@@ -163,34 +136,13 @@ const onItemTap = (item: SettingItem) => {
     }
 }
 
-/* 设置菜单列表 */
+/* 设置菜单列表（hy-cell） */
 .setting-list {
-    display: flex;
-    flex-direction: column;
-    margin-top: 40rpx;
-    background-color: #ffffff;
-}
+    --hy-cell-item-icon-margin: 32rpx;
 
-.setting-item {
-    display: flex;
-    align-items: center;
-    gap: 32rpx;
-    height: 120rpx;
-    border-bottom: 2rpx solid #f1f2f3;
-
-    &:last-child {
-        border-bottom: none;
-    }
-
-    &:active {
-        opacity: 0.7;
-    }
-
-    &__label {
-        flex: 1;
-        font-size: 30rpx;
-        font-weight: 500;
-        color: $flux-text-primary;
+    :deep(.hy-cell-item) {
+        height: 100rpx;
+        --hy-cell-item-background: transparent;
     }
 }
 </style>

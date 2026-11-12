@@ -12,7 +12,6 @@ import Navbar from '@/components/Navbar.vue';
 definePage({
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'black',
     },
 });
 
@@ -157,7 +156,7 @@ const onBackLogin = () => {
     padding-bottom: calc(90rpx + constant(safe-area-inset-bottom));
     padding-bottom: calc(90rpx + env(safe-area-inset-bottom));
     /* #endif */
-    background-color: #ffffff;
+    background-color: $hy-background;
 
     &__title {
         display: flex;
@@ -201,7 +200,7 @@ const onBackLogin = () => {
         align-items: center;
         gap: 120rpx;
         &__icon {
-            background-color: #fafafa;
+            background-color: $hy-background--3;
             width: 200rpx;
             height: 200rpx;
             border-radius: $hy-radius-circle;

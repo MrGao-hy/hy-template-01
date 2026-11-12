@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { IconConfig, useTranslate } from '@hy-app/ui';
+import Navbar from '@/components/Navbar.vue';
 
 /**
- * 优惠券页（Figma 画板 8782:3640 voucher）
- * 3 张券：左侧折扣色块（折扣 + 有效期）+ 右侧标题/描述/优惠码
+ * 优惠券页
  */
 definePage({
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'black',
     },
 });
 
@@ -22,22 +21,49 @@ interface VoucherItem {
     desc: string;
     code: string;
     percent: number;
-    expire: string;
+    /** 折扣块底色 */
+    tint: string;
+    /** 有效期：日 */
+    day: string;
+    /** 有效期：月 */
+    month: string;
 }
 
-/** 券列表 */
+/** 券列表（顺序与配色按设计稿） */
 const vouchers = computed<VoucherItem[]>(() => [
-    { key: 'item1', title: t('item1Title'), desc: t('item1Desc'), code: t('item1Code'), percent: 30, expire: `${t('exp')} 12.22` },
-    { key: 'item2', title: t('item2Title'), desc: t('item2Desc'), code: t('item2Code'), percent: 20, expire: `${t('exp')} 12.28` },
-    { key: 'item3', title: t('item3Title'), desc: t('item3Desc'), code: t('item3Code'), percent: 50, expire: `${t('exp')} 12.20` },
+    {
+        key: 'blackFriday',
+        title: t('item3Title'),
+        desc: t('item3Desc'),
+        code: t('item3Code'),
+        percent: 50,
+        tint: '#23262F',
+        day: '20',
+        month: 'Dec',
+    },
+    {
+        key: 'holidaySale',
+        title: t('item1Title'),
+        desc: t('item1Desc'),
+        code: t('item1Code'),
+        percent: 30,
+        tint: '#777E90',
+        day: '22',
+        month: 'Dec',
+    },
+    {
+        key: 'firstOrder',
+        title: t('item2Title'),
+        desc: t('item2Desc'),
+        code: t('item2Code'),
+        percent: 20,
+        tint: '#B1B5C3',
+        day: '28',
+        month: 'Dec',
+    },
 ]);
 
 // ============== 事件处理 ==============
-
-/** 返回上一页 */
-const onBack = () => {
-    uni.navigateBack();
-};
 
 /** 使用优惠券 */
 const onUseVoucher = (item: VoucherItem) => {
@@ -51,15 +77,12 @@ const onUseVoucher = (item: VoucherItem) => {
 </script>
 
 <template>
-    <view class="voucher-page">
-        <!-- ============== 顶部：返回 + 标题 ============== -->
-        <view class="voucher-page__header">
-            <view class="voucher-page__back" @tap="onBack">
-                <hy-icon :name="IconConfig.LEFT" size="36rpx" color="#1a1a1a" />
-            </view>
-            <text class="voucher-page__title">{{ t('title') }}</text>
-        </view>
+    <!-- ============== 顶部：返回 + 标题 ============== -->
+    <navbar
+        :title="t('title')"
+    ></navbar>
 
+    <view class="voucher-page">
         <!-- ============== 优惠券列表 ============== -->
         <view class="voucher-list">
             <view
@@ -68,10 +91,21 @@ const onUseVoucher = (item: VoucherItem) => {
                 class="voucher-card"
                 @tap="onUseVoucher(item)"
             >
-                <!-- 左侧折扣色块 -->
-                <view class="voucher-card__left">
+                <!-- 左侧撕边齿（页面底色圆点压边） -->
+                <view class="voucher-card__teeth">
+                    <view
+                        v-for="n in 5"
+                        :key="n"
+                        class="voucher-card__tooth"
+                    />
+                </view>
+
+                <!-- 折扣块 -->
+                <view
+                    class="voucher-card__left"
+                    :style="{ backgroundColor: item.tint }"
+                >
                     <text class="voucher-card__percent">{{ item.percent }}%</text>
-                    <text class="voucher-card__expire">{{ item.expire }}</text>
                 </view>
 
                 <!-- 右侧信息 -->
@@ -80,118 +114,172 @@ const onUseVoucher = (item: VoucherItem) => {
                     <text class="voucher-card__desc">{{ item.desc }}</text>
                     <text class="voucher-card__code">{{ item.code }}</text>
                 </view>
+
+                <!-- 有效期 -->
+                <view class="voucher-card__exp">
+                    <text class="voucher-card__exp-label">{{ t('exp') }}</text>
+                    <text class="voucher-card__exp-day">{{ item.day }}</text>
+                    <text class="voucher-card__exp-month">{{ item.month }}</text>
+                </view>
+
+                <!-- 虚线分隔处上下冲孔 -->
+                <view class="voucher-card__punch voucher-card__punch--top" />
+                <view
+                    class="voucher-card__punch voucher-card__punch--bottom"
+                />
             </view>
         </view>
     </view>
 </template>
 
 <style lang="scss" scoped>
+
 .voucher-page {
-    min-height: 100vh;
-    padding: calc(var(--status-bar-height) + 40rpx) 40rpx
-        calc(40rpx + env(safe-area-inset-bottom));
     box-sizing: border-box;
-    background-color: #ffffff;
-
-    &__header {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 80rpx;
-    }
-
-    &__back {
-        position: absolute;
-        left: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 56rpx;
-        height: 56rpx;
-    }
-
-    &__title {
-        font-size: 36rpx;
-        font-weight: 700;
-        color: $flux-text-primary;
-    }
+    min-height: 100vh;
+    padding: 0 52rpx calc(40rpx + env(safe-area-inset-bottom));
+    background-color: var(--hy-voucher-bg);
 }
 
 /* 优惠券列表 */
 .voucher-list {
     display: flex;
     flex-direction: column;
-    gap: 32rpx;
-    margin-top: 40rpx;
+    gap: 56rpx;
+    padding-top: 60rpx;
 }
 
 .voucher-card {
+    position: relative;
     display: flex;
     align-items: stretch;
-    border-radius: $flux-radius-lg;
+    box-sizing: border-box;
+    height: 177rpx;
+    border-radius: 18rpx;
     overflow: hidden;
-    box-shadow: 0 8rpx 20rpx rgba(0, 0, 0, 0.05);
+    background-color: var(--hy-voucher-card-bg);
+    box-shadow: var(--hy-voucher-card-shadow);
 
     &:active {
         opacity: 0.85;
     }
 
-    &__left {
+    /* 左侧撕边齿 */
+    &__teeth {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
         display: flex;
         flex-direction: column;
+        justify-content: space-around;
+        width: 0;
+    }
+
+    &__tooth {
+        width: 26rpx;
+        height: 26rpx;
+        margin-left: -13rpx;
+        border-radius: 50%;
+        background-color: var(--hy-voucher-notch);
+    }
+
+    /* 折扣块 */
+    &__left {
+        display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8rpx;
         flex-shrink: 0;
-        width: 200rpx;
-        padding: 32rpx 0;
-        background: linear-gradient(160deg, #3d3d43 0%, #191920 100%);
-        color: #ffffff;
+        align-self: center;
+        width: 136rpx;
+        height: 136rpx;
+        margin-left: 40rpx;
+        border-radius: 24rpx;
     }
 
     &__percent {
-        font-size: 44rpx;
-        font-weight: 700;
+        font-size: 40rpx;
+        font-weight: 600;
+        color: #ffffff;
     }
 
-    &__expire {
-        font-size: 20rpx;
-        opacity: 0.8;
-    }
-
+    /* 信息区 */
     &__body {
         display: flex;
         flex: 1;
         flex-direction: column;
         justify-content: center;
-        gap: 8rpx;
+        gap: 6rpx;
         min-width: 0;
-        padding: 32rpx;
-        background-color: #fafafa;
+        padding: 0 12rpx 0 28rpx;
+        box-sizing: border-box;
     }
 
     &__title {
-        font-size: 30rpx;
+        font-size: 32rpx;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: var(--hy-voucher-title);
     }
 
     &__desc {
         font-size: 24rpx;
-        color: #8a8a8f;
+        color: var(--hy-voucher-desc);
     }
 
     &__code {
-        margin-top: 8rpx;
-        padding: 8rpx 20rpx;
-        align-self: flex-start;
-        font-size: 22rpx;
+        margin-top: 4rpx;
+        font-size: 26rpx;
         font-weight: 600;
-        color: #343434;
-        background-color: #ffffff;
-        border: 2rpx dashed rgba(52, 52, 52, 0.4);
-        border-radius: 100rpx;
+        color: var(--hy-voucher-title);
+    }
+
+    /* 有效期栏 */
+    &__exp {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-shrink: 0;
+        box-sizing: border-box;
+        width: 88rpx;
+        padding-top: 26rpx;
+        border-left: 3rpx dashed var(--hy-voucher-divider);
+    }
+
+    &__exp-label {
+        font-size: 20rpx;
+        color: var(--hy-voucher-exp-label);
+    }
+
+    &__exp-day {
+        margin-top: 36rpx;
+        font-size: 22rpx;
+        line-height: 1.4;
+        color: var(--hy-voucher-exp-date);
+    }
+
+    &__exp-month {
+        font-size: 22rpx;
+        line-height: 1.4;
+        color: var(--hy-voucher-exp-date);
+    }
+
+    /* 虚线分隔处上下冲孔 */
+    &__punch {
+        position: absolute;
+        right: 88rpx;
+        width: 20rpx;
+        height: 20rpx;
+        border-radius: 50%;
+        background-color: var(--hy-voucher-notch);
+        transform: translateX(50%);
+    }
+
+    &__punch--top {
+        top: -10rpx;
+    }
+
+    &__punch--bottom {
+        bottom: -10rpx;
     }
 }
 </style>

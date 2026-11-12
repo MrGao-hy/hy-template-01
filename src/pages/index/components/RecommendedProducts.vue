@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useTranslate } from '@hy-app/ui';
-import HyScrollList from '@hy-app/ui/components/hy-scroll-list/hy-scroll-list.vue';
 import type { RecommendedProduct } from './types';
 
 const { t } = useTranslate('home');
@@ -32,10 +31,7 @@ const onShowAllTap = () => {
             <text class="home__section-title">{{
                 t('recommended.title')
             }}</text>
-            <view
-                class="home__section-more"
-                @tap="onShowAllTap"
-            >
+            <view class="home__section-more" @tap="onShowAllTap">
                 <text class="home__section-more-text">{{
                     t('recommended.showAll')
                 }}</text>
@@ -75,27 +71,26 @@ const onShowAllTap = () => {
 
 <style lang="scss" scoped>
 .home__section {
-    margin-bottom: $flux-spacing-xl;
+    margin-bottom: $hy-border-margin-padding-lg;
 
     &-header {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: $flux-spacing-md;
+        margin-bottom: $hy-border-margin-padding-base;
     }
 
     &-title {
         font-size: 36rpx;
         font-weight: 700;
-        color: $flux-text-primary;
     }
 
     &-more {
-        padding: $flux-spacing-xs $flux-spacing-sm;
+        padding: $hy-border-margin-padding-sm;
         &-text {
-            font-size: $flux-font-sm;
-            color: $flux-text-secondary;
+            font-size: $hy-font-size-sm;
+            color: $hy-text-color--grey;
         }
     }
 }
@@ -104,9 +99,9 @@ const onShowAllTap = () => {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: $flux-spacing-md;
-    background-color: $hy-background--box;
-    border-radius: $flux-radius-md;
+    gap: $hy-border-margin-padding-base;
+    background-color: $hy-background--2;
+    border-radius: $hy-radius-base;
     box-shadow: $hy-shadow-base;
     width: 500rpx;
     margin: 10rpx auto;
@@ -116,27 +111,25 @@ const onShowAllTap = () => {
         height: 160rpx;
         flex-shrink: 0;
         overflow: hidden;
-        border-radius: $flux-radius-md;
+        border-radius: $hy-radius-base;
     }
 
     &__info {
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: $flux-spacing-xs;
+        gap: $hy-border-margin-padding-sm;
     }
 
     &__name {
-        font-size: $flux-font-md;
+        font-size: $hy-font-size-base;
         font-weight: 500;
-        color: $flux-text-primary;
         line-height: 1.4;
     }
 
     &__price {
-        font-size: $flux-font-lg;
+        font-size: $hy-font-size-lg;
         font-weight: 700;
-        color: $flux-text-primary;
     }
 }
 </style>

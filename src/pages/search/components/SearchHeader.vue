@@ -47,7 +47,6 @@ const onFilterTap = () => {
             <hy-search
                 v-model="keyword"
                 shape="circle"
-                bg-color="#FAFAFA"
                 :height="40"
                 :show-action="false"
                 :disabled="disabled"
@@ -81,7 +80,7 @@ const onFilterTap = () => {
     .right-icon {
         width: 84rpx;
         height: 84rpx;
-        background-color: #fafafa;
+        background-color: $hy-background--track;
         border-radius: $hy-radius-lg;
         box-shadow: $hy-border-shadow-base;
         display: flex;

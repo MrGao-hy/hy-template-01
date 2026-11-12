@@ -65,13 +65,13 @@ const onCategoryNavTap = (item: GridItemVo) => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: $flux-spacing-sm;
+    gap: $hy-border-margin-padding-sm;
 
     &__icon-wrap {
         width: 72rpx;
         height: 72rpx;
         border-radius: $hy-radius-semicircle;
-        background-color: $flux-bg-category;
+        background-color: var(--hy-menu-bg);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -93,14 +93,14 @@ const onCategoryNavTap = (item: GridItemVo) => {
             }
 
             .hy-icon {
-                color: #ffffff;
+                color: var(--hy-text-color--inverse, #ffffff);
             }
         }
     }
 
     &__name {
-        font-size: $flux-font-xs;
-        color: $flux-text-secondary;
+        font-size: $hy-font-size-xs;
+        color: $hy-text-color--3;
         transition: all 0.3s ease;
         white-space: nowrap;
 

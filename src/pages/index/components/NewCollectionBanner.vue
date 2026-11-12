@@ -59,7 +59,7 @@ const onCollectionTap = () => {
 
 <style lang="scss" scoped>
 .home__section {
-    margin-bottom: $flux-spacing-xl;
+    margin-bottom: $hy-border-margin-padding-xl;
 }
 
 .collection-banner {
@@ -70,7 +70,7 @@ const onCollectionTap = () => {
     justify-content: space-between;
     overflow: hidden;
     position: relative;
-    background-color: $hy-background--track;
+    background-color: $hy-background--container;
 
     &--large {
         padding: 0 0 0 120rpx;
@@ -81,7 +81,7 @@ const onCollectionTap = () => {
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: $flux-spacing-md;
+        gap: $hy-border-margin-padding-base;
         z-index: 1;
     }
 
@@ -89,27 +89,27 @@ const onCollectionTap = () => {
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: $flux-spacing-sm;
+        gap: $hy-border-margin-padding-sm;
     }
 
     &__tag-line {
         width: 4rpx;
         height: 28rpx;
-        background-color: $flux-primary;
+        background-color: $hy-text-color;
         border-radius: 2rpx;
     }
 
     &__tag {
-        font-size: $flux-font-xs;
+        font-size: $hy-font-size-xs;
         font-weight: 500;
-        color: $flux-text-secondary;
+        color: $hy-text-color--3;
         letter-spacing: 1rpx;
         white-space: nowrap;
     }
 
     &__title {
         font-size: 40rpx;
-        color: $flux-text-secondary;
+        color: $hy-text-color--3;
         line-height: 1.2;
         white-space: pre-line;
 
@@ -132,7 +132,7 @@ const onCollectionTap = () => {
             width: 290rpx;
             height: 290rpx;
             border-radius: $hy-radius-circle;
-            background-color: #e2e2e276;
+            background-color: var(--hy-home-image-bg--circle);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -141,7 +141,7 @@ const onCollectionTap = () => {
                 width: 230rpx;
                 height: 230rpx;
                 border-radius: $hy-radius-circle;
-                background-color: #e2e2e2;
+                background-color: var(--hy-home-image-bg--circle-2);
             }
         }
     }

@@ -67,7 +67,7 @@ const onClick = (e: Event) => {
     border-radius: 59rpx;
     /* 原型背景 rgba(255,255,255,0.25) + backdrop blur(5px) */
     background-color: rgba(255, 255, 255, 0.25);
-    border: 2rpx solid #ffffff;
+    border: 2rpx solid var(--hy-text-color--inverse, #ffffff);
     padding: 30rpx 106rpx;
     /* H5/App 玻璃模糊效果 */
     /* #ifdef H5 || APP-PLUS */
@@ -81,7 +81,7 @@ const onClick = (e: Event) => {
         font-size: 32rpx;
         font-weight: 700;
         line-height: 1.41em;
-        color: #ffffff;
+        color: var(--hy-text-color--inverse, #ffffff);
         text-align: center;
     }
 

@@ -1,37 +1,45 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { IconConfig, useTranslate } from '@hy-app/ui';
+import { computed, ref } from 'vue';
+import { useTranslate } from '@hy-app/ui';
+import Navbar from '@/components/Navbar.vue';
+import { Config } from '@/config';
 
-/**
- * 添加新卡页（Figma 画板 8782:3885 add new card）
- * 卡片预览（**** **** **** ****）+ Cardholder/Card Number/Expires/CVV 表单 + Add card
- */
 definePage({
     style: {
         navigationStyle: 'custom',
-        navigationBarTextStyle: 'black',
     },
 });
 
 const { t } = useTranslate('addCard');
 
+/** 新增卡片表单 */
+interface AddCardForm {
+    /** 持卡人姓名 */
+    cardholder: string;
+    /** 卡号（纯数字） */
+    cardNumber: string;
+    /** 有效期 MM/YY */
+    expires: string;
+    /** 安全码 */
+    cvv: string;
+}
+
 /** 表单数据 */
-const form = ref({
+const form = ref<AddCardForm>({
     cardholder: '',
     cardNumber: '',
     expires: '',
     cvv: '',
 });
 
-/** 卡号掩码预览（4 组 ****） */
-const maskedGroups = ['****', '****', '****', '****'];
+/** 卡片预览：卡号按 4 位分组，未输入部分显示 **** */
+const previewGroups = computed(() =>
+    Array.from({ length: 4 }, (_, i) =>
+        form.value.cardNumber.slice(i * 4, i * 4 + 4).padEnd(4, '*')
+    )
+);
 
 // ============== 事件处理 ==============
-
-/** 返回上一页 */
-const onBack = () => {
-    uni.navigateBack();
-};
 
 /** 有效期输入格式化 MM/YY */
 const onExpiresInput = (val: string) => {
@@ -40,15 +48,21 @@ const onExpiresInput = (val: string) => {
         digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
 };
 
-/** CVV 仅数字 */
+/** CVV 仅数字，最多 3 位 */
 const onCvvInput = (val: string) => {
     form.value.cvv = val.replace(/\D/g, '').slice(0, 3);
 };
 
 /** 提交添加卡片 */
 const onAddCard = () => {
-    if (!form.value.cardholder || !form.value.cardNumber) {
-        uni.showToast({ title: t('cardholderName'), icon: 'none' });
+    const { cardholder, cardNumber, expires, cvv } = form.value;
+    const isIncomplete =
+        cardholder.trim().length === 0 ||
+        cardNumber.length < 16 ||
+        expires.length < 5 ||
+        cvv.length < 3;
+    if (isIncomplete) {
+        uni.showToast({ title: t('fillRequired'), icon: 'none' });
         return;
     }
     uni.showToast({ title: t('addCard'), icon: 'success' });
@@ -57,151 +71,160 @@ const onAddCard = () => {
 </script>
 
 <template>
-    <view class="add-card">
-        <!-- ============== 顶部：返回 + 标题 ============== -->
-        <view class="add-card__header">
-            <view class="add-card__back" @tap="onBack">
-                <hy-icon :name="IconConfig.LEFT" size="36rpx" color="#1a1a1a" />
-            </view>
-            <text class="add-card__title">{{ t('title') }}</text>
-        </view>
+    <!-- ============== 顶部：返回 + 标题 ============== -->
+    <navbar :title="t('title')"></navbar>
 
+    <view class="add-card">
         <!-- ============== 卡片预览 ============== -->
         <view class="bank-card">
+            <view class="bank-card__brand">
+                <hy-image
+                    :src="`${Config.IMG}/logo-visa-white.svg`"
+                    width="118rpx"
+                    height="40rpx"
+                    mode="aspectFit"
+                    :show-loading="false"
+                    :show-error="false"
+                />
+            </view>
             <view class="bank-card__no">
                 <text
-                    v-for="(seg, i) in maskedGroups"
+                    v-for="(seg, i) in previewGroups"
                     :key="i"
                     class="bank-card__seg"
                 >
                     {{ seg }}
                 </text>
             </view>
-            <view class="bank-card__bottom">
+            <view class="bank-card__foot">
                 <view class="bank-card__field">
                     <text class="bank-card__field-label">
-                        {{ form.cardholder || 'NAME' }}
+                        {{ t('cardholder') }}
                     </text>
                     <text class="bank-card__field-value">
-                        {{ form.cardholder || t('cardholderName') }}
+                        {{ form.cardholder || 'NAME' }}
                     </text>
                 </view>
                 <view class="bank-card__field bank-card__field--right">
+                    <text class="bank-card__field-label">
+                        {{ t('validThru') }}
+                    </text>
                     <text class="bank-card__field-value">
                         {{ form.expires || 'MM/YY' }}
                     </text>
-                    <text class="bank-card__field-label">{{ t('expires') }}</text>
                 </view>
             </view>
         </view>
 
         <!-- ============== 表单 ============== -->
-        <view class="form">
-            <view class="form__field">
-                <text class="form__label">{{ t('cardholderName') }}</text>
-                <hy-input v-model="form.cardholder" :border="false" placeholder="Sunie Pham" custom-class="form__input" />
-            </view>
-            <view class="form__field">
-                <text class="form__label">{{ t('cardNumber') }}</text>
-                <hy-input v-model="form.cardNumber" type="number" :border="false" placeholder="5412363272837284" custom-class="form__input" />
-            </view>
+        <hy-form class="form" :model="form" label-position="top" :border="true">
+            <hy-form-item :label="t('cardholderName')" prop="cardholder">
+                <hy-input
+                    v-model="form.cardholder"
+                    border="none"
+                    font-size="30rpx"
+                    placeholder="Sunie Pham"
+                />
+            </hy-form-item>
+            <hy-form-item :label="t('cardNumber')" prop="cardNumber">
+                <hy-input
+                    v-model="form.cardNumber"
+                    type="number"
+                    border="none"
+                    font-size="30rpx"
+                    :maxlength="16"
+                    placeholder="5412 3632 7283 7284"
+                />
+            </hy-form-item>
             <view class="form__row">
-                <view class="form__field">
-                    <text class="form__label">{{ t('expires') }}</text>
+                <hy-form-item :label="t('expires')" prop="expires">
                     <hy-input
                         :model-value="form.expires"
-                        :border="false"
+                        border="none"
+                        font-size="30rpx"
                         placeholder="03/23"
-                        type="number"
-                        custom-class="form__input"
+                        :maxlength="5"
                         @update:model-value="onExpiresInput"
                     />
-                </view>
-                <view class="form__field">
-                    <text class="form__label">{{ t('cvv') }}</text>
+                </hy-form-item>
+                <hy-form-item :label="t('cvv')" prop="cvv">
                     <hy-input
                         :model-value="form.cvv"
-                        :border="false"
+                        border="none"
+                        font-size="30rpx"
                         placeholder="999"
-                        type="number"
                         password
-                        custom-class="form__input"
+                        :maxlength="3"
                         @update:model-value="onCvvInput"
                     />
-                </view>
+                </hy-form-item>
             </view>
-        </view>
+        </hy-form>
 
         <!-- ============== 添加按钮 ============== -->
-        <view class="add-btn" @tap="onAddCard">
-            {{ t('addCard') }}
-        </view>
+        <hy-button
+            class="add-card__submit"
+            size="large"
+            shape="circle"
+            color="#343434"
+            :text="t('addCard')"
+            @click="onAddCard"
+        />
     </view>
 </template>
 
 <style lang="scss" scoped>
 .add-card {
-    min-height: 100vh;
-    padding: calc(var(--status-bar-height) + 40rpx) 40rpx
-        calc(40rpx + env(safe-area-inset-bottom));
     box-sizing: border-box;
-    background-color: #ffffff;
+    min-height: 100vh;
+    padding: calc(var(--status-bar-height) + 20rpx) 60rpx
+        calc(60rpx + env(safe-area-inset-bottom));
+    background-color: $hy-background;
 
-    &__header {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 80rpx;
-    }
-
-    &__back {
-        position: absolute;
-        left: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 56rpx;
-        height: 56rpx;
-    }
-
-    &__title {
-        font-size: 36rpx;
-        font-weight: 700;
-        color: $flux-text-primary;
+    &__submit {
+        margin-top: 72rpx;
     }
 }
 
-/* 卡片预览 */
+/* 卡片预览（与支付管理页保持同一视觉） */
 .bank-card {
-    padding: 36rpx;
-    margin-top: 40rpx;
-    background: linear-gradient(135deg, #43434b 0%, #191920 60%, #2f2f38 100%);
-    border-radius: 28rpx;
+    box-sizing: border-box;
+    height: 382rpx;
+    margin: 72rpx -12rpx 0;
+    padding: 44rpx 32rpx;
+    background: linear-gradient(180deg, #57adf4 0%, #14c1d9 55%, #998fd4 100%);
+    border-radius: 22rpx;
+    box-shadow: 0 20rpx 30rpx rgba(171, 169, 167, 0.55);
+
+    &__brand {
+        display: flex;
+        justify-content: flex-end;
+    }
 
     &__no {
         display: flex;
-        gap: 32rpx;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 90rpx;
     }
 
     &__seg {
-        font-size: 36rpx;
-        font-weight: 700;
-        letter-spacing: 4rpx;
-        color: #ffffff;
+        font-size: 40rpx;
+        letter-spacing: 6rpx;
+        color: var(--hy-text-color--inverse, #ffffff);
     }
 
-    &__bottom {
+    &__foot {
         display: flex;
         align-items: flex-end;
         justify-content: space-between;
-        margin-top: 48rpx;
+        margin-top: 44rpx;
     }
 
     &__field {
         display: flex;
         flex-direction: column;
-        gap: 6rpx;
+        gap: 8rpx;
 
         &--right {
             align-items: flex-end;
@@ -210,14 +233,15 @@ const onAddCard = () => {
 
     &__field-label {
         font-size: 18rpx;
+        font-weight: 800;
         letter-spacing: 2rpx;
-        color: rgba(255, 255, 255, 0.6);
+        color: var(--hy-text-color--inverse, #ffffff);
     }
 
     &__field-value {
-        font-size: 26rpx;
+        font-size: 22rpx;
         font-weight: 600;
-        color: #ffffff;
+        color: var(--hy-text-color--inverse, #ffffff);
     }
 }
 
@@ -225,47 +249,35 @@ const onAddCard = () => {
 .form {
     display: flex;
     flex-direction: column;
-    margin-top: 32rpx;
+    gap: 40rpx;
+    margin-top: 64rpx;
 
     &__row {
         display: flex;
-        gap: 32rpx;
+        gap: 40rpx;
     }
+}
 
-    &__field {
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-        gap: 12rpx;
-        padding: 20rpx 0;
-        border-bottom: 2rpx solid #f1f2f3;
-    }
+/* 有效期 / CVV 并排等宽 */
+.form__row :deep(.hy-form-item) {
+    flex: 1;
+    min-width: 0;
+}
 
-    &__label {
+/* 覆盖 hy-form-item：贴合 Figma（label 24rpx 灰、分隔线 #f1f2f3） */
+:deep(.hy-form-item) {
+    margin-bottom: 0;
+
+    .hy-form-item__label {
+        margin-bottom: 8rpx;
         font-size: 24rpx;
-        color: #8a8a8f;
+        line-height: 1.5;
+        color: $hy-text-color--3;
     }
-}
 
-:deep(.form__input) {
-    font-size: 30rpx;
-}
-
-/* 添加按钮 */
-.add-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 96rpx;
-    margin-top: 64rpx;
-    font-size: 30rpx;
-    font-weight: 600;
-    color: #ffffff;
-    background-color: #343434;
-    border-radius: 100rpx;
-
-    &:active {
-        opacity: 0.85;
+    .hy-border__bottom {
+        padding-bottom: 16rpx;
+        border-bottom-color: $hy-background--empty;
     }
 }
 </style>

@@ -41,7 +41,6 @@ const categoryIndex = ref<string>('');
 
 /** 折扣标签 */
 const discountOptions = ['50% off', '40% off', '30% off', '25% off'];
-const selectedDiscounts = ref<string[]>([]);
 
 // ============== 事件 ==============
 
@@ -65,18 +64,11 @@ const onCategoryChange = (params: SelectValueVo) => {
     // if (!Number.isNaN(v)) categoryIndex.value = v;
 };
 
-const onDiscountToggle = (discount: string) => {
-    const i = selectedDiscounts.value.indexOf(discount);
-    if (i === -1) selectedDiscounts.value.push(discount);
-    else selectedDiscounts.value.splice(i, 1);
-};
-
 const onReset = () => {
     rangeValue.value = [MIN_PRICE, MAX_PRICE];
     selectedColor.value = null;
     selectedStars.value = 0;
     categoryIndex.value = '';
-    selectedDiscounts.value = [];
 };
 
 const onApply = () => {
@@ -92,13 +84,9 @@ const onClose = () => {
 <template>
     <hy-popup
         v-model:show="show"
-        v-if="show"
         mode="right"
         safe-area-inset-top
         close-on-click-overlay
-        :custom-style="{
-            width: '80vw',
-        }"
         :z-index="13000"
         :round="20"
         @close="show = false"
@@ -131,9 +119,6 @@ const onClose = () => {
                         :max="MAX_PRICE"
                         :step="PRICE_STEP"
                         :block-size="20"
-                        active-color="#1A1A1A"
-                        inactive-color="#E6E6E6"
-                        block-color="#1A1A1A"
                         show-value
                         custom-class="price-slider"
                     />
@@ -214,50 +199,53 @@ const onClose = () => {
                 <text class="filter-section__title">{{
                     t('filter.discount')
                 }}</text>
-                <view class="discount-list">
-                    <view
+                <view class="discount-list"> </view>
+                <hy-flex wrap="wrap" gap="10">
+                    <hy-tag
                         v-for="d in discountOptions"
                         :key="d"
-                        class="discount-tag"
-                        :class="{ 'is-active': selectedDiscounts.includes(d) }"
-                        @tap="onDiscountToggle(d)"
-                    >
-                        <text>{{ d }}</text>
-                        <hy-icon
-                            v-if="selectedDiscounts.includes(d)"
-                            :name="IconConfig.CLOSE"
-                            size="18rpx"
-                            color="currentColor"
-                        />
-                    </view>
-                </view>
+                        :label="d"
+                        :value="d"
+                        shape="circle"
+                        size="medium"
+                        color="var(--hy-text-color)"
+                        plain
+                        closable
+                        close-color="transparent"
+                        :custom-style="{ marginRight: 0, marginTop: 0 }"
+                    />
+                </hy-flex>
             </view>
 
             <view class="filter-popup__safe-bottom" />
         </scroll-view>
 
         <!-- ============== 底部按钮 ============== -->
-        <view class="filter-popup__footer">
-            <view class="footer-btn footer-btn--ghost" @tap="onReset">
-                {{ t('filter.reset') }}
-            </view>
-            <view class="footer-btn footer-btn--primary" @tap="onApply">
-                {{ t('filter.apply') }}
-            </view>
-        </view>
+        <hy-flex gap="20" custom-class="filter-popup__footer">
+            <hy-button
+                :text="t('filter.reset')"
+                plain
+                shape="circle"
+                color="var(--hy-text-color)"
+                :custom-style="{ flex: 1 }"
+                @click="onReset"
+            ></hy-button>
+            <hy-button
+                :text="t('filter.apply')"
+                shape="circle"
+                :custom-style="{ flex: 1 }"
+                @click="onApply"
+            ></hy-button>
+        </hy-flex>
     </hy-popup>
 </template>
 
 <style lang="scss" scoped>
 .filter-popup {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-
     &__scroll {
-        flex: 1;
         padding: 32rpx 40rpx 0;
         box-sizing: border-box;
+        width: 600rpx;
     }
 
     &__header {
@@ -270,7 +258,7 @@ const onClose = () => {
     &__title {
         font-size: 40rpx;
         font-weight: 700;
-        color: #1a1a1a;
+        color: $hy-text-color;
     }
 
     &__safe-bottom {
@@ -278,12 +266,7 @@ const onClose = () => {
     }
 
     &__footer {
-        display: flex;
-        gap: 24rpx;
         padding: 24rpx 40rpx;
-        padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
-        background: #fff;
-        border-top: 2rpx solid #f1f2f4;
     }
 }
 
@@ -294,7 +277,7 @@ const onClose = () => {
         display: block;
         font-size: 32rpx;
         font-weight: 700;
-        color: #1a1a1a;
+        color: $hy-text-color;
         margin-bottom: 24rpx;
     }
 }
@@ -338,7 +321,7 @@ const onClose = () => {
     width: 88rpx;
     height: 72rpx;
     border-radius: 16rpx;
-    border: 2rpx solid #e6e6e6;
+    border: 2rpx solid $hy-border-color;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -349,7 +332,7 @@ const onClose = () => {
     &.is-active {
         background: #1a1a1a;
         border-color: #1a1a1a;
-        color: #fff;
+        color: var(--hy-text-color--inverse, #ffffff);
     }
 
     &__num {
@@ -363,7 +346,7 @@ const onClose = () => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: 2rpx solid #e6e6e6;
+    border: 2rpx solid $hy-border-color;
     border-radius: 16rpx;
     padding: 0 24rpx;
     height: 80rpx;
@@ -380,60 +363,7 @@ const onClose = () => {
 
     &__text {
         font-size: 28rpx;
-        color: #1a1a1a;
-    }
-}
-
-/* 折扣 */
-.discount-list {
-    display: flex;
-    gap: 20rpx;
-    flex-wrap: wrap;
-}
-
-.discount-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 8rpx;
-    padding: 12rpx 24rpx;
-    border-radius: 100rpx;
-    border: 2rpx solid #e6e6e6;
-    font-size: 26rpx;
-    color: #1a1a1a;
-    background: #fff;
-    transition: all 0.2s;
-
-    &.is-active {
-        border-color: #1a1a1a;
-        background: #1a1a1a;
-        color: #fff;
-    }
-}
-
-/* 底部按钮 */
-.footer-btn {
-    flex: 1;
-    height: 88rpx;
-    border-radius: 100rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30rpx;
-    font-weight: 600;
-    transition: opacity 0.2s;
-
-    &:active {
-        opacity: 0.7;
-    }
-
-    &--ghost {
-        background: #f2f2f4;
-        color: #1a1a1a;
-    }
-
-    &--primary {
-        background: #1a1a1a;
-        color: #fff;
+        color: $hy-text-color;
     }
 }
 </style>

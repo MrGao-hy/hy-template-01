@@ -2,6 +2,11 @@
 import { useTranslate } from '@hy-app/ui';
 import type { CollectionBanner } from './types';
 
+defineOptions({
+    options: {
+        styleIsolation: 'shared',
+    },
+});
 const { t } = useTranslate('home');
 
 interface IProps {
@@ -31,10 +36,7 @@ const onShowAllTap = () => {
             <text class="home__section-title">{{
                 t('topCollection.title')
             }}</text>
-            <view
-                class="home__section-more"
-                @tap="onShowAllTap"
-            >
+            <view class="home__section-more" @tap="onShowAllTap">
                 <text class="home__section-more-text">{{
                     t('topCollection.showAll')
                 }}</text>
@@ -54,9 +56,7 @@ const onShowAllTap = () => {
             >
                 <view class="collection-banner__content">
                     <view class="collection-banner__tag-wrap">
-                        <view
-                            class="collection-banner__tag-line"
-                        />
+                        <view class="collection-banner__tag-line" />
                         <text class="collection-banner__tag">{{
                             t(item.tagKey)
                         }}</text>
@@ -64,8 +64,7 @@ const onShowAllTap = () => {
                     <text
                         class="collection-banner__title"
                         :class="{
-                            'collection-banner__title--dark':
-                                item.id === 2,
+                            'collection-banner__title--dark': item.id === 2,
                         }"
                     >
                         {{ t(item.titleKey) }}
@@ -74,12 +73,8 @@ const onShowAllTap = () => {
                 <view class="collection-banner__image-wrap">
                     <hy-image
                         :src="item.image"
-                        :width="
-                            item.id === 1 ? '240rpx' : '280rpx'
-                        "
-                        :height="
-                            item.id === 1 ? '300rpx' : '400rpx'
-                        "
+                        :width="item.id === 1 ? '240rpx' : '280rpx'"
+                        :height="item.id === 1 ? '300rpx' : '400rpx'"
                         radius="0"
                         mode="aspectFit"
                         lazy-load
@@ -92,27 +87,26 @@ const onShowAllTap = () => {
 
 <style lang="scss" scoped>
 .home__section {
-    margin-bottom: $flux-spacing-xl;
+    margin-bottom: $hy-border-margin-padding-xl;
 
     &-header {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: $flux-spacing-md;
+        margin-bottom: $hy-border-margin-padding-base;
     }
 
     &-title {
         font-size: 36rpx;
         font-weight: 700;
-        color: $flux-text-primary;
     }
 
     &-more {
-        padding: $flux-spacing-xs $flux-spacing-sm;
+        padding: $hy-border-margin-padding-sm;
         &-text {
-            font-size: $flux-font-sm;
-            color: $flux-text-secondary;
+            font-size: $hy-font-size-sm;
+            color: $hy-text-color--grey;
         }
     }
 }
@@ -125,11 +119,11 @@ const onShowAllTap = () => {
     justify-content: space-between;
     overflow: hidden;
     position: relative;
-    background-color: $hy-background--track;
+    background-color: $hy-background--container;
 
     &--slim {
         min-height: 200rpx;
-        margin-bottom: $flux-spacing-md;
+        margin-bottom: $hy-border-margin-padding-base;
     }
 
     &--summer {
@@ -145,7 +139,7 @@ const onShowAllTap = () => {
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: $flux-spacing-md;
+        gap: $hy-border-margin-padding-base;
         z-index: 1;
     }
 
@@ -153,32 +147,31 @@ const onShowAllTap = () => {
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: $flux-spacing-sm;
+        gap: $hy-border-margin-padding-sm;
     }
 
     &__tag-line {
         width: 4rpx;
         height: 28rpx;
-        background-color: $flux-primary;
+        background-color: $hy-text-color;
         border-radius: 2rpx;
     }
 
     &__tag {
-        font-size: $flux-font-xs;
+        font-size: $hy-font-size-sm;
         font-weight: 500;
-        color: $flux-text-secondary;
+        color: $hy-text-color--grey;
         letter-spacing: 1rpx;
         white-space: nowrap;
     }
 
     &__title {
         font-size: 40rpx;
-        color: $flux-text-secondary;
         line-height: 1.2;
         white-space: pre-line;
 
         &--dark {
-            color: $flux-text-primary;
+            color: $hy-text-color;
         }
     }
 
@@ -191,7 +184,7 @@ const onShowAllTap = () => {
 
         &::after {
             content: '';
-            background-color: #f1f1f1;
+            background-color: var(--hy-home-image-bg--circle);
             width: 200rpx;
             height: 200rpx;
             border-radius: $hy-radius-circle;

@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { IconConfig, useTranslate, type GridItemVo } from '@hy-app/ui';
-import TheRootPages from '@/components/TheRootPages.vue';
-import Icon from '@/components/Icon.vue';
+import { useTranslate, type GridItemVo } from '@hy-app/ui';
+import AppNavbar from '@/components/AppNavbar.vue';
 import Tabbar from '@/components/Tabbar.vue';
 
 import CategoryNav from './components/CategoryNav.vue';
@@ -12,7 +11,7 @@ import NewCollectionBanner from './components/NewCollectionBanner.vue';
 import RecommendedProducts from './components/RecommendedProducts.vue';
 import TopCollection from './components/TopCollection.vue';
 import CategoryShowcase from './components/CategoryShowcase.vue';
-import SideMenuPopup from '@/components/SideMenuPopup.vue';
+import { Config } from '@/config';
 
 import type {
     CategoryNav as CategoryNavType,
@@ -21,7 +20,6 @@ import type {
     RecommendedProduct,
     CollectionBanner,
     CategoryShowcase as CategoryShowcaseType,
-    SideMenuItem,
 } from './components/types';
 
 definePage({
@@ -65,19 +63,19 @@ const categoryNavList = ref<CategoryNavType[]>([
 const bannerList = ref<BannerItem[]>([
     {
         id: 1,
-        image: '/static/images/fluxstore/image_071373fad51ad0143a98105907f84f8d80c53d58.png',
+        image: `${Config.IMG}/swiper_1.png`,
         titleKey: 'banner.autumnTitle',
         subtitleKey: 'banner.autumnSubtitle',
     },
     {
         id: 2,
-        image: '/static/images/fluxstore/image_09a1be8060c68fe8e2d0ea8f62839ee9328cede6.png',
+        image: `${Config.IMG}/swiper_1.png`,
         titleKey: 'banner.summerTitle',
         subtitleKey: 'banner.summerSubtitle',
     },
     {
         id: 3,
-        image: '/static/images/fluxstore/image_09e90f5ea1ecc64acbaaa975deb94ffe18def16c.png',
+        image: `${Config.IMG}/swiper_1.png`,
         titleKey: 'banner.newTitle',
         subtitleKey: 'banner.newSubtitle',
     },
@@ -89,25 +87,25 @@ const featureProductList = ref<Product[]>([
         id: 1,
         nameKey: 'featureProducts.turtleneckSweater',
         price: 39.99,
-        image: '/static/images/fluxstore/home_swiper_1.png',
+        image: `${Config.IMG}/home_swiper_1.png`,
     },
     {
         id: 2,
         nameKey: 'featureProducts.longSleeveDress',
         price: 45.0,
-        image: '/static/images/fluxstore/home_swiper_2.png',
+        image: `${Config.IMG}/home_swiper_2.png`,
     },
     {
         id: 3,
         nameKey: 'featureProducts.sportswearSet',
         price: 80.0,
-        image: '/static/images/fluxstore/home_swiper_3.png',
+        image: `${Config.IMG}/home_swiper_3.png`,
     },
     {
         id: 4,
         nameKey: 'featureProducts.casualJacket',
         price: 65.0,
-        image: '/static/images/fluxstore/home_swiper_4.png',
+        image: `${Config.IMG}/home_swiper_4.png`,
     },
 ]);
 
@@ -116,7 +114,7 @@ const newCollectionBanner = ref<CollectionBanner>({
     id: 1,
     tagKey: 'newCollection.tag',
     titleKey: 'newCollection.title',
-    image: '/static/images/fluxstore/home_1.png',
+    image: `${Config.IMG}/home_1.png`,
 });
 
 /** Recommended - 推荐商品列表 */
@@ -125,13 +123,13 @@ const recommendedList = ref<RecommendedProduct[]>([
         id: 1,
         nameKey: 'recommended.whiteHoodie',
         price: 29.0,
-        image: '/static/images/fluxstore/home_good_1.png',
+        image: `${Config.IMG}/home_good_1.png`,
     },
     {
         id: 2,
         nameKey: 'recommended.cottonTshirt',
         price: 30.0,
-        image: '/static/images/fluxstore/home_good_2.png',
+        image: `${Config.IMG}/home_good_2.png`,
     },
 ]);
 
@@ -141,13 +139,13 @@ const topCollectionList = ref<CollectionBanner[]>([
         id: 1,
         tagKey: 'topCollection.saleTag',
         titleKey: 'topCollection.slimTitle',
-        image: '/static/images/fluxstore/home_good_3.png',
+        image: `${Config.IMG}/home_good_3.png`,
     },
     {
         id: 2,
         tagKey: 'topCollection.summerTag',
         titleKey: 'topCollection.sexyTitle',
-        image: '/static/images/fluxstore/home_good_4.png',
+        image: `${Config.IMG}/home_good_4.png`,
     },
 ]);
 
@@ -157,35 +155,17 @@ const categoryShowcaseList = ref<CategoryShowcaseType[]>([
         id: 1,
         categoryKey: 'categoryShowcase.tshirts',
         titleKey: 'categoryShowcase.tshirtsTitle',
-        image: '/static/images/fluxstore/home_good_5.png',
+        image: `${Config.IMG}/home_good_5.png`,
     },
     {
         id: 2,
         categoryKey: 'categoryShowcase.dresses',
         titleKey: 'categoryShowcase.dressesTitle',
-        image: '/static/images/fluxstore/home_good_6.png',
+        image: `${Config.IMG}/home_good_6.png`,
     },
 ]);
 
 // ============== 事件处理 ==============
-
-/** 侧边工具列表弹窗显隐 */
-const showSideMenu = ref(false);
-
-/** 菜单点击：打开侧边工具列表弹窗 */
-const onMenuTap = () => {
-    showSideMenu.value = true;
-};
-
-/** 侧边工具列表选中 */
-const onSideMenuSelect = (item: SideMenuItem) => {
-    console.log('side menu selected:', t(`sideMenu.${item.nameKey}`));
-};
-
-/** 通知点击 */
-const onNotificationTap = () => {
-    uni.navigateTo({ url: '/pages-sub/notification/Index' });
-};
 
 /** 分类导航点击 */
 const onCategoryNavTap = (item: GridItemVo) => {
@@ -226,105 +206,66 @@ const onToPages = () => {};
 </script>
 
 <template>
-    <the-root-pages>
-        <view class="home">
-            <!-- ============== 顶部导航栏 ============== -->
-            <hy-navbar
-                :title="t('navbarTitle')"
-                :title-style="{ fontSize: '36rpx', fontWeight: '700' }"
-                placeholder
-                @left-click="onMenuTap"
-                @right-click="onNotificationTap"
-            >
-                <template #left>
-                    <Icon name="menu" />
-                </template>
-                <template #right>
-                    <view class="navbar-right-item">
-                        <hy-icon :name="IconConfig.REMIND" />
-                        <hy-badge is-dot absolute :offset="[0, 12]"></hy-badge>
-                    </view>
-                </template>
-            </hy-navbar>
+    <view class="home">
+        <!-- ============== 顶部导航栏 ============== -->
+        <app-navbar :title="t('navbarTitle')" :active-id="1" />
 
-            <scroll-view scroll-y class="home__scroll" :show-scrollbar="false">
-                <view class="home__container">
-                    <!-- ============== 分类导航区 - Women/Men/Accessories/Beauty ============== -->
-                    <CategoryNav
-                        :list="categoryNavList"
-                        @tap="onCategoryNavTap"
-                    />
+        <scroll-view scroll-y class="home__scroll" :show-scrollbar="false">
+            <view class="home__container">
+                <!-- ============== 分类导航区 - Women/Men/Accessories/Beauty ============== -->
+                <CategoryNav :list="categoryNavList" @tap="onCategoryNavTap" />
 
-                    <!-- ============== 轮播图 Banner ============== -->
-                    <HomeBanner :list="bannerList" @tap="onBannerTap" />
+                <!-- ============== 轮播图 Banner ============== -->
+                <HomeBanner :list="bannerList" @tap="onBannerTap" />
 
-                    <!-- ============== Feature Products - 特色商品区 ============== -->
-                    <FeatureProducts
-                        :list="featureProductList"
-                        @tap="onProductTap"
-                        @show-all="onShowAllTap('feature')"
-                    />
-                </view>
+                <!-- ============== Feature Products - 特色商品区 ============== -->
+                <FeatureProducts
+                    :list="featureProductList"
+                    @tap="onProductTap"
+                    @show-all="onShowAllTap('feature')"
+                />
+            </view>
 
-                <!-- ============== NEW COLLECTION - 新合集横幅 ============== -->
-                <NewCollectionBanner
-                    :banner="newCollectionBanner"
-                    @tap="onCollectionTap"
+            <!-- ============== NEW COLLECTION - 新合集横幅 ============== -->
+            <NewCollectionBanner
+                :banner="newCollectionBanner"
+                @tap="onCollectionTap"
+            />
+
+            <view class="home__container">
+                <!-- ============== Recommended - 推荐商品区 ============== -->
+                <RecommendedProducts
+                    :list="recommendedList"
+                    @tap="onProductTap"
+                    @show-all="onShowAllTap('recommended')"
                 />
 
-                <view class="home__container">
-                    <!-- ============== Recommended - 推荐商品区 ============== -->
-                    <RecommendedProducts
-                        :list="recommendedList"
-                        @tap="onProductTap"
-                        @show-all="onShowAllTap('recommended')"
-                    />
+                <!-- ============== Top Collection - 顶部合集区 ============== -->
+                <TopCollection
+                    :list="topCollectionList"
+                    @tap="onCollectionTap"
+                    @show-all="onShowAllTap('top')"
+                />
 
-                    <!-- ============== Top Collection - 顶部合集区 ============== -->
-                    <TopCollection
-                        :list="topCollectionList"
-                        @tap="onCollectionTap"
-                        @show-all="onShowAllTap('top')"
-                    />
+                <!-- ============== 分类展示 - T-Shirts / Dresses ============== -->
+                <CategoryShowcase
+                    :list="categoryShowcaseList"
+                    @tap="onCategoryShowcaseTap"
+                />
+            </view>
+        </scroll-view>
 
-                    <!-- ============== 分类展示 - T-Shirts / Dresses ============== -->
-                    <CategoryShowcase
-                        :list="categoryShowcaseList"
-                        @tap="onCategoryShowcaseTap"
-                    />
-                </view>
-
-                <!-- ============== 底部安全区 ============== -->
-                <view class="home__safe-bottom" />
-            </scroll-view>
-
-            <!-- ============== 底部 TabBar ============== -->
-            <tabbar :current="0" @change="onToPages" />
-
-            <!-- ============== 侧边工具列表弹窗 ============== -->
-            <SideMenuPopup
-                v-model:show="showSideMenu"
-                @select="onSideMenuSelect"
-            />
-        </view>
-    </the-root-pages>
+        <!-- ============== 底部 TabBar ============== -->
+        <tabbar :current="0" @change="onToPages" />
+    </view>
 </template>
 
 <style lang="scss" scoped>
 .home {
     min-height: 100vh;
-    background-color: $flux-bg-page;
     position: relative;
     display: flex;
     flex-direction: column;
-
-    .navbar-right-item {
-        position: relative;
-
-        .hy-badge {
-            border: 2px solid $hy-background;
-        }
-    }
 
     &__navbar-icon {
         width: 44rpx;
@@ -332,9 +273,9 @@ const onToPages = () => {};
     }
 
     &__navbar-title {
-        font-size: $flux-font-xl;
+        font-size: $hy-font-size-lg;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
         letter-spacing: 0.5rpx;
     }
 
@@ -347,17 +288,6 @@ const onToPages = () => {};
     /* ============== 容器区域 ============== */
     &__container {
         padding: 0 $hy-border-margin-padding-lg;
-    }
-
-    /* ============== 底部安全区 ============== */
-    &__safe-bottom {
-        /* #ifdef H5 || APP-PLUS */
-        height: calc(160rpx + env(safe-area-inset-bottom));
-        /* #endif */
-        /* #ifdef MP-WEIXIN */
-        height: calc(160rpx + constant(safe-area-inset-bottom));
-        height: calc(160rpx + env(safe-area-inset-bottom));
-        /* #endif */
     }
 }
 </style>

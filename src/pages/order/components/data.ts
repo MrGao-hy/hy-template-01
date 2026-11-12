@@ -1,12 +1,12 @@
+import { Config } from '@/config';
 import type { OrderItem } from './types';
 
 /** 商品图（复用 fluxstore 素材） */
 const IMG = {
-    sportwear:
-        '/static/images/fluxstore/image_550c305749d6c4a8efe5849bb6952d297db4e2c1.png',
-    sweater: '/static/images/fluxstore/home_swiper_1.png',
-    tshirt: '/static/images/fluxstore/home_good_2.png',
-    maxi: '/static/images/fluxstore/image_ab2f4ed424ae6384ab7d20a54f772bf15d7db671.png',
+    sportwear: `${Config.IMG}/good_1.png`,
+    sweater: `${Config.IMG}/good_2.png`,
+    tshirt: `${Config.IMG}/good_3.png`,
+    maxi: `${Config.IMG}/good_4.png`,
 };
 
 /** 模拟订单数据（按 FluxStore 常规订单流程占位，待设计稿校准） */
@@ -15,6 +15,8 @@ export const mockOrders: OrderItem[] = [
         no: '256022',
         date: '2026-09-12',
         status: 'processing',
+        trackingNo: 'IK287368838',
+        address: 'SBI Building, Software Park',
         products: [
             {
                 id: 1,
@@ -22,6 +24,7 @@ export const mockOrders: OrderItem[] = [
                 image: IMG.sportwear,
                 spec: 'Size: L | Color: Cream',
                 price: 80.0,
+                quantity: 1,
             },
             {
                 id: 2,
@@ -29,6 +32,7 @@ export const mockOrders: OrderItem[] = [
                 image: IMG.sweater,
                 spec: 'Size: M | Color: Brown',
                 price: 39.99,
+                quantity: 1,
             },
         ],
         total: 119.99,
@@ -37,6 +41,8 @@ export const mockOrders: OrderItem[] = [
         no: '256018',
         date: '2026-09-08',
         status: 'completed',
+        trackingNo: 'IK287368830',
+        address: 'SBI Building, Software Park',
         products: [
             {
                 id: 3,
@@ -44,6 +50,7 @@ export const mockOrders: OrderItem[] = [
                 image: IMG.tshirt,
                 spec: 'Size: S | Color: White',
                 price: 30.0,
+                quantity: 1,
             },
         ],
         total: 30.0,
@@ -52,6 +59,8 @@ export const mockOrders: OrderItem[] = [
         no: '256011',
         date: '2026-09-02',
         status: 'completed',
+        trackingNo: 'IK987362341',
+        address: 'SBI Building, Software Park',
         products: [
             {
                 id: 4,
@@ -59,6 +68,7 @@ export const mockOrders: OrderItem[] = [
                 image: IMG.maxi,
                 spec: 'Size: M | Color: Green',
                 price: 68.0,
+                quantity: 1,
             },
             {
                 id: 1,
@@ -66,6 +76,7 @@ export const mockOrders: OrderItem[] = [
                 image: IMG.sportwear,
                 spec: 'Size: L | Color: Cream',
                 price: 80.0,
+                quantity: 1,
             },
         ],
         total: 148.0,
@@ -74,6 +85,8 @@ export const mockOrders: OrderItem[] = [
         no: '256005',
         date: '2026-08-25',
         status: 'cancelled',
+        trackingNo: 'IK287368826',
+        address: 'SBI Building, Software Park',
         products: [
             {
                 id: 3,
@@ -81,6 +94,7 @@ export const mockOrders: OrderItem[] = [
                 image: IMG.tshirt,
                 spec: 'Size: S | Color: White',
                 price: 30.0,
+                quantity: 1,
             },
         ],
         total: 30.0,

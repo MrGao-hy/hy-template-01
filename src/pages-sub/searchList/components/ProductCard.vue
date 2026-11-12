@@ -111,8 +111,8 @@ const FULL_STARS = 5;
     }
 
     &__name {
-        font-size: $flux-font-sm;
-        color: $flux-text-primary;
+        font-size: $hy-font-size-sm;
+        color: $hy-text-color;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -132,7 +132,7 @@ const FULL_STARS = 5;
     }
 
     &__reviews {
-        font-size: $flux-font-xs;
+        font-size: $hy-font-size-xs;
         color: rgba(51, 48, 46, 0.5);
     }
 
@@ -144,14 +144,14 @@ const FULL_STARS = 5;
     }
 
     &__price {
-        font-size: $flux-font-lg;
+        font-size: $hy-font-size-md;
         font-weight: 700;
-        color: $flux-text-primary;
+        color: $hy-text-color;
     }
 
     &__old-price {
-        font-size: $flux-font-sm;
-        color: #bebfc4;
+        font-size: $hy-font-size-sm;
+        color: $hy-text-color--4;
         text-decoration: line-through;
     }
 }

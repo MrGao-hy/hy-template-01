@@ -5,6 +5,6 @@
 <style lang="scss" scoped>
 .product-list-page {
     min-height: 100vh;
-    background-color: #ffffff;
+    background-color: $hy-background;
 }
 </style>

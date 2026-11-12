@@ -16,8 +16,6 @@ interface IEmits {
 const props = defineProps<IProps>();
 const emit = defineEmits<IEmits>();
 
-const bannerImageList = computed(() => props.list.map(b => b.image));
-
 const onBannerTap = (index: number) => {
     emit('tap', index);
 };
@@ -26,7 +24,7 @@ const onBannerTap = (index: number) => {
 <template>
     <view class="home__banner">
         <hy-swiper
-            :list="bannerImageList"
+            :list="list"
             height="360rpx"
             radius="32rpx"
             indicator
@@ -36,10 +34,10 @@ const onBannerTap = (index: number) => {
             autoplay
             circular
         >
-            <template #default="{ index }">
+            <template #default="{ index, record }">
                 <view class="banner-item" @tap="onBannerTap(index)">
                     <hy-image
-                        :src="props.list[index].image"
+                        :src="record.image"
                         width="100%"
                         height="100%"
                         radius="32rpx"
@@ -48,35 +46,20 @@ const onBannerTap = (index: number) => {
                     <view class="banner-item__overlay">
                         <view class="banner-item__content">
                             <text class="banner-item__title">{{
-                                t(props.list[index].titleKey)
+                                t(record.titleKey)
                             }}</text>
-                            <text
-                                class="banner-item__subtitle"
-                                >{{
-                                    t(
-                                        props.list[index]
-                                            .subtitleKey
-                                    )
-                                }}</text
-                            >
+                            <text class="banner-item__subtitle">{{
+                                t(record.subtitleKey)
+                            }}</text>
                         </view>
                     </view>
                 </view>
             </template>
             <template #indicator="{ current }">
                 <view class="swiper-dots">
-                    <view
-                        class="dot"
-                        :class="{ active: current === 0 }"
-                    ></view>
-                    <view
-                        class="dot"
-                        :class="{ active: current === 1 }"
-                    ></view>
-                    <view
-                        class="dot"
-                        :class="{ active: current === 2 }"
-                    ></view>
+                    <view class="dot" :class="{ active: current === 0 }"></view>
+                    <view class="dot" :class="{ active: current === 1 }"></view>
+                    <view class="dot" :class="{ active: current === 2 }"></view>
                 </view>
             </template>
         </hy-swiper>
@@ -85,7 +68,7 @@ const onBannerTap = (index: number) => {
 
 <style lang="scss" scoped>
 .home__banner {
-    margin-bottom: $flux-spacing-xl;
+    margin-bottom: $hy-border-margin-padding-xl;
 }
 
 .banner-item {
@@ -113,15 +96,15 @@ const onBannerTap = (index: number) => {
     }
 
     &__title {
-        font-size: $flux-font-xxl;
+        font-size: $hy-font-size-xxl;
         font-weight: 700;
-        color: #ffffff;
+        color: var(--hy-text-color--inverse, #ffffff);
         line-height: 1.2;
         text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
     }
 
     &__subtitle {
-        font-size: $flux-font-xl;
+        font-size: $hy-font-size-lg;
         font-weight: 600;
         color: rgba(255, 255, 255, 0.9);
         line-height: 1.2;
@@ -141,7 +124,7 @@ const onBannerTap = (index: number) => {
         width: 10rpx;
         height: 10rpx;
         border-radius: $hy-radius-circle;
-        background-color: #ffffff;
+        background-color: var(--hy-text-color--inverse, #ffffff);
         position: relative;
 
         &.active {
@@ -152,7 +135,7 @@ const onBannerTap = (index: number) => {
                 left: -8rpx;
                 right: -8rpx;
                 bottom: -8rpx;
-                border: 1px solid #fff;
+                border: 1px solid var(--hy-text-color--inverse, #ffffff);
                 border-radius: $hy-radius-circle;
             }
         }
