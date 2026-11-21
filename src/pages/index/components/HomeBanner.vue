@@ -9,6 +9,11 @@ interface IProps {
     list: BannerItem[];
 }
 
+/** 轮播高度：微信小程序端插槽分发会插入编译器 wrapper 节点（无高度），
+ *  插槽内容 height:100% 会塌陷为 0 导致不显示，
+ *  故 .banner-item 需显式高度，须与下方 $banner-height 同步修改 */
+const BANNER_HEIGHT = '360rpx';
+
 interface IEmits {
     (e: 'tap', index: number): void;
 }
@@ -25,7 +30,7 @@ const onBannerTap = (index: number) => {
     <view class="home__banner">
         <hy-swiper
             :list="list"
-            height="360rpx"
+            :height="BANNER_HEIGHT"
             radius="32rpx"
             indicator
             indicator-mode="dot"
@@ -67,13 +72,17 @@ const onBannerTap = (index: number) => {
 </template>
 
 <style lang="scss" scoped>
+/* 与 script 中 BANNER_HEIGHT 保持一致，微信小程序插槽内容高度不可用 100% */
+$banner-height: 360rpx;
+
 .home__banner {
     margin-bottom: $hy-border-margin-padding-xl;
 }
 
 .banner-item {
     width: 100%;
-    height: 100%;
+    /* 小程序端插槽 wrapper 节点高度为 0，显式高度兜底（H5 不受影响） */
+    height: $banner-height;
     position: relative;
     overflow: hidden;
 

@@ -170,7 +170,8 @@ const onRate = () => {
                 <view class="rate-card__stars">
                     <hy-rate
                         v-model="rateStars"
-                        active-color="#777E90"
+                        active-color="var(--hy-primary)"
+                        disabled
                     ></hy-rate>
                 </view>
             </view>
@@ -372,11 +373,6 @@ const onRate = () => {
         top: 116rpx;
         left: 172rpx;
         display: flex;
-    }
-
-    &__star {
-        width: 48rpx;
-        height: 48rpx;
     }
 }
 </style>

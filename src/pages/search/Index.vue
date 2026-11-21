@@ -71,9 +71,8 @@ const onToPages = () => {
 
 <style lang="scss" scoped>
 .search-page {
-    min-height: 100vh;
-    padding: 0 62rpx;
-    display: flex;
-    flex-direction: column;
+    box-sizing: border-box;
+    padding: 0 $hy-border-margin-padding-lg
+        calc(env(safe-area-inset-bottom) + 52px);
 }
 </style>

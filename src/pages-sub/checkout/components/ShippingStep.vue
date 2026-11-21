@@ -2,6 +2,11 @@
 import { computed, reactive, ref } from 'vue';
 import { IconConfig, useToast, useTranslate } from '@hy-app/ui';
 
+defineOptions({
+    options: {
+        styleIsolation: 'shared',
+    },
+});
 /**
  * 结算 STEP 1：配送信息（Figma: 8782-2325）
  */
@@ -98,6 +103,16 @@ const shippingMethods: ShippingMethod[] = [
 ];
 const selectedMethod = ref('home-free');
 
+/** 配送方式选项（hy-radio columns） */
+const methodColumns = shippingMethods.map(method => ({
+    label: method.title,
+    value: method.key,
+}));
+
+/** 按选中值取配送方式（供 label 插槽渲染价格与描述） */
+const getMethod = (key?: string | number): ShippingMethod =>
+    shippingMethods.find(method => method.key === key) ?? shippingMethods[0];
+
 /** 复制账单地址（hy-checkbox 单布尔模式：columns 长度须为 1） */
 const copyAddress = ref(false);
 const copyColumns = ref([{ label: t('copyAddress'), value: 1 }]);
@@ -106,11 +121,6 @@ const copyColumns = ref([{ label: t('copyAddress'), value: 1 }]);
 const couponCode = ref('');
 
 // ============== 事件 ==============
-
-/** 选择配送方式 */
-const onSelectMethod = (key: string) => {
-    selectedMethod.value = key;
-};
 
 /** 验证优惠码 */
 const onValidateCoupon = () => {
@@ -204,33 +214,29 @@ defineExpose({ validate });
             <text class="method-section__title">
                 {{ t('shippingMethod') }}
             </text>
-            <view
-                v-for="method in shippingMethods"
-                :key="method.key"
-                class="method-item"
-                @tap="onSelectMethod(method.key)"
+            <hy-radio
+                v-model="selectedMethod"
+                :columns="methodColumns"
+                placement="column"
+                size="large"
+                inactive-color="var(--hy-text-color--4)"
             >
-                <view
-                    class="method-item__radio"
-                    :class="{ 'is-active': selectedMethod === method.key }"
-                >
-                    <view
-                        v-if="selectedMethod === method.key"
-                        class="method-item__radio-dot"
-                    ></view>
-                </view>
-                <view class="method-item__body">
-                    <view class="method-item__head">
-                        <text class="method-item__name">
-                            {{ method.title }}
-                        </text>
-                        <text class="method-item__price">
-                            {{ method.price }}
+                <template #label="{ record }">
+                    <view class="method-item__body">
+                        <view class="method-item__head">
+                            <text class="method-item__name">
+                                {{ getMethod(record.value).title }}
+                            </text>
+                            <text class="method-item__price">
+                                {{ getMethod(record.value).price }}
+                            </text>
+                        </view>
+                        <text class="method-item__desc">
+                            {{ getMethod(record.value).desc }}
                         </text>
                     </view>
-                    <text class="method-item__desc">{{ method.desc }}</text>
-                </view>
-            </view>
+                </template>
+            </hy-radio>
         </view>
 
         <!-- ============== 优惠券 ============== -->
@@ -264,8 +270,6 @@ defineExpose({ validate });
                 v-model="copyAddress"
                 :columns="copyColumns"
                 shape="square"
-                active-color="#508a7b"
-                inactive-color="#bebfc4"
                 :icon-size="16"
                 label-size="14"
                 label-color="#575757"
@@ -310,43 +314,32 @@ defineExpose({ validate });
     }
 }
 
-.method-item {
-    display: flex;
+/* 覆盖 hy-radio 默认布局，贴合设计稿行距与图标位置 */
+:deep(.hy-radio-group--column) {
+    margin: 0;
+}
+
+:deep(.hy-radio) {
     align-items: flex-start;
-    gap: 24rpx;
+    margin: 0;
     padding: 24rpx 0;
 
     &:active {
         opacity: 0.8;
     }
+}
 
-    &__radio {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 46rpx;
-        height: 46rpx;
-        margin-top: 4rpx;
-        border: 3rpx solid $hy-text-color--4;
-        border-radius: 50%;
+:deep(.hy-radio__icon-wrap) {
+    margin-top: 4rpx;
+    margin-right: 24rpx;
+}
 
-        &.is-active {
-            border-color: $hy-primary;
-        }
-    }
+:deep(.hy-radio__label--wrap) {
+    flex: 1;
+    margin-right: 0;
+}
 
-    &__radio-dot {
-        width: 18rpx;
-        height: 18rpx;
-        background-color: $hy-primary;
-        border-radius: 50%;
-    }
-
-    &__body {
-        flex: 1;
-        min-width: 0;
-    }
-
+.method-item {
     &__head {
         display: flex;
         align-items: center;
@@ -403,7 +396,7 @@ defineExpose({ validate });
         gap: 24rpx;
     }
 
-    &__input {
+    :deep(.coupon-section__input) {
         flex: 1;
         height: 96rpx;
         padding: 0 32rpx;

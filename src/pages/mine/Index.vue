@@ -111,66 +111,78 @@ const onToPages = () => {};
 </script>
 
 <template>
-    <!-- ============== 用户信息头部 ============== -->
-    <view class="profile-header" @tap="onEditProfile">
-        <hy-avatar :src="userInfo.avatar" />
-        <view class="profile-header__info">
-            <text class="profile-header__name">{{ userInfo.name }}</text>
-            <text class="profile-header__email">{{ userInfo.email }}</text>
+    <view class="mine-page">
+        <!-- ============== 用户信息头部 ============== -->
+        <view class="profile-header" @tap="onEditProfile">
+            <hy-avatar :src="userInfo.avatar" />
+            <view class="profile-header__info">
+                <text class="profile-header__name">{{ userInfo.name }}</text>
+                <text class="profile-header__email">{{ userInfo.email }}</text>
+            </view>
+            <hy-icon :name="IconConfig.SETTING_FILL" :size="24" />
         </view>
-        <hy-icon :name="IconConfig.SETTING_FILL" :size="24" />
-    </view>
 
-    <!-- ============== 菜单列表（hy-card + hy-cell） ============== -->
-    <hy-card
-        :border-radius="16"
-        margin="0 24rpx"
-        :padding="0"
-        border
-        :show-foot="false"
-    >
-        <hy-cell clickable :border="false" @click="onCellClick" size="large">
-            <hy-cell-item
-                v-for="item in menuList.filter(i => !i.danger)"
-                :key="item.key"
-                :name="item.key"
-                :title="item.label"
-                :icon="{ name: item.icon }"
-            />
-        </hy-cell>
-    </hy-card>
+        <!-- ============== 菜单列表（hy-card + hy-cell） ============== -->
+        <hy-card
+            :border-radius="16"
+            :padding="0"
+            border
+            :show-foot="false"
+        >
+            <hy-cell
+                clickable
+                :border="false"
+                @click="onCellClick"
+                size="large"
+            >
+                <hy-cell-item
+                    v-for="item in menuList.filter(i => !i.danger)"
+                    :key="item.key"
+                    :name="item.key"
+                    :title="item.label"
+                    :icon="{ name: item.icon }"
+                />
+            </hy-cell>
+        </hy-card>
+    </view>
 
     <!-- ============== 底部 TabBar ============== -->
     <tabbar :current="3" @change="onToPages" />
 </template>
 
 <style lang="scss" scoped>
-/* 用户信息头部 */
-.profile-header {
-    display: flex;
-    align-items: center;
-    gap: 34rpx;
-    padding: calc(var(--status-bar-height) + 128rpx) 64rpx;
+.mine-page {
+    padding: calc(env(safe-area-inset-top) + 52px) 54rpx
+        calc(env(safe-area-inset-bottom) + 52px);
+    box-sizing: border-box;
 
-    &__info {
+    /* 用户信息头部 */
+    .profile-header {
         display: flex;
-        flex: 1;
-        flex-direction: column;
-        gap: 6rpx;
-        min-width: 0;
-    }
+        align-items: center;
+        gap: 34rpx;
+        padding: 80rpx 0 120rpx;
 
-    &__name {
-        font-size: 32rpx;
-        font-weight: 700;
-    }
+        &__info {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            gap: 6rpx;
+            min-width: 0;
+        }
 
-    &__email {
-        font-size: 26rpx;
-        color: $hy-text-color--3;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        &__name {
+            font-size: 32rpx;
+            font-weight: 700;
+        }
+
+        &__email {
+            font-size: 26rpx;
+            color: $hy-text-color--3;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
     }
 }
 </style>

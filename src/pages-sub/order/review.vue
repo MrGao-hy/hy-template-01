@@ -17,7 +17,7 @@ import Navbar from '@/components/Navbar.vue';
  */
 definePage({
     style: {
-        navigationStyle: 'custom'
+        navigationStyle: 'custom',
     },
 });
 
@@ -81,10 +81,10 @@ const onSubmit = () => {
 </script>
 
 <template>
-    <view class="review-page">
-        <!-- ============== 顶部：返回 + 标题 ============== -->
-        <navbar :title="t('rateProductTitle')"></navbar>
+    <!-- ============== 顶部：返回 + 标题 ============== -->
+    <navbar :title="t('rateProductTitle')"></navbar>
 
+    <view class="review-page">
         <!-- ============== 积分提示条（可折叠） ============== -->
         <view v-show="bannerVisible" class="point-banner">
             <hy-icon
@@ -109,8 +109,7 @@ const onSubmit = () => {
                 :count="FULL_STARS"
                 :size="40"
                 :gutter="24"
-                active-color="#508A7B"
-                inactive-color="#eff0f1"
+                active-color="var(--hy-primary)"
             />
         </view>
 
@@ -128,10 +127,10 @@ const onSubmit = () => {
 
         <!-- 图片上传（虚线框 + 图片 icon） -->
         <hy-upload
-            class="upload"
             :file-list="fileList"
             accept="image"
             :max-count="MAX_IMAGES"
+            :custom-style="{ marginTop: '36rpx' }"
             @after-read="onAfterRead"
         >
             <view class="upload-trigger">
@@ -160,8 +159,7 @@ const onSubmit = () => {
 .review-page {
     min-height: 100vh;
     box-sizing: border-box;
-    padding: calc(var(--status-bar-height) + 40rpx) 30rpx
-        calc(180rpx + env(safe-area-inset-bottom));
+    padding: 40rpx 30rpx env(safe-area-inset-bottom);
 
     &__header {
         position: relative;
@@ -190,7 +188,7 @@ const onSubmit = () => {
     &__footer {
         position: fixed;
         right: 30rpx;
-        bottom: calc(140rpx + env(safe-area-inset-bottom));
+        bottom: calc(80rpx + env(safe-area-inset-bottom));
         left: 30rpx;
         z-index: 10;
     }
@@ -232,15 +230,13 @@ const onSubmit = () => {
 .content-card {
     margin-top: 56rpx;
     padding: 36rpx 36rpx 12rpx;
-    background-color: $hy-background--2;
+    background-color: $hy-background--3;
     border-radius: 40rpx;
     box-shadow: 0 2rpx 6rpx -24rpx rgba(0, 0, 0, 0.15);
 }
 
 /* 上传占位（虚线边框 + 图片 icon） */
 .upload {
-    margin-top: 34rpx;
-
     &-trigger {
         display: flex;
         align-items: center;

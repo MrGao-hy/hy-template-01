@@ -18,7 +18,7 @@ const thankYouLines = computed(() => t('thankYou').split('\n'));
 
 <template>
     <view class="confirm-step">
-        <Icon :name="SUCCESS_IMAGE" size="110" color="#FFFFFF"></Icon>
+        <Icon :name="SUCCESS_IMAGE" size="110"></Icon>
         <view class="confirm-step__text">
             <text
                 v-for="(line, i) in thankYouLines"

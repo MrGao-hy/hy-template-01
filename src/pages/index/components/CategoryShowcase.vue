@@ -52,10 +52,9 @@ const onCategoryShowcaseTap = (item: CategoryShowcase) => {
                 </view>
                 <hy-image
                     :src="item.image"
-                    width="100%"
-                    height="100%"
                     radius="24rpx"
-                    mode="aspectFill"
+                    height="228"
+                    mode="widthFix"
                     lazy-load
                     :custom-class="`category-showcase-card__image ${item.id === 1 ? 'image--left' : 'image--right'}`"
                 />
@@ -87,13 +86,13 @@ const onCategoryShowcaseTap = (item: CategoryShowcase) => {
         z-index: 999;
 
         &.image--left {
-            top: -100rpx;
-            left: -150rpx;
-            height: 800rpx !important;
+            top: -80rpx;
+            left: -200rpx;
         }
 
         &.image--right {
-            right: -100rpx;
+            top: -50rpx;
+            right: -180rpx;
         }
     }
 

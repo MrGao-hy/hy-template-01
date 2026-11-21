@@ -41,7 +41,6 @@ const toProductDetailPage = () => {
         v-model="checkedValue"
         placement="column"
         :icon-size="10"
-        active-color="#508A7B"
     >
         <view
             class="cart-item"

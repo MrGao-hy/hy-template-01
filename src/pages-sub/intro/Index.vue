@@ -4,9 +4,7 @@ import { useTranslate } from '@hy-app/ui';
 import GlassButton from '@/components/GlassButton.vue';
 import IntroSlide from './components/IntroSlide.vue';
 import TheRootPages from '@/components/TheRootPages.vue';
-import introModel from '@/assets/intro/intro-model.png';
-import introFashion from '@/assets/intro/intro-fashion.png';
-import introPngegg from '@/assets/intro/intro-pngegg.png';
+import { Config } from '@/config';
 
 definePage({
     style: {
@@ -32,17 +30,17 @@ const slides = computed<SlideConfig[]>(() => [
     {
         titleKey: 'slide1.title',
         subtitleKey: 'slide1.subtitle',
-        image: introModel,
+        image: `${Config.IMG}/intro-model.png`,
     },
     {
         titleKey: 'slide2.title',
         subtitleKey: 'slide2.subtitle',
-        image: introFashion,
+        image: `${Config.IMG}/intro-fashion.png`,
     },
     {
         titleKey: 'slide3.title',
         subtitleKey: 'slide3.subtitle',
-        image: introPngegg,
+        image: `${Config.IMG}/intro-pngegg.png`,
     },
 ]);
 
@@ -199,13 +197,13 @@ const onDotClick = (index: number) => {
         height: 12rpx;
         border-radius: 50%;
         /* 未激活：空心白边框 0.5px */
-        border: 2rpx solid var(--hy-text-color--inverse, #FFFFFF);
+        border: 2rpx solid var(--hy-text-color--inverse, #ffffff);
         background-color: transparent;
         transition: all 0.3s ease;
 
         /* 激活：实心白 */
         &.is-active {
-            background-color: var(--hy-text-color--inverse, #FFFFFF);
+            background-color: var(--hy-text-color--inverse, #ffffff);
         }
     }
 

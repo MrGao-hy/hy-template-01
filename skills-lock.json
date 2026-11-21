@@ -1,11 +1,12 @@
 {
-  "version": 1,
+  "version": 2,
   "skills": {
     "hy-app": {
       "source": "hy-uniapp/skills",
+      "commit": "0291f8afc702c0e46c5a3fee490a305aa573eb41",
       "sourceType": "github",
       "skillPath": "SKILL.md",
-      "computedHash": "9c44e71c410e495fa16a5558a29b94c745ed0777c05cfef2dc62ad66d912bb1d"
+      "computedHash": "37229640789903786da71c6aaf12287d0355d95a75c4cb4b70379286c0f115d6"
     }
   }
 }

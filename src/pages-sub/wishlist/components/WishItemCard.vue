@@ -2,10 +2,14 @@
 import { IconConfig } from '@hy-app/ui';
 
 /**
- * 收藏商品卡片（Figma 8782:2506 · all items 卡片 141×253px）
- * - 图片：141×186px，圆角 10px，右上角收藏图标
- * - 信息区（自上而下）：名称（12px Medium）→ 价格 + 划线价（12px Bold / 12px 灰）→ 星级 + 评价数
+ * 收藏商品卡片
  */
+defineOptions({
+    options: {
+        styleIsolation: 'shared',
+        virtualHost: true,
+    },
+});
 
 /** 收藏商品数据 */
 export interface WishItem {
@@ -59,7 +63,11 @@ const onToggleFav = () => {
                 :custom-style="{ height: '372rpx' }"
             />
             <view class="wish-item__fav" @tap.stop="onToggleFav">
-                <hy-icon :name="IconConfig.STAR_FILL" size="32rpx" color="#FF6E6E" />
+                <hy-icon
+                    :name="IconConfig.STAR_FILL"
+                    size="32rpx"
+                    color="#FF6E6E"
+                />
             </view>
         </view>
 
@@ -68,7 +76,9 @@ const onToggleFav = () => {
             <text class="wish-item__name">{{ item.name }}</text>
 
             <view class="wish-item__price-row">
-                <text class="wish-item__price">$ {{ item.price.toFixed(2) }}</text>
+                <text class="wish-item__price"
+                    >$ {{ item.price.toFixed(2) }}</text
+                >
                 <text v-if="item.originPrice" class="wish-item__origin">
                     $ {{ item.originPrice.toFixed(2) }}
                 </text>
@@ -82,7 +92,9 @@ const onToggleFav = () => {
                     :gutter="4"
                     active-color="#f5c33b"
                 />
-                <text class="wish-item__rate-text">({{ item.scoreCount }})</text>
+                <text class="wish-item__rate-text"
+                    >({{ item.scoreCount }})</text
+                >
             </view>
         </view>
     </view>

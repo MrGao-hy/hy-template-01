@@ -206,54 +206,52 @@ const onToPages = () => {};
 </script>
 
 <template>
+    <!-- ============== 顶部导航栏 ============== -->
+    <app-navbar :title="t('navbarTitle')" :active-id="1" />
+
     <view class="home">
-        <!-- ============== 顶部导航栏 ============== -->
-        <app-navbar :title="t('navbarTitle')" :active-id="1" />
+        <view class="home__container">
+            <!-- ============== 分类导航区 - Women/Men/Accessories/Beauty ============== -->
+            <CategoryNav :list="categoryNavList" @tap="onCategoryNavTap" />
 
-        <scroll-view scroll-y class="home__scroll" :show-scrollbar="false">
-            <view class="home__container">
-                <!-- ============== 分类导航区 - Women/Men/Accessories/Beauty ============== -->
-                <CategoryNav :list="categoryNavList" @tap="onCategoryNavTap" />
+            <!-- ============== 轮播图 Banner ============== -->
+            <HomeBanner :list="bannerList" @tap="onBannerTap" />
 
-                <!-- ============== 轮播图 Banner ============== -->
-                <HomeBanner :list="bannerList" @tap="onBannerTap" />
+            <!-- ============== Feature Products - 特色商品区 ============== -->
+            <FeatureProducts
+                :list="featureProductList"
+                @tap="onProductTap"
+                @show-all="onShowAllTap('feature')"
+            />
+        </view>
 
-                <!-- ============== Feature Products - 特色商品区 ============== -->
-                <FeatureProducts
-                    :list="featureProductList"
-                    @tap="onProductTap"
-                    @show-all="onShowAllTap('feature')"
-                />
-            </view>
+        <!-- ============== NEW COLLECTION - 新合集横幅 ============== -->
+        <NewCollectionBanner
+            :banner="newCollectionBanner"
+            @tap="onCollectionTap"
+        />
 
-            <!-- ============== NEW COLLECTION - 新合集横幅 ============== -->
-            <NewCollectionBanner
-                :banner="newCollectionBanner"
-                @tap="onCollectionTap"
+        <view class="home__container">
+            <!-- ============== Recommended - 推荐商品区 ============== -->
+            <RecommendedProducts
+                :list="recommendedList"
+                @tap="onProductTap"
+                @show-all="onShowAllTap('recommended')"
             />
 
-            <view class="home__container">
-                <!-- ============== Recommended - 推荐商品区 ============== -->
-                <RecommendedProducts
-                    :list="recommendedList"
-                    @tap="onProductTap"
-                    @show-all="onShowAllTap('recommended')"
-                />
+            <!-- ============== Top Collection - 顶部合集区 ============== -->
+            <TopCollection
+                :list="topCollectionList"
+                @tap="onCollectionTap"
+                @show-all="onShowAllTap('top')"
+            />
 
-                <!-- ============== Top Collection - 顶部合集区 ============== -->
-                <TopCollection
-                    :list="topCollectionList"
-                    @tap="onCollectionTap"
-                    @show-all="onShowAllTap('top')"
-                />
-
-                <!-- ============== 分类展示 - T-Shirts / Dresses ============== -->
-                <CategoryShowcase
-                    :list="categoryShowcaseList"
-                    @tap="onCategoryShowcaseTap"
-                />
-            </view>
-        </scroll-view>
+            <!-- ============== 分类展示 - T-Shirts / Dresses ============== -->
+            <CategoryShowcase
+                :list="categoryShowcaseList"
+                @tap="onCategoryShowcaseTap"
+            />
+        </view>
 
         <!-- ============== 底部 TabBar ============== -->
         <tabbar :current="0" @change="onToPages" />
@@ -262,32 +260,8 @@ const onToPages = () => {};
 
 <style lang="scss" scoped>
 .home {
-    min-height: 100vh;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-
-    &__navbar-icon {
-        width: 44rpx;
-        height: 44rpx;
-    }
-
-    &__navbar-title {
-        font-size: $hy-font-size-lg;
-        font-weight: 700;
-        color: $hy-text-color;
-        letter-spacing: 0.5rpx;
-    }
-
-    /* ============== 滚动区域 ============== */
-    &__scroll {
-        flex: 1;
-        height: 0;
-    }
-
-    /* ============== 容器区域 ============== */
-    &__container {
-        padding: 0 $hy-border-margin-padding-lg;
-    }
+    box-sizing: border-box;
+    padding: 0 $hy-border-margin-padding-lg
+        calc(env(safe-area-inset-bottom) + 52px);
 }
 </style>

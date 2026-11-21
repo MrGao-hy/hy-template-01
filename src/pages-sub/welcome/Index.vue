@@ -2,8 +2,7 @@
 import { onMounted, ref } from 'vue';
 import { useTranslate } from '@hy-app/ui';
 import GlassButton from '@/components/GlassButton.vue';
-import TheRootPages from '@/components/TheRootPages.vue';
-import welcomeBg from '@/assets/welcome/welcome-bg.png';
+import { Config } from '@/config';
 
 const { t } = useTranslate('welcome');
 
@@ -16,14 +15,13 @@ definePage({
 
 /** 控制进场动画 */
 const visible = ref(false);
+const welcomeBg = `${Config.IMG}/welcome-bg.png`;
 
 onMounted(() => {
     // 下一帧触发动画，确保过渡生效
     setTimeout(() => {
         visible.value = true;
     }, 50);
-
-    console.log(t('title'));
 });
 
 /** 点击 Get Started 跳转引导页 */
@@ -35,30 +33,28 @@ const onStart = () => {
 </script>
 
 <template>
-    <the-root-pages>
-        <view class="welcome" :class="{ 'is-visible': visible }">
-            <!-- 背景图：原型 image 45 (541x812, 偏移-113,0) -->
-            <image
-                class="welcome__bg"
-                :src="welcomeBg"
-                mode="aspectFill"
-                lazy-load
-            />
-            <!-- 黑色遮罩 rgba(0,0,0,0.5) -->
-            <view class="welcome__overlay" />
+    <view class="welcome" :class="{ 'is-visible': visible }">
+        <!-- 背景图：原型 image 45 (541x812, 偏移-113,0) -->
+        <image
+            class="welcome__bg"
+            :src="welcomeBg"
+            mode="aspectFill"
+            lazy-load
+        />
+        <!-- 黑色遮罩 rgba(0,0,0,0.5) -->
+        <view class="welcome__overlay" />
 
-            <!-- 文本与按钮内容区 -->
-            <view class="welcome__content">
-                <!-- 标题块：原型位于 (47,528)，居中 -->
-                <view class="welcome__text-block">
-                    <text class="welcome__title">{{ t('title') }}</text>
-                    <text class="welcome__subtitle">{{ t('subtitle') }}</text>
-                </view>
-                <!-- Get Started 按钮：原型位于 (87,659) -->
-                <glass-button text="Get Started" @click="onStart" />
+        <!-- 文本与按钮内容区 -->
+        <view class="welcome__content">
+            <!-- 标题块：原型位于 (47,528)，居中 -->
+            <view class="welcome__text-block">
+                <text class="welcome__title">{{ t('title') }}</text>
+                <text class="welcome__subtitle">{{ t('subtitle') }}</text>
             </view>
+            <!-- Get Started 按钮：原型位于 (87,659) -->
+            <glass-button text="Get Started" @click="onStart" />
         </view>
-    </the-root-pages>
+    </view>
 </template>
 
 <style lang="scss">
@@ -127,7 +123,7 @@ const onStart = () => {
         font-size: 50rpx;
         font-weight: 700;
         line-height: 1.41em;
-        color: var(--hy-text-color--inverse, #FFFFFF);
+        color: var(--hy-text-color--inverse, #ffffff);
         text-align: center;
     }
 
@@ -136,7 +132,7 @@ const onStart = () => {
         font-size: 32rpx;
         font-weight: 700;
         line-height: 1.41em;
-        color: var(--hy-text-color--inverse, #FFFFFF);
+        color: var(--hy-text-color--inverse, #ffffff);
         text-align: center;
     }
 

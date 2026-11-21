@@ -3,11 +3,15 @@ import { computed } from 'vue';
 import { IconConfig } from '@hy-app/ui';
 
 /**
- * 收藏看板卡片（Figma 8782:2594 · wishlist board 组件 331×226px）
- * - 顶部：6 张图马赛克拼贴（左 2 张大图 + 右侧 2×2 小图，330×149px，圆角 10.7px）
- * - 下方：左侧名称（22px Bold）+ 数量（12px 灰），右侧 Next 箭头
- * - 底部：1px #E8E8E8 分隔线
+ * 收藏看板卡片
  */
+
+defineOptions({
+    options: {
+        styleIsolation: 'shared',
+        virtualHost: true,
+    },
+});
 
 /** 看板数据 */
 export interface WishBoard {
@@ -40,7 +44,9 @@ const mosaicImages = computed<string[]>(() => {
 });
 
 /** 数量文案兜底 */
-const displayCount = computed(() => props.countText ?? `${props.board.count} items`);
+const displayCount = computed(
+    () => props.countText ?? `${props.board.count} items`
+);
 
 const onTap = () => {
     emit('tap', props.board);
@@ -55,17 +61,20 @@ const onTap = () => {
                 v-for="img in mosaicImages.slice(0, 2)"
                 :key="img"
                 :src="img"
-                class="board-card__big"
                 width="100%"
                 height="100%"
                 mode="aspectFill"
                 :fade="true"
                 lazy-load
                 preview-image
+                custom-class="board-card__big"
             />
             <view class="board-card__grid">
                 <view
-                    v-for="(row, rowIndex) in [mosaicImages.slice(2, 4), mosaicImages.slice(4, 6)]"
+                    v-for="(row, rowIndex) in [
+                        mosaicImages.slice(2, 4),
+                        mosaicImages.slice(4, 6),
+                    ]"
                     :key="rowIndex"
                     class="board-card__row"
                 >
@@ -73,13 +82,13 @@ const onTap = () => {
                         v-for="img in row"
                         :key="img"
                         :src="img"
-                        class="board-card__cell"
                         width="100%"
                         height="100%"
                         mode="aspectFill"
                         :fade="true"
                         lazy-load
                         preview-image
+                        custom-class="board-card__cell"
                     />
                 </view>
             </view>
@@ -92,7 +101,11 @@ const onTap = () => {
                 <text class="board-card__count">{{ displayCount }}</text>
             </view>
             <view class="board-card__arrow">
-                <hy-icon :name="IconConfig.RIGHT" size="36rpx" color="#1a1a1a" />
+                <hy-icon
+                    :name="IconConfig.RIGHT"
+                    size="36rpx"
+                    color="#1a1a1a"
+                />
             </view>
         </view>
     </view>
@@ -121,7 +134,7 @@ const onTap = () => {
     }
 
     /* 左/中：全高大图 */
-    &__big {
+    :deep(.board-card__big) {
         flex: 1;
         height: 100%;
     }
@@ -142,7 +155,7 @@ const onTap = () => {
         min-height: 0;
     }
 
-    &__cell {
+    :deep(.board-card__cell) {
         flex: 1;
         height: 100%;
     }

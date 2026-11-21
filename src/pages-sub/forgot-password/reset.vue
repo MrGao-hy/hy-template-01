@@ -3,8 +3,8 @@ import { computed, reactive, ref } from 'vue';
 import { useToast, useTranslate } from '@hy-app/ui';
 import AuthField from '@/components/auth/AuthField.vue';
 import AuthButton from '@/components/auth/AuthButton.vue';
-import TheRootPages from '@/components/TheRootPages.vue';
 import Navbar from '@/components/Navbar.vue';
+import { Config } from '@/config';
 
 /**
  * 忘记密码 - 步骤3：设置新密码
@@ -50,7 +50,7 @@ const rules = {
         },
     ],
 };
-const showSuccessModel = ref(false);
+const showSuccessModel = ref(true);
 const loading = ref(false);
 
 const onReset = async () => {
@@ -74,70 +74,65 @@ const onBackLogin = () => {
 </script>
 
 <template>
-    <the-root-pages>
-        <view class="auth-page">
-            <navbar></navbar>
-
-            <view class="auth-page__title">
-                <text class="auth-page__title-line">{{ t('resetTitle') }}</text>
-                <text class="auth-page__title-sub">{{
-                    t('resetSubTitle')
-                }}</text>
-            </view>
-
-            <hy-form ref="formRef" :model="form" :rules="rules">
-                <view class="auth-page__form">
-                    <hy-form-item prop="password">
-                        <auth-field
-                            v-model="form.password"
-                            :placeholder="t('passwordPlaceholder')"
-                            type="password"
-                        />
-                    </hy-form-item>
-                    <hy-form-item prop="confirmPassword">
-                        <auth-field
-                            v-model="form.confirmPassword"
-                            :placeholder="t('confirmPlaceholder')"
-                            type="password"
-                        />
-                    </hy-form-item>
-                </view>
-            </hy-form>
-
-            <view class="auth-page__action">
-                <auth-button
-                    :text="t('resetButton')"
-                    :loading="loading"
-                    :disabled="!hasFormValue"
-                    @click="onReset"
-                />
-            </view>
-
-            <hy-popup :show="showSuccessModel" round="20">
-                <view class="success-modal">
-                    <view class="success-modal__icon">
-                        <hy-image
-                            src="/src/pages-sub/static/icons/success.png"
-                            width="46"
-                            height="57"
-                        ></hy-image>
-                    </view>
-                    <view class="success-modal__content">
-                        <view class="success-modal__content-title">{{
-                            t('successTitle')
-                        }}</view>
-                        <view class="success-modal__content-desc">{{
-                            t('successDesc')
-                        }}</view>
-                    </view>
-                    <auth-button
-                        :text="t('backToLoginButton')"
-                        @click="onBackLogin"
-                    ></auth-button>
-                </view>
-            </hy-popup>
+    <navbar></navbar>
+    <view class="auth-page">
+        <view class="auth-page__title">
+            <text class="auth-page__title-line">{{ t('resetTitle') }}</text>
+            <text class="auth-page__title-sub">{{ t('resetSubTitle') }}</text>
         </view>
-    </the-root-pages>
+
+        <hy-form ref="formRef" :model="form" :rules="rules">
+            <view class="auth-page__form">
+                <hy-form-item prop="password">
+                    <auth-field
+                        v-model="form.password"
+                        :placeholder="t('passwordPlaceholder')"
+                        type="password"
+                    />
+                </hy-form-item>
+                <hy-form-item prop="confirmPassword">
+                    <auth-field
+                        v-model="form.confirmPassword"
+                        :placeholder="t('confirmPlaceholder')"
+                        type="password"
+                    />
+                </hy-form-item>
+            </view>
+        </hy-form>
+
+        <view class="auth-page__action">
+            <auth-button
+                :text="t('resetButton')"
+                :loading="loading"
+                :disabled="!hasFormValue"
+                @click="onReset"
+            />
+        </view>
+
+        <hy-popup :show="showSuccessModel" round="20">
+            <view class="success-modal">
+                <view class="success-modal__icon">
+                    <hy-image
+                        :src="`${Config.IMG2}/success.png`"
+                        width="46"
+                        height="57"
+                    ></hy-image>
+                </view>
+                <view class="success-modal__content">
+                    <view class="success-modal__content-title">{{
+                        t('successTitle')
+                    }}</view>
+                    <view class="success-modal__content-desc">{{
+                        t('successDesc')
+                    }}</view>
+                </view>
+                <auth-button
+                    :text="t('backToLoginButton')"
+                    @click="onBackLogin"
+                ></auth-button>
+            </view>
+        </hy-popup>
+    </view>
 </template>
 
 <style lang="scss">
@@ -200,7 +195,7 @@ const onBackLogin = () => {
         align-items: center;
         gap: 120rpx;
         &__icon {
-            background-color: $hy-background--3;
+            background: var(--hy-text-color--inverse);
             width: 200rpx;
             height: 200rpx;
             border-radius: $hy-radius-circle;

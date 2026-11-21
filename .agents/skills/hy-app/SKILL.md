@@ -161,11 +161,13 @@ MCP 查询顺序：
 ```text
 search_components
         ↓
-get_component_api
+get_component_api(section=all, detail=false)
         ↓
-get_component_examples
+源码 defineExpose 查询组件 Methods
         ↓
 check_platform_support
+        ↓
+get_component_examples(listOnly=true)
         ↓
 validate_component_usage
 ```
@@ -176,22 +178,91 @@ validate_component_usage
 
 MCP 查询组件时：
 
-> 删除 `hy-` 前缀，并转换为 PascalCase。
+> 统一使用小写 kebab-case，`hy-` 前缀可带可不带。
 
 例如：
 
 ```text
-hy-button        → Button
-hy-count-down    → CountDown
-hy-form-item     → FormItem
-hy-swipe-action  → SwipeAction
-hy-config-provider → ConfigProvider
+hy-button            → componentName: hy-button / button
+hy-count-down        → componentName: hy-count-down / count-down
+hy-form-item         → componentName: hy-form-item / form-item
+hy-swipe-action      → componentName: hy-swipe-action / swipe-action
+hy-config-provider   → componentName: hy-config-provider / config-provider
 ```
 
-禁止：
+hy-app MCP 匹配行为：
+
+* 名称统一转小写后匹配，大小写不敏感
+* `hy-` 前缀自动兼容：传 `button` 会自动补成 `hy-button`，传 `hy-button` 也会去掉前缀重查
+* 不会做驼峰与连字符转换：`CountDown` 转小写后是 `countdown`，与索引中的 `count-down` 不一致，会返回「未找到组件」
+
+---
+
+## 6.2 不规范名称归一化
+
+遇到以下不规范名称时：
+
+> 必须先转换成规范 kebab-case，再调用 MCP。
+
+| 输入（不规范） | 问题 | 转换后 |
+| ------------- | ---------- | ------------- |
+| `HyForm` | PascalCase | `hy-form` |
+| `hyForm` | camelCase | `hy-form` |
+| `hy_form` | snake_case | `hy-form` |
+| `" form "` | 首尾空格 | `form` |
+| `CountDown` | 驼峰 | `count-down` |
+| `FormItem` | 驼峰 | `form-item` |
+
+归一化步骤：
 
 ```text
-componentName: hy-button
+1. 去掉首尾空格
+2. 大小写边界拆词：hyForm → hy-Form、HYForm → HY-Form
+3. 统一转小写
+4. 下划线转连字符：hy_form → hy-form
+```
+
+禁止把未归一化的名称直接传给 MCP：
+
+```text
+get_component_api(componentName: "HyForm")    ✗ 未找到组件
+get_component_api(componentName: "hy-form")   ✓
+```
+
+生成的代码中组件名同样必须使用规范 kebab-case：
+
+```vue
+<hy-form-item></hy-form-item>
+```
+
+---
+
+## 6.3 search_components 用法
+
+* 支持中文关键词：`query: "按钮"`、`query: "倒计时"`
+* 支持英文子串模糊匹配：`query: "count"` 可搜到 `hy-count-down`
+* 可选 `category` 按分类过滤：
+
+```text
+基础组件 / 页面布局 / 列表与内容 / 数据与状态 / 表单录入
+数据选择 / 弹层与反馈 / 导航与操作 / 业务组件 / 其他组件
+```
+
+* 最多返回 10 条结果
+* 搜索关键词同样遵循 6.2 归一化规则
+
+查询失败时的兜底：
+
+```text
+get_component_api 返回「未找到组件」
+        ↓
+按 6.2 归一化名称后重试
+        ↓
+仍失败则改用 search_components，用更短关键词或中文模糊搜索
+        ↓
+从结果 name 字段取准确组件名
+        ↓
+重新调用 get_component_api
 ```
 
 ---
@@ -203,7 +274,7 @@ componentName: hy-button
 * Props
 * Events
 * Slots
-* Methods
+* Exposes
 * v-model
 * Hook 参数
 * 默认值

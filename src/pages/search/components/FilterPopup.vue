@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { IconConfig, useTranslate } from '@hy-app/ui';
 import type { SelectValueVo } from '@hy-app/ui';
 
 const show = defineModel('show', { default: false });
-
+defineOptions({
+    options: {
+        styleIsolation: 'shared',
+    },
+});
 const emit = defineEmits<{
     (e: 'apply'): void;
 }>();
@@ -34,9 +38,16 @@ const maxStars = 5;
 const selectedStars = ref<number>(0);
 
 /** 分类选项 */
-const categoryOptions = [
-    ['Crop Tops', 'Dresses', 'Jackets', 'Sweaters', 'Shoes', 'Bags'],
-];
+const categoryOptions = computed(() => [
+    [
+        t('filter.category1'),
+        t('filter.category2'),
+        t('filter.category3'),
+        t('filter.category4'),
+        t('filter.category5'),
+        t('filter.category6'),
+    ],
+]);
 const categoryIndex = ref<string>('');
 
 /** 折扣标签 */
@@ -221,7 +232,7 @@ const onClose = () => {
         </scroll-view>
 
         <!-- ============== 底部按钮 ============== -->
-        <hy-flex gap="20" custom-class="filter-popup__footer">
+        <hy-flex gap="20" :custom-style="{padding: '40rpx'}">
             <hy-button
                 :text="t('filter.reset')"
                 plain
@@ -265,9 +276,6 @@ const onClose = () => {
         height: 40rpx;
     }
 
-    &__footer {
-        padding: 24rpx 40rpx;
-    }
 }
 
 .filter-section {

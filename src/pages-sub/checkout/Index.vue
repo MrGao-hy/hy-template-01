@@ -43,10 +43,10 @@ const agreed = ref(false);
 
 /** 底栏按钮：推进步骤（STEP 1 需表单校验，STEP 2 需勾选条款） */
 const onStepNext = async () => {
-    if (currentStep.value === 1) {
-        const valid = await shippingRef.value?.validate();
-        if (!valid) return;
-    }
+    // if (currentStep.value === 1) {
+    //     const valid = await shippingRef.value?.validate();
+    //     if (!valid) return;
+    // }
     if (currentStep.value >= STEP_COUNT) {
         // 继续购物：回到首页
         uni.switchTab({ url: '/pages/index/Index' });

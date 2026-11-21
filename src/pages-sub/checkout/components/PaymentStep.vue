@@ -3,6 +3,12 @@ import { computed, ref } from 'vue';
 import { IconConfig, useTranslate } from '@hy-app/ui';
 import { Config } from '@/config';
 
+defineOptions({
+    options: {
+        styleIsolation: 'shared',
+    },
+});
+
 /**
  * 结算 STEP 2：支付方式（Figma: 8782-2251）
  * Payment Method 三卡片（选中深色）→ Choose your card + 银行卡轮播 → 快捷支付品牌 → 结算金额 + 条款
@@ -30,14 +36,14 @@ const channels: PaymentChannel[] = [
     {
         key: 'cash',
         label: t('payCash'),
-        icon: `${Config.IMG}/icon-cash.svg`,
-        iconActive: `${Config.IMG}/icon-cash-active.svg`,
+        icon: `${Config.IMG2}/icon-cash.svg`,
+        iconActive: `${Config.IMG2}/icon-cash-active.svg`,
     },
     {
         key: 'credit',
         label: t('payCreditCard'),
-        icon: `${Config.IMG}/icon-credit-card-normal.svg`,
-        iconActive: `${Config.IMG}/icon-credit-card.svg`,
+        icon: `${Config.IMG2}/icon-credit-card-normal.svg`,
+        iconActive: `${Config.IMG2}/icon-credit-card.svg`,
     },
     {
         key: 'other',
@@ -68,11 +74,11 @@ const activeCardIndex = ref(0);
 
 /** 快捷支付品牌 logo */
 const quickPays = [
-    `${Config.IMG}/logo-paypal.svg`,
-    `${Config.IMG}/logo-visa.svg`,
-    `${Config.IMG}/logo-mastercard.svg`,
-    `${Config.IMG}/logo-alipay.svg`,
-    `${Config.IMG}/logo-amex.svg`,
+    `${Config.IMG2}/logo-paypal.svg`,
+    `${Config.IMG2}/logo-visa.svg`,
+    `${Config.IMG2}/logo-mastercard.svg`,
+    `${Config.IMG2}/logo-alipay.svg`,
+    `${Config.IMG2}/logo-amex.svg`,
 ];
 
 /** 商品金额（设计稿 mock 数据） */
@@ -84,8 +90,11 @@ const SHIPPING_FEE = 0;
 /** 应付小计 */
 const subtotal = computed(() => PRODUCT_PRICE + SHIPPING_FEE);
 
-/** 同意条款复选框（hy-checkbox 单布尔模式：columns 长度须为 1） */
-const agreeColumns = ref([{ label: '', value: 1 }]);
+/** 同意条款复选框（hy-checkbox 单布尔模式：columns 长度须为 1）
+ *  注意：label 插槽须用作用域写法接收 record，普通 #label 具名插槽在微信小程序端
+ *  无法命中 v-for 内被改写为 label-{index} 的插槽名，导致内容不显示
+ */
+const agreeColumns = ref([{ label: t('agreePrefix'), value: 1 }]);
 
 // ============== 事件 ==============
 
@@ -154,7 +163,6 @@ const onAddNew = () => {
 
         <!-- ============== 银行卡 3D 轮播（hy-swiper 露边 + 缩放景深，滑动/点选切换） ============== -->
         <hy-swiper
-            class="bank-swiper"
             :list="cards"
             :current="activeCardIndex"
             :autoplay="false"
@@ -163,6 +171,7 @@ const onAddNew = () => {
             bg-color="transparent"
             previous-margin="30"
             next-margin="30"
+            custom-class="bank-swiper"
             @update:current="onSwiperChange"
         >
             <template #default="{ record, index }">
@@ -240,11 +249,10 @@ const onAddNew = () => {
                     v-model="agreed"
                     :columns="agreeColumns"
                     shape="square"
-                    active-color="#343434"
                 >
-                    <template #label>
+                    <template #label="{ record }">
                         <text class="agree-text">
-                            {{ t('agreePrefix') }}
+                            {{ record.label }}
                             <text class="agree-text__link">
                                 {{ t('termsService') }}
                             </text>
@@ -323,7 +331,7 @@ const onAddNew = () => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 104rpx;
+    margin: 104rpx 0 30rpx;
 
     &__title {
         font-size: 32rpx;
@@ -342,15 +350,13 @@ const onAddNew = () => {
 }
 
 /* 银行卡 3D 轮播（负外边距通栏 + item 内缩，为四周阴影留出渲染空间防止裁剪） */
-.bank-swiper {
+:deep(.bank-swiper) {
     margin: 24rpx -30rpx 0;
 
-    /* 覆盖 hy-swiper 内层 wrapper 自带背景色 */
     :deep(.hy-swiper__wrapper) {
         background-color: transparent;
     }
 
-    /* swiper-item 居中 + 内缩（内边距需小于 next-margin，保证相邻卡片有可见露边） */
     :deep(.hy-swiper__wrapper--item) {
         box-sizing: border-box;
         display: flex;

@@ -125,7 +125,6 @@ const onCheckout = () => {
     padding: calc(var(--status-bar-height) + 40rpx) 40rpx
         calc(420rpx + env(safe-area-inset-bottom));
     box-sizing: border-box;
-    background-color: $hy-background;
 
     &__header {
         position: relative;

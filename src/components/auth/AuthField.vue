@@ -79,7 +79,6 @@ const onBlur = () => emit('blur');
         :maxlength="maxlength"
         border="bottom"
         font-size="28rpx"
-        color="#000000"
         input-align="left"
         :custom-style="customStyle"
         @update:model-value="(v: string) => emit('update:modelValue', v)"

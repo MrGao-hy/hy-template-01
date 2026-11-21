@@ -41,7 +41,7 @@ const products = ref<SearchResultProduct[]>([
         price: 68.0,
         reviews: 46,
         rating: 5,
-        image: `${Config.IMG}/image_ab2f4ed424ae6384ab7d20a54f772bf15d7db671.png`,
+        image: `${Config.IMG}/good_1.png`,
     },
     {
         id: 2,
@@ -50,7 +50,7 @@ const products = ref<SearchResultProduct[]>([
         oldPrice: 90.0,
         reviews: 64,
         rating: 5,
-        image: `${Config.IMG}/image_226c7c5428720a36a74b4a0234996217317a7aac.png`,
+        image: `${Config.IMG}/good_2.png`,
     },
     {
         id: 3,
@@ -58,7 +58,7 @@ const products = ref<SearchResultProduct[]>([
         price: 85.0,
         reviews: 50,
         rating: 5,
-        image: `${Config.IMG}/image_0bae90a82fa4f5ac14e4f0e05d1b9536e46e2dad.png`,
+        image: `${Config.IMG}/good_3.png`,
     },
     {
         id: 4,
@@ -66,7 +66,7 @@ const products = ref<SearchResultProduct[]>([
         price: 59.0,
         reviews: 38,
         rating: 5,
-        image: `${Config.IMG}/image_277a304a44849c4e605ccf87ec37092bf51698d0.png`,
+        image: `${Config.IMG}/good_4.png`,
     },
     {
         id: 5,
@@ -74,7 +74,7 @@ const products = ref<SearchResultProduct[]>([
         price: 67.0,
         reviews: 39,
         rating: 5,
-        image: `${Config.IMG}/image_69401766929aa18a23140b188e176f5dc57c4883.png`,
+        image: `${Config.IMG}/good_5.png`,
     },
     {
         id: 6,
@@ -83,7 +83,7 @@ const products = ref<SearchResultProduct[]>([
         oldPrice: 82.0,
         reviews: 53,
         rating: 5,
-        image: `${Config.IMG}/image_5ff7fc25c9e3fc5d6a2e06d04f48aed5873b9be1.png`,
+        image: `${Config.IMG}/good_6.png`,
     },
     {
         id: 7,
@@ -91,7 +91,7 @@ const products = ref<SearchResultProduct[]>([
         price: 64.0,
         reviews: 83,
         rating: 5,
-        image: `${Config.IMG}/image_6f239608e6eedd4eb1bc0211a6fb49f898973ab9.png`,
+        image: `${Config.IMG}/good_7.png`,
     },
     {
         id: 8,
@@ -99,7 +99,7 @@ const products = ref<SearchResultProduct[]>([
         price: 78.99,
         reviews: 25,
         rating: 5,
-        image: `${Config.IMG}/image_ba2a806d6be335c904ae672bcb778cd426726789.png`,
+        image: `${Config.IMG}/good_8.png`,
     },
 ]);
 

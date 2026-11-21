@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { IconConfig, useToast, useTranslate } from '@hy-app/ui';
+import { useToast, useTranslate } from '@hy-app/ui';
 import { onLoad } from '@dcloudio/uni-app';
 import { mockOrders } from './components/data';
 import { Config } from '@/config';
@@ -8,8 +8,7 @@ import type { OrderItem } from './components/types';
 import Navbar from '@/components/Navbar.vue';
 
 /**
- * 订单详情（Figma: 8782-2688 已送达 / 8782-2640 配送中）
- * 状态横幅 → 订单信息卡 → 商品与金额汇总卡 → 底部操作（随状态变化）
+ * 订单详情
  */
 definePage({
     style: {
@@ -42,8 +41,8 @@ const banner = computed(() =>
 /** 横幅右侧图标（送达 → 成功；配送中 → 导航） */
 const bannerIcon = computed(() =>
     isDelivered.value
-        ? `${Config.IMG}/icon_01.png`
-        : `${Config.IMG}/icon_02.png`
+        ? `${Config.IMG2}/icon_01.png`
+        : `${Config.IMG2}/icon_02.png`
 );
 
 /** 订单信息行（左 label / 右 value） */

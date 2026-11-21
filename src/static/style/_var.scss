@@ -5,7 +5,7 @@
  */
 page .hy-config-provider.hy-theme--light {
     /* 主题色 */
-    --hy-theme-color: #508a7b;
+    --hy-primary: #508a7b;
 
     /* 背景 */
     --hy-background: #ffffff; /* 页面底色 */
@@ -27,7 +27,7 @@ page .hy-config-provider.hy-theme--light {
     --hy-border-color-light: #f1f2f3;
 
     /* 项目自定义（组件库无对应 token） */
-    --hy-text-color--inverse: #ffffff; /* 深色/主色背景上的文字 */
+    --hy-text-color--inverse: #f1f1f1; /* 深色/主色背景上的文字 */
     --hy-menu-bg: #f3f3f3;
     --hy-home-image-bg--circle: #f1f1f1;
     --hy-home-image-bg--circle-2: #e2e2e2;
@@ -51,7 +51,7 @@ page .hy-config-provider.hy-theme--light {
 
 page .hy-config-provider.hy-theme--dark {
     /* 主题色 */
-    --hy-theme-color: #508a7b;
+    --hy-primary: #508a7b;
 
     /* 背景 */
     // --hy-background: #2a2f37;

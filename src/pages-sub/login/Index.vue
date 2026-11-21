@@ -4,7 +4,6 @@ import { useTranslate } from '@hy-app/ui';
 import AuthField from '@/components/auth/AuthField.vue';
 import AuthButton from '@/components/auth/AuthButton.vue';
 import SocialAuth from '@/components/auth/SocialAuth.vue';
-import TheRootPages from '@/components/TheRootPages.vue';
 
 /**
  * 登录页
@@ -92,64 +91,62 @@ const onSignUp = () => {
 </script>
 
 <template>
-    <the-root-pages>
-        <view class="auth-page">
-            <!-- 标题：24px Bold #000，lineHeight 48px -->
-            <view class="auth-page__title">
-                <text class="auth-page__title-line">{{ t('titleLine1') }}</text>
-                <text class="auth-page__title-line">{{ t('titleLine2') }}</text>
-            </view>
+    <view class="auth-page">
+        <!-- 标题：24px Bold #000，lineHeight 48px -->
+        <view class="auth-page__title">
+            <text class="auth-page__title-line">{{ t('titleLine1') }}</text>
+            <text class="auth-page__title-line">{{ t('titleLine2') }}</text>
+        </view>
 
-            <!-- 表单：原型 (33,237) gap 20px -->
-            <hy-form ref="formRef" :model="form" :rules="rules">
-                <hy-form-item prop="email">
-                    <auth-field
-                        v-model="form.email"
-                        :placeholder="t('emailPlaceholder')"
-                    />
-                </hy-form-item>
-                <hy-form-item prop="password">
-                    <auth-field
-                        v-model="form.password"
-                        :placeholder="t('passwordPlaceholder')"
-                        type="password"
-                    />
-                </hy-form-item>
-
-                <!-- 忘记密码：右对齐 -->
-                <view class="auth-page__forgot" @click="onForgot">
-                    <text class="auth-page__forgot-text">{{
-                        t('forgotPassword')
-                    }}</text>
-                </view>
-            </hy-form>
-
-            <!-- 登录按钮：居中 -->
-            <view class="auth-page__action">
-                <auth-button
-                    :text="t('button')"
-                    :loading="loading"
-                    @click="onLogin"
+        <!-- 表单：原型 (33,237) gap 20px -->
+        <hy-form ref="formRef" :model="form" :rules="rules">
+            <hy-form-item prop="email">
+                <auth-field
+                    v-model="form.email"
+                    :placeholder="t('emailPlaceholder')"
                 />
-            </view>
+            </hy-form-item>
+            <hy-form-item prop="password">
+                <auth-field
+                    v-model="form.password"
+                    :placeholder="t('passwordPlaceholder')"
+                    type="password"
+                />
+            </hy-form-item>
 
-            <!-- 分隔文案：12px Light opacity 0.6 -->
-            <text class="auth-page__divider">{{ t('orWith') }}</text>
-
-            <!-- 社交登录 -->
-            <view class="auth-page__social">
-                <social-auth @select="onSocial" />
-            </view>
-
-            <!-- 底部跳转 -->
-            <view class="auth-page__footer">
-                <text class="auth-page__footer-text">{{ t('noAccount') }}</text>
-                <text class="auth-page__footer-link" @click="onSignUp">{{
-                    t('signUp')
+            <!-- 忘记密码：右对齐 -->
+            <view class="auth-page__forgot" @click="onForgot">
+                <text class="auth-page__forgot-text">{{
+                    t('forgotPassword')
                 }}</text>
             </view>
+        </hy-form>
+
+        <!-- 登录按钮：居中 -->
+        <view class="auth-page__action">
+            <auth-button
+                :text="t('button')"
+                :loading="loading"
+                @click="onLogin"
+            />
         </view>
-    </the-root-pages>
+
+        <!-- 分隔文案：12px Light opacity 0.6 -->
+        <text class="auth-page__divider">{{ t('orWith') }}</text>
+
+        <!-- 社交登录 -->
+        <view class="auth-page__social">
+            <social-auth @select="onSocial" />
+        </view>
+
+        <!-- 底部跳转 -->
+        <view class="auth-page__footer">
+            <text class="auth-page__footer-text">{{ t('noAccount') }}</text>
+            <text class="auth-page__footer-link" @click="onSignUp">{{
+                t('signUp')
+            }}</text>
+        </view>
+    </view>
 </template>
 
 <style lang="scss">

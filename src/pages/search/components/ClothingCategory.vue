@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { IconConfig, useTranslate } from '@hy-app/ui';
+import { useTranslate } from '@hy-app/ui';
 import { Config } from '@/config';
+import CategoryGroup, { type SubCategoryItem } from './CategoryGroup.vue';
+
+defineOptions({
+    options: {
+        styleIsolation: 'shared',
+    },
+});
 
 const { t } = useTranslate('search');
-
-/** 子分类项 */
-interface SubCategoryItem {
-    /** 国际化 key */
-    titleKey: string;
-    /** 商品数量 */
-    count: number;
-}
 
 /** 分类卡片 */
 interface CategoryCard {
@@ -26,7 +25,9 @@ interface CategoryCard {
     circleBg: string;
     /** 分类图片 */
     image: string;
-    /** 展开后的子分类列表 */
+    /** 图片宽度（rpx） */
+    imageWidth: number;
+    /** 展开后的子分类列表（由 CategoryGroup 递归渲染） */
     items?: SubCategoryItem[];
 }
 
@@ -38,24 +39,129 @@ const list = ref<CategoryCard[]>([
         background: '#A3A798',
         circleLight: 'rgba(194, 199, 181, 0.5)',
         circleBg: '#C2C7B5',
-        image: `${Config.IMG}/image_c793677696d160379456b9e0b7274fcb6b4facc6.png`,
+        image: `${Config.IMG}/search_1.png`,
+        imageWidth: 380,
         items: [
-            { titleKey: 'classification1', count: 128 },
-            { titleKey: 'classification2', count: 40 },
-            { titleKey: 'classification3', count: 36 },
-            { titleKey: 'classification4', count: 24 },
-            { titleKey: 'classification5', count: 14 },
-            { titleKey: 'classification6', count: 12 },
-            { titleKey: 'classification7', count: 9 },
+            {
+                titleKey: 'classification1',
+                count: 128,
+                children: [
+                    { titleKey: 'subClassification1', count: 45 },
+                    { titleKey: 'subClassification2', count: 28 },
+                    { titleKey: 'subClassification3', count: 22 },
+                    { titleKey: 'subClassification4', count: 18 },
+                    { titleKey: 'subClassification62', count: 15 },
+                ],
+            },
+            {
+                titleKey: 'classification2',
+                count: 40,
+                children: [
+                    { titleKey: 'subClassification11', count: 18 },
+                    { titleKey: 'subClassification12', count: 13 },
+                    { titleKey: 'subClassification13', count: 9 },
+                ],
+            },
+            {
+                titleKey: 'classification3',
+                count: 36,
+                children: [
+                    { titleKey: 'subClassification14', count: 16 },
+                    { titleKey: 'subClassification15', count: 11 },
+                    { titleKey: 'subClassification16', count: 6 },
+                    { titleKey: 'subClassification63', count: 3 },
+                ],
+            },
+            {
+                titleKey: 'classification4',
+                count: 24,
+                children: [
+                    { titleKey: 'subClassification17', count: 11 },
+                    { titleKey: 'subClassification18', count: 8 },
+                    { titleKey: 'subClassification19', count: 5 },
+                ],
+            },
+            {
+                titleKey: 'classification5',
+                count: 14,
+                children: [
+                    { titleKey: 'subClassification20', count: 9 },
+                    { titleKey: 'subClassification21', count: 5 },
+                ],
+            },
+            {
+                titleKey: 'classification6',
+                count: 12,
+                children: [
+                    { titleKey: 'subClassification23', count: 7 },
+                    { titleKey: 'subClassification24', count: 5 },
+                ],
+            },
+            {
+                titleKey: 'classification7',
+                count: 9,
+                children: [
+                    { titleKey: 'subClassification26', count: 5 },
+                    { titleKey: 'subClassification27', count: 4 },
+                ],
+            },
         ],
     },
     {
         key: 2,
         titleKey: 'categoryTitle2',
-        background: '#9C9492',
+        background: 'rgba(156,148,146,0.5)',
         circleLight: 'rgba(156, 148, 146, 0.5)',
         circleBg: '#9C9492',
-        image: `${Config.IMG}/image_96c516a4449f5653b7738bfaff52d2373eb9d940.png`,
+        image: `${Config.IMG}/search_2.png`,
+        imageWidth: 350,
+        items: [
+            {
+                titleKey: 'classification8',
+                count: 64,
+                children: [
+                    { titleKey: 'subClassification8', count: 24 },
+                    { titleKey: 'subClassification9', count: 16 },
+                    { titleKey: 'subClassification10', count: 12 },
+                    { titleKey: 'subClassification64', count: 7 },
+                    { titleKey: 'subClassification65', count: 5 },
+                ],
+            },
+            {
+                titleKey: 'classification9',
+                count: 28,
+                children: [
+                    { titleKey: 'subClassification29', count: 14 },
+                    { titleKey: 'subClassification30', count: 9 },
+                    { titleKey: 'subClassification31', count: 5 },
+                ],
+            },
+            {
+                titleKey: 'classification10',
+                count: 18,
+                children: [
+                    { titleKey: 'subClassification32', count: 9 },
+                    { titleKey: 'subClassification33', count: 6 },
+                    { titleKey: 'subClassification34', count: 3 },
+                ],
+            },
+            {
+                titleKey: 'classification11',
+                count: 12,
+                children: [
+                    { titleKey: 'subClassification35', count: 7 },
+                    { titleKey: 'subClassification36', count: 5 },
+                ],
+            },
+            {
+                titleKey: 'classification12',
+                count: 9,
+                children: [
+                    { titleKey: 'subClassification38', count: 5 },
+                    { titleKey: 'subClassification39', count: 4 },
+                ],
+            },
+        ],
     },
     {
         key: 3,
@@ -63,7 +169,47 @@ const list = ref<CategoryCard[]>([
         background: '#44565C',
         circleLight: 'rgba(91, 113, 120, 0.5)',
         circleBg: '#5B7178',
-        image: `${Config.IMG}/image_3d3c56ecc5dd806b206d8595e4f1e074342375c1.png`,
+        image: `${Config.IMG}/search_3.png`,
+        imageWidth: 370,
+        items: [
+            {
+                titleKey: 'classification13',
+                count: 86,
+                children: [
+                    { titleKey: 'subClassification5', count: 32 },
+                    { titleKey: 'subClassification6', count: 22 },
+                    { titleKey: 'subClassification7', count: 14 },
+                    { titleKey: 'subClassification66', count: 11 },
+                    { titleKey: 'subClassification67', count: 7 },
+                ],
+            },
+            {
+                titleKey: 'classification14',
+                count: 32,
+                children: [
+                    { titleKey: 'subClassification41', count: 15 },
+                    { titleKey: 'subClassification42', count: 11 },
+                    { titleKey: 'subClassification43', count: 6 },
+                ],
+            },
+            {
+                titleKey: 'classification15',
+                count: 26,
+                children: [
+                    { titleKey: 'subClassification44', count: 12 },
+                    { titleKey: 'subClassification45', count: 9 },
+                    { titleKey: 'subClassification46', count: 5 },
+                ],
+            },
+            {
+                titleKey: 'classification16',
+                count: 15,
+                children: [
+                    { titleKey: 'subClassification47', count: 9 },
+                    { titleKey: 'subClassification48', count: 6 },
+                ],
+            },
+        ],
     },
     {
         key: 4,
@@ -71,16 +217,55 @@ const list = ref<CategoryCard[]>([
         background: '#B9AEB2',
         circleLight: 'rgba(214, 207, 210, 0.5)',
         circleBg: '#D1CACD',
-        image: `${Config.IMG}/image_94e3f60d0bcca95f03fb944f30384d4c322d886e.png`,
+        image: `${Config.IMG}/search_4.png`,
+        imageWidth: 170,
+        items: [
+            {
+                titleKey: 'classification17',
+                count: 45,
+                children: [
+                    { titleKey: 'subClassification50', count: 18 },
+                    { titleKey: 'subClassification51', count: 12 },
+                    { titleKey: 'subClassification52', count: 9 },
+                    { titleKey: 'subClassification68', count: 6 },
+                ],
+            },
+            {
+                titleKey: 'classification18',
+                count: 20,
+                children: [
+                    { titleKey: 'subClassification53', count: 9 },
+                    { titleKey: 'subClassification54', count: 7 },
+                    { titleKey: 'subClassification55', count: 4 },
+                ],
+            },
+            {
+                titleKey: 'classification19',
+                count: 16,
+                children: [
+                    { titleKey: 'subClassification56', count: 8 },
+                    { titleKey: 'subClassification57', count: 5 },
+                    { titleKey: 'subClassification58', count: 3 },
+                ],
+            },
+            {
+                titleKey: 'classification20',
+                count: 12,
+                children: [
+                    { titleKey: 'subClassification59', count: 7 },
+                    { titleKey: 'subClassification60', count: 5 },
+                ],
+            },
+        ],
     },
 ]);
 
 /** 当前展开的分类 key 列表（hy-folding-panel 为受控组件，必须 v-model 绑定） */
 const activeKeys = ref<number[]>([]);
 
-/** 子分类点击 */
-const onSubCategoryTap = (item: SubCategoryItem) => {
-    console.log('sub category tapped:', t(item.titleKey));
+/** 分类选中（任意层级叶子节点） */
+const onSelect = (item: SubCategoryItem) => {
+    console.log('category selected:', t(item.titleKey));
 };
 </script>
 
@@ -88,7 +273,7 @@ const onSubCategoryTap = (item: SubCategoryItem) => {
     <view class="category">
         <hy-folding-panel v-model:model-value="activeKeys" :border="false">
             <hy-folding-panel-item
-                v-for="(item, index) in list"
+                v-for="item in list"
                 :key="item.key"
                 :index="item.key"
             >
@@ -98,54 +283,38 @@ const onSubCategoryTap = (item: SubCategoryItem) => {
                         class="category-card"
                         :style="{ backgroundColor: item.background }"
                     >
-                        <!-- 装饰圆 -->
-                        <view
-                            class="category-card__circle category-card__circle--light"
-                            :style="{ backgroundColor: item.circleLight }"
-                        ></view>
-                        <view
-                            class="category-card__circle"
-                            :style="{ backgroundColor: item.circleBg }"
-                        ></view>
+                        <!-- 装饰圆 + 分类图片（同心居中） -->
+                        <view class="category-card__decor">
+                            <view
+                                class="category-card__circle category-card__circle--light"
+                                :style="{ backgroundColor: item.circleLight }"
+                            ></view>
+                            <view
+                                class="category-card__circle"
+                                :style="{ backgroundColor: item.circleBg }"
+                            ></view>
+                            <hy-image
+                                :src="item.image"
+                                :width="`${item.imageWidth}rpx`"
+                                mode="widthFix"
+                                lazy-load
+                                custom-class="category-card__image"
+                            />
+                        </view>
                         <!-- 分类标题 -->
                         <text class="category-card__title">{{
                             t(item.titleKey)
                         }}</text>
-                        <!-- 分类图片 -->
-                        <hy-image
-                            :src="item.image"
-                            width="246rpx"
-                            height="252rpx"
-                            mode="aspectFill"
-                            radius="30rpx"
-                            lazy-load
-                            class="category-card__image"
-                        />
                     </view>
                 </template>
 
-                <!-- ============== 展开的子分类列表 ============== -->
+                <!-- ============== 子分类（CategoryGroup 递归渲染所有层级） ============== -->
                 <template #default>
-                    <view v-if="item.items?.length" class="sub-category">
-                        <view
-                            v-for="(sub, i) in item.items"
-                            :key="i"
-                            class="sub-category__item"
-                            @tap="onSubCategoryTap(sub)"
-                        >
-                            <text class="sub-category__name">{{
-                                t(sub.titleKey)
-                            }}</text>
-                            <view class="sub-category__count">
-                                <text>{{ sub.count }} {{ t('items') }}</text>
-                                <hy-icon
-                                    :name="IconConfig.RIGHT"
-                                    size="24rpx"
-                                    class="sub-category__arrow"
-                                />
-                            </view>
-                        </view>
-                    </view>
+                    <CategoryGroup
+                        v-if="item.items?.length"
+                        :items="item.items"
+                        @select="onSelect"
+                    />
                 </template>
             </hy-folding-panel-item>
         </hy-folding-panel>
@@ -170,17 +339,26 @@ const onSubCategoryTap = (item: SubCategoryItem) => {
     align-items: center;
     padding-left: 44rpx;
 
+    /* 装饰圆 + 图片容器 */
+    &__decor {
+        position: absolute;
+        top: 50%;
+        right: 42rpx;
+        width: 210rpx;
+        height: 210rpx;
+        transform: translateY(-50%);
+    }
+
     &__circle {
         position: absolute;
-        top: 50rpx;
-        right: 72rpx;
+        top: 50%;
+        left: 50%;
         width: 150rpx;
         height: 150rpx;
         border-radius: $hy-radius-circle;
+        transform: translate(-50%, -50%);
 
         &--light {
-            top: 20rpx;
-            right: 42rpx;
             width: 210rpx;
             height: 210rpx;
         }
@@ -195,55 +373,13 @@ const onSubCategoryTap = (item: SubCategoryItem) => {
         letter-spacing: 2rpx;
     }
 
-    &__image {
+    /* 图片以圆圈中心点为基准居中，偏移量由 custom-style 的 transform 覆盖 */
+    :deep(.category-card__image) {
         position: absolute;
-        right: 0;
-        top: 0;
-    }
-}
-
-/* ============== 子分类列表 ============== */
-.sub-category {
-    background-color: $hy-background;
-
-    &__item {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        height: 110rpx;
-        position: relative;
-        justify-content: space-between;
-
-        &::after {
-            content: '';
-            position: absolute;
-            left: 36rpx;
-            right: 36rpx;
-            bottom: 0;
-            height: 2rpx;
-            background-color: $hy-background--container;
-        }
-
-        &:last-child::after {
-            display: none;
-        }
-    }
-
-    &__name {
-        font-size: $hy-font-size-base;
-        color: $hy-text-color;
-    }
-
-    &__count {
-        font-size: $hy-font-size-sm;
-        color: $hy-text-color--4;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    &__arrow {
-        margin-left: 10rpx;
+        top: 50%;
+        left: 50%;
+        z-index: 1;
+        transform: translate(-50%, -50%);
     }
 }
 </style>

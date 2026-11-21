@@ -77,6 +77,7 @@ const onShowAllTap = () => {
                         :height="item.id === 1 ? '300rpx' : '400rpx'"
                         radius="0"
                         mode="aspectFit"
+                        :custom-class="`image-${item.id}`"
                         lazy-load
                     />
                 </view>
@@ -169,10 +170,6 @@ const onShowAllTap = () => {
         font-size: 40rpx;
         line-height: 1.2;
         white-space: pre-line;
-
-        &--dark {
-            color: $hy-text-color;
-        }
     }
 
     &__image-wrap {

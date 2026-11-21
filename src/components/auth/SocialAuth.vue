@@ -1,13 +1,8 @@
 <script setup lang="ts">
 /**
  * 社交登录入口区
- * 还原 Figma "logo social" 组件：3 个 42×42 圆形按钮，gap 20px
- *   - 白底 + 1px #332218 @ opacity 0.14 描边
- *   - 内部 22×22 品牌图标
  */
-import iconApple from '@/assets/auth/icon-apple.svg';
-import iconGoogle from '@/assets/auth/icon-google.svg';
-import iconFacebook from '@/assets/auth/icon-facebook.svg';
+import { Config } from '@/config';
 
 type SocialProvider = 'apple' | 'google' | 'facebook';
 
@@ -18,9 +13,9 @@ interface IEmit {
 const emit = defineEmits<IEmit>();
 
 const providers: { key: SocialProvider; icon: string }[] = [
-    { key: 'apple', icon: iconApple },
-    { key: 'google', icon: iconGoogle },
-    { key: 'facebook', icon: iconFacebook },
+    { key: 'apple', icon: `${Config.IMG2}/icon-apple.svg` },
+    { key: 'google', icon: `${Config.IMG2}/icon-google.svg` },
+    { key: 'facebook', icon: `${Config.IMG2}/icon-facebook.svg` },
 ];
 
 const onSelect = (p: SocialProvider) => emit('select', p);
@@ -36,12 +31,7 @@ const onSelect = (p: SocialProvider) => emit('select', p);
             :hover-stay-time="100"
             @click="onSelect(p.key)"
         >
-            <image
-                class="social-auth__icon"
-                :src="p.icon"
-                mode="aspectFit"
-                lazy-load
-            />
+            <hy-icon :name="p.icon" />
         </view>
     </view>
 </template>
@@ -60,9 +50,7 @@ const onSelect = (p: SocialProvider) => emit('select', p);
         width: 84rpx;
         height: 84rpx;
         border-radius: 50%;
-        background-color: $hy-background--2;
-        /* 原型描边 #332218 @ opacity 0.14 */
-        border: 2rpx solid rgba(51, 34, 24, 0.14);
+        background-color: $hy-background--empty;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -72,7 +60,7 @@ const onSelect = (p: SocialProvider) => emit('select', p);
 
         &--hover {
             transform: scale(0.94);
-            background-color: #f5f5f5;
+            background-color: $hy-background--hover;
         }
     }
 

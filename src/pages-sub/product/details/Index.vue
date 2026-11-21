@@ -30,9 +30,8 @@ const HERO_IMAGES = [
     `${Config.IMG}/good_2.png`,
 ];
 
-/** 商品信息 */
+/** 商品信息（名称走多语言） */
 const product = {
-    name: 'Sportwear Set',
     price: 80.0,
     rating: 5,
     reviews: 83,
@@ -64,49 +63,47 @@ const ratingBars: RatingBar[] = [
     { star: 1, percent: 1 },
 ];
 
-/** 评价列表（Figma: Jennifer Rose / Kelly Rihana） */
-const reviews: ReviewItem[] = [
+/** 评价列表（Figma: Jennifer Rose / Kelly Rihana，文案走多语言） */
+const reviews = computed<ReviewItem[]>(() => [
     {
         id: 1,
-        name: 'Jennifer Rose',
+        name: t('review1Name'),
         avatar: `${Config.IMG}/avatar_1.png`,
-        time: '5m ago',
+        time: t('reviewTimeAgo', { minutes: 5 }),
         rating: 5,
-        content:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        content: t('review1Content'),
     },
     {
         id: 2,
-        name: 'Kelly Rihana',
+        name: t('review2Name'),
         avatar: `${Config.IMG}/avatar_2.png`,
-        time: '9m ago',
+        time: t('reviewTimeAgo', { minutes: 9 }),
         rating: 4,
-        content:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+        content: t('review2Content'),
     },
-];
+]);
 
-/** 相似商品 */
-const similarProductList: SimpleProduct[] = [
+/** 相似商品（名称走多语言，修复原损坏行） */
+const similarProductList = computed<SimpleProduct[]>(() => [
     {
         id: 1,
-        name: 'Maxi Dress',
+        name: t('similar1Name'),
         price: 68.0,
         image: `${Config.IMG}/good_9.png`,
     },
     {
         id: 2,
-        name: 'Linen Dress',
+        name: t('similar2Name'),
         price: 52.0,
         image: `${Config.IMG}/good_10.png`,
     },
     {
         id: 3,
-        name: 'Kimi Green Dress',
+        name: t('similar3Name'),
         price: 47.99,
         image: `${Config.IMG}/good_11.png`,
     },
-];
+]);
 
 // ============== 事件 ==============
 
@@ -141,7 +138,7 @@ const onSimilarTap = (_item: SimpleProduct) => {
             <view class="product-panel__head">
                 <!-- 标题 + 价格 -->
                 <hy-flex align="center" justify="space-between">
-                    <text class="product-panel__head--name">{{ product.name }}</text>
+                    <text class="product-panel__head--name">{{ t('name') }}</text>
                     <text class="product-panel__head--price">
                         $ {{ product.price.toFixed(2) }}
                     </text>

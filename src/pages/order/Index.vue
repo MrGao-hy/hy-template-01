@@ -19,7 +19,7 @@ definePage({
 
 const { t } = useTranslate('order');
 const toast = useToast();
-const message = useMessage()
+const message = useMessage();
 
 /** 状态 Tab 键 */
 type TabKey = 'all' | OrderStatus;
@@ -111,8 +111,7 @@ const onCancel = (order: OrderItem) => {
 
 <style lang="scss" scoped>
 .order-page {
-    min-height: 100vh;
-    padding: 0 40rpx calc(40rpx + env(safe-area-inset-bottom));
+    padding: 0 40rpx calc(52px + env(safe-area-inset-bottom));
     box-sizing: border-box;
     background-color: $hy-background;
 }
@@ -134,5 +133,4 @@ const onCancel = (order: OrderItem) => {
         }
     }
 }
-
 </style>
